@@ -2,9 +2,10 @@
       <!-- title row -->
       <div class="row">
         <div class="col-xs-12">
-          <h2 class="page-header">
-            <i class="fa fa-globe"></i> AdminLTE, Inc.
-            <small class="pull-right">Date: 2/10/2014</small>
+          <h2 class="page-header"> <a class="btn btn-default btn-social btn-dropbox">
+                <i class="fa fa-plus"></i> Pedido Nuevo
+              </a>
+            <small class="pull-right">Fecha del día: <?=(new DateTime())->format('d/m/Y')?></small>
           </h2>
         </div>
         <!-- /.col -->
