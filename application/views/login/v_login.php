@@ -15,7 +15,7 @@
     <body class="hold-transition login-page">
         <div class="login-box">
             <div class="login-logo">
-                <b>STARPERU</b>SIST
+                <b>SIV</b>SISTEMA
             </div>
 
             <div class="login-box-body">
@@ -42,7 +42,7 @@
 
             <footer class="footer">
                 <div class="text-right">
-                    <b>Versión</b> 1.2
+                    <b>Sistema de Pedidos</b> v1.1
                 </div>
 
             </footer>  
