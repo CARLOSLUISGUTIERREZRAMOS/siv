@@ -11,7 +11,7 @@
                     <div class="box-body">
                         <div class="form-group">
                             <label for="exampleInputEmail1">Codigo Cliente</label>
-                            <input type="text" class="form-control" id="cod_cliente" disabled>
+                            <input type="text" class="form-control" id="cod_cliente" value="<?php printf('%010d', $codigo_nuevo);?>" disabled>
                         </div>
                         <div class="form-group">
                             <label for="exampleInputPassword1">Nombres</label>

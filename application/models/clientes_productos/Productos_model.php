@@ -4,7 +4,7 @@
  *
  * @author C_GGUTIERREZ
  */
-class Clientes_model extends CI_Model{
+class Productos_model extends CI_Model{
     
     public function __construct() {
         parent::__construct();
@@ -12,9 +12,9 @@ class Clientes_model extends CI_Model{
         
     }
     
-    public function GetAllClientes(){
+    public function GetAllProductos(){
         
-         $res =  $this->db->get('cliente');
+         $res =  $this->db->get('producto');
          return $res;
 //         return $this->db->last_query();
         
@@ -23,15 +23,15 @@ class Clientes_model extends CI_Model{
     public function GetNextId(){
         
         $this->db->select('codigo');
-        $this->db->from('cliente');
+        $this->db->from('producto');
         $this->db->order_by("codigo", "DESC");
         $this->db->limit(1);
         return $this->db->get()->row()->codigo;
     }
     
-    public function RegistrarNuevoCliente($data){
+    public function RegistrarNuevoProducto($data){
         $this->db->set($data);
-        return (bool)$this->db->insert('cliente');
+        return (bool)$this->db->insert('producto');
 //        return $this->db->last_query();
     }
     
