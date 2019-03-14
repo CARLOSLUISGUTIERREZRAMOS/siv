@@ -14,8 +14,8 @@ class Login extends CI_Controller {
     }
 
     function index() {
-
-
+        
+//        echo $this->password->encriptar_password('sheila');die;
         $this->form_validation->set_rules('codigoUsuario', 'CODIGO USUARIO', 'required');
         $this->form_validation->set_rules('password', 'CONTRASEÑA', 'required');
         if ($this->form_validation->run() == FALSE) {
@@ -24,7 +24,10 @@ class Login extends CI_Controller {
             $xss_post = $this->input->post(NULL, TRUE);
             $usuarioValido = $this->usuario_model->verificaUsuario($xss_post['codigoUsuario']);
             if ($usuarioValido) {
-                $res = $this->password->validarPassword($xss_post['password'], '$2y$10$3ogGt6bedniV5zZ17ggd.eFWd9kC6QXJjbK0n5Z1T9ni73.Cc9hg.');
+                
+                $pass_db =  $this->usuario_model->GetPassUser($xss_post['codigoUsuario']);
+//                echo $pass_db;die;
+                $res = $this->password->validarPassword($xss_post['password'], $pass_db);
                 if ($res) {
                     $this->setDatosSesion($xss_post['codigoUsuario']);
                     redirect('interno/main');

@@ -1,10 +1,13 @@
 <header class="main-header">
     <!-- Logo -->
     <a href="<?= base_url() . 'interno/main' ?>" class="logo">
-        <span class="logo-mini">SIST</span>
-        <div class="pull-left image">
+        <span class="logo-mini">SIV</span>
+    
+        <span class="logo-lg"><b>    <img src="<?= base_url() . 'img/logo_ventas.png'; ?>">SIV</b>ADMIN</span>
+        
+<!--        <div class="pull-left image">
             <img width="25%" height="25%" src="<?= base_url() . 'img/logo_ventas.png'; ?>" class="img-responsive" alt="STARPERU">
-        </div>
+        </div>-->
     </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
