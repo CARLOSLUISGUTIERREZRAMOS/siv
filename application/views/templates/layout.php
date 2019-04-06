@@ -76,9 +76,9 @@
 
         <?php echo script_tag('js/jquery/jquery.min.js'); ?>
         <?php echo script_tag('js/jquery/jquery-ui.min.js'); ?>
-        <script>
+<!--        <script>
             $.widget.bridge('uibutton', $.ui.button);
-        </script>
+        </script>-->
         <?php echo script_tag('js/bootstrap/bootstrap.min.js'); ?>
         <!-- INPUT MASK -->
         <!-- .INPUT MASK -->
