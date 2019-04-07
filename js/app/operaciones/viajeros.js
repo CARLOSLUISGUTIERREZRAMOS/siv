@@ -1,15 +1,5 @@
 $(function () {
 
-//    var viewportHeight = $(window).height();
-//    $('.bloque_pedidos').slimScroll({
-//        height: viewportHeight + 'px',
-//        color: '#455A64',
-//        distance: '0',
-//        allowPageScroll: true,
-//        alwaysVisible: true
-//    });
-
-
     $(".decimal").inputmask('decimal', {
         rightAlign: true
     });
@@ -98,6 +88,30 @@ $(function () {
     })
 
     $('.pedido_detalle').on('ifChecked', function (event) {
-        console.log(1)
+        var item_id_pedido_detalle = $(this).parents('tr').attr('id');
+//        console.log(item_id_pedido_detalle);
+        var cantidad = $(this).parents('tr').find('td')[1].innerHTML;
+        var nombre = $(this).parents('tr').find('td')[2].innerHTML;
+        var shipping = $(this).parents('tr').find('td')[3].innerHTML;
+        var peso_libras = $(this).parents('tr').find('td')[4].innerHTML;
+
+        var nueva_fila_tblTuPedido = '<tr id="'+item_id_pedido_detalle+'">' +
+                '<td>' + cantidad + '</td>' +
+                '<td>' + nombre + '</td>' +
+                '<td>' + shipping + '</td>' +
+                '<td>' + peso_libras + '</td>' +
+                '</tr>';
+
+        $('#tbl_tupedido tbody').append(nueva_fila_tblTuPedido);
+
     });
+    
+     $("body").on("ifUnchecked", ".pedido_detalle", function () {
+//    $('.pedido_detalle').on('ifUnchecked', function (event) {
+         var item_id_pedido_detalle = $(this).parents('tr').attr('id');
+         console.log(item_id_pedido_detalle);
+          $('#tbl_tupedido').parents("tr #"+item_id_pedido_detalle).remove();
+//         $('#tbl_tupedido').closest('tr').remove();
+    });
+
 });
