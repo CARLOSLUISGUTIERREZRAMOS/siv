@@ -40,7 +40,7 @@
                                 <!--<a href="#" class="btn btn-default btn-flat">Profile</a>-->
                             </div>
                             <div class="pull-right">
-                                <a href="<?= base_url('interno/main/logout') ?>" class="btn btn-default btn-flat">Cerrar sesión</a>
+                                <a href="<?= base_url('index.php/interno/main/logout') ?>" class="btn btn-default btn-flat">Cerrar sesión</a>
                             </div>
                         </li>
                     </ul>
