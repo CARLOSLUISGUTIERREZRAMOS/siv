@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <style>
+            
+        body {
+
+	background: url(img/img.gif) no-repeat center top;
+
+}
+        </style>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>SIS.STARPERU | Log in</title>
@@ -9,7 +17,6 @@
         <?php echo link_tag('css/bootstrap/bootstrap.min.css'); ?>
         <?php echo link_tag('css/font-awesome/css/font-awesome.min.css'); ?> 
         <?php echo link_tag('css/Ionicons/ionicons.min.css'); ?>
-        <?php echo link_tag('css/css_propios/estilos.css'); ?>
         <?php echo link_tag('css/lte/AdminLTE.min.css'); ?>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
     </head>

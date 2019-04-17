@@ -14,8 +14,8 @@ class Login extends CI_Controller {
     }
 
     function index() {
-        
-//        echo $this->password->encriptar_password('sheila');die;
+
+
         $this->form_validation->set_rules('codigoUsuario', 'CODIGO USUARIO', 'required');
         $this->form_validation->set_rules('password', 'CONTRASEÑA', 'required');
         if ($this->form_validation->run() == FALSE) {

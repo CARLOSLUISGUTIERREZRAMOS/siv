@@ -68,7 +68,7 @@ class Productos_model extends CI_Model {
 //        $this->db->update('producto', array('stock_actual' => $stock_set));
 //        return $this->db->last_query();
         
-        return true;
+//        return true;
     }
 
 }

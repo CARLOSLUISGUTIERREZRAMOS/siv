@@ -170,7 +170,7 @@ class Pedidos extends CI_Controller {
             $this->Pedidos_model->RegistrarPedidoDetalle($data_insert_pedido_detalle);
 //            var_dump($res);
             $calculo_presupuesto_para_compra += $this->CalcularPresupuestoParaCompra($pendiente_compra, $producto->costo_unitario_producto);
-            $this->Productos_model->ActualizarStockActualProducto($producto->cantidad, $stock_act_producto, $producto->codigo_producto);
+//            $this->Productos_model->ActualizarStockActualProducto($producto->cantidad, $stock_act_producto, $producto->codigo_producto);
         }
         $REGISTRO_DE_ABONO = ((double) $ObjPedido->abono > 0) ? TRUE : FALSE;
         if ($REGISTRO_DE_ABONO) {
@@ -207,7 +207,7 @@ class Pedidos extends CI_Controller {
     }
 
     //Genera un numero de pedido fiticio.
-    public function CreaPedido() {
+    public function CreaPedido() {  
 
         $ResModel_IdPedido = $this->Pedidos_model->GetLastId();
         foreach ($ResModel_IdPedido->result() as $pedido) {
@@ -221,8 +221,8 @@ class Pedidos extends CI_Controller {
         $this->template->add_js('js/datatables/jquery.dataTables.min.js');
         $this->template->add_js('js/datatables/dataTables.bootstrap.min.js');
         $this->template->set('titulo', 'Listado de Pedidos');
-        $data['pedidos'] = $this->Pedidos_model->GetAllPedidos();
-
+        $data['pedidos'] = $this->Pedidos_model->GetAllPedidos('PEDIDO');
+        $data['controlador'] = 'Pedidos';
         $this->template->load(10, 'pedidos/v_lista_pedidos', $data);
     }
 

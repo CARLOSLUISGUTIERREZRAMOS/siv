@@ -4,13 +4,13 @@ if (isset($data_ingresada)) {
     $EXITO = $this->session->flashdata('EXITO');
     $alert = ($EXITO) ? 'succes' : 'danger';
     ?>
-<br>
-    <div class="alert alert-success <?=$alert?>">
+    <br>
+    <div class="alert alert-success <?= $alert ?>">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
         <h4><i class="icon fa fa-check"></i> Exito!</h4>
-        <?php 
-        foreach($data_ingresada as $item){
-            echo $item."<br>";
+        <?php
+        foreach ($data_ingresada as $item) {
+            echo $item . "<br>";
         }
         ?>
     </div>
@@ -157,7 +157,9 @@ if (isset($data_ingresada)) {
                                 <td><?= $item->stock_producto_flag ?></td>
                                 <td><?php
                                     $pendiente_compra = 0;
-                                    if ($item->stock_producto_flag > $item->cantidad) {
+                                    if ((float) $item->pendiente_compra > 0) {
+                                        $pendiente_compra = $item->pendiente_compra;
+                                    } else if ($item->stock_producto_flag > $item->cantidad) {
                                         $pendiente_compra;
                                     } else {
                                         $pendiente_compra = (int) $item->cantidad - (int) $item->stock_actual;
@@ -168,12 +170,27 @@ if (isset($data_ingresada)) {
                                 if ($pendiente_compra === 0) {
                                     $fondo = "bg-yellow";
                                     $msg = 'PDT. ENVIO';
+                                    if ($item->estado === 'EN') {
+                                        $fondo = "bg-green";
+                                        $msg = 'ENVÍO';
+                                    }
                                 } else {
+                                    if ($item->estado === 'EP') {
+                                        $fondo_estado = "bg-yellow";
+                                        $msg_estado = 'ENVÍO PARCIAL';
+                                    }
                                     $fondo = "bg-red";
                                     $msg = 'PDT. COMPRA';
                                 }
                                 ?>
-                                <td><span class="badge <?= $fondo ?>"><?= $msg ?></span></td>
+                                <td>
+                                    <span class="badge <?= $fondo ?>"><?= $msg ?></span> 
+                                    <?php if (isset($fondo_estado)) { ?>
+                                        <span class="badge <?= $fondo_estado ?>"><?= $msg_estado ?></span> 
+                                        <?php
+                                    }
+                                    ?>
+                                </td>
 
                             </tr>
                             <?php
@@ -201,7 +218,7 @@ if (isset($data_ingresada)) {
                         </tr>
 
                         <?php
-                        //SUMATARIA TOTAL ABONO
+//SUMATARIA TOTAL ABONO
                         if ($EXISTE_ABONO) {
                             foreach ($abonos->Result() as $abono) {
                                 //LOGICA PARA CONVERTIR EL ABONO REGISTRADO A USD CON EL TIPO DE CAMBIO DE ESE DÍA
@@ -243,7 +260,7 @@ if (isset($data_ingresada)) {
                                         ?>
                                     </select>
                                 </td>
-                                <td><input type="hidden" id="<?=$last_abono?>" class="monto_usd" value=""></td>
+                                <td><input type="hidden" id="<?= $last_abono ?>" class="monto_usd" value=""></td>
                             </tr>
                             <?php
                         }

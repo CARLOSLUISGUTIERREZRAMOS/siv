@@ -38,7 +38,7 @@
                             <td><?= $pedido->presupuesto_x_compra ?> </td>
                             <td><?= ((float)$pedido->saldo > 0) ? $pedido->saldo : $pedido->precio_total ?> </td>
                             <td><?= ObtenerNombreEstado($pedido->estado) ?> </td>
-                            <td><a type="button" class="btn btn-default" href="<?= base_url() ?>operaciones/Pedidos/VerDetallePedido?codigo_pedido=<?= $pedido->codigo ?>"><i class="fa fa-th-list"></i></button></a>
+                            <td><a type="button" class="btn btn-default" href="<?= base_url() ?>operaciones/<?=$controlador?>/VerDetallePedido?codigo_pedido=<?= $pedido->codigo ?>"><i class="fa fa-th-list"></i></button></a>
                         </tr>
                         <?php
                     }

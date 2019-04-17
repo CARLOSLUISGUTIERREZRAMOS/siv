@@ -31,7 +31,7 @@ class Usuario_Model extends CI_Model {
             return $res;
         }
     }
-    
+
     public function ActivaDesactUsuario($codUsuario = NULL, $CharAccion, $id_usuario = NULL) {
         $data = array('estado' => "$CharAccion");
         if (!is_null($id_usuario)) {

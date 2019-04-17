@@ -21,31 +21,19 @@
                     <table class="table">
                         <tbody>
                             <tr>
-                                <td>Total libras enviadas: </td>
-                                <td>
-                                    <div class="col-xs-12">
-                                        <input type="text" value="" class="form-control input-sm">
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Total maletas enviadas: </td>
+                                <th>Total maletas enviadas: </th>
                                 <td>
                                     <div class="col-xs-12">
                                         <span><?= $DetalleViaje->maletas_enviadas ?></span>
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <th></th>
-                                <td>
-                                </td>
-                            </tr>
+
                             <tr>
                                 <th>Saldo para gastos: </th>
                                 <td>
                                     <div class="col-xs-12">
-                                        <input type="text" value="" class="form-control input-sm">
+                                        <span id="saldo_para_gastos"></span>
                                     </div>
                                 </td>
                             </tr>
@@ -61,7 +49,7 @@
                         <th>Costo del Pasaje</th>
                         <th>Comisión del Viajero</th>
                         <th>Comisión ADN</th>
-                        <th>Comisión Elvira</th>
+                        <th>Comisión Luis</th>
                         <th>Impuesto Aduanas</th>
                         <th>Costo de Recojo</th>
                         <th>Gastos extras</th>
@@ -102,7 +90,7 @@
 
         <div class="row">   
             <!-- accepted payments column -->
-            <div class="col-xs-7 bloque_pedidos">
+            <div class="col-xs-12 col-lg-7 bloque_pedidos">
                 <p class="lead">Lista de productos disponibles:</p>
                 <div class="table-responsive">
 
@@ -131,10 +119,10 @@
                                         <thead>
                                             <tr>
                                                 <th></th>
-                                                <th>Cantidad</th>
                                                 <th>Producto</th>
-                                                <th>Shipping</th>
-                                                <th>Peso libras</th>
+                                                <th>Cant.Req</th>
+                                                <th>Stock</th>
+                                                <th style="width: 40px">Cant.Envío</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -149,20 +137,24 @@
 
                                                     <td>
                                                         <label>
-                                                            <input type="checkbox" class="flat-red pedido_detalle">
+                                                            <input type="checkbox" class="flat-red pedido_detalle <?= $row->cod_prod ?>" id="<?= $key_en ?>" <?= ($row->stock_actual == '0') ? 'disabled' : '' ?>>
                                                         </label>
                                                     </td>
-                                                    <td class="cantidad" id="<?= $key_en ?>"><?= $row->cantidad ?></td>
                                                     <td class="nombre" id="<?= $key_en ?>"><?= $row->nombre ?></td>
-                                                    <td class="shipping_unitario" id="<?= $key_en ?>"><?= $row->shipping_unitario ?></td>
-                                                    <td class="peso_libras" id="<?= $key_en ?>"><?= $row->peso_libras ?></td>
+                                                    <td class="cantidad" id="<?= $key_en ?>"><?= $row->cantidad ?></td>
+                                                    <td class="stock_actual" id="<?= $row->cod_prod ?>"><?= $row->stock_actual ?></td>
+                                                    <td><input class="form-control input-sm cantidad_envio" type="number" id="<?= $row->cod_prod ?>" name="<?= $key_en ?>" <?= ($row->stock_actual == '0') ? 'disabled' : '' ?>></td>
+                                                    <td id="shipping_unitario" style="display: none"><?= $row->shipping_unitario ?></td>
+                                                    <td id="peso_libras"  style="display: none"><?= $row->peso_libras ?></td>
+                                                    <td id="pedido_cliente_codigo"  style="display: none"><?= $row->pedido_cliente_codigo ?></td>
+                                                    <td id="pedido_codigo"  style="display: none"><?= $key ?></td>
                                                 </tr>
                                                 <?php
                                             }
                                             ?>
                                         </tbody>
                                         <tfoot>
-                                            
+
                                         </tfoot>
                                     </table>
                                 </div>
@@ -177,21 +169,30 @@
 
                 </div>
             </div>
+
             <!-- /.col -->
-            <div class="col-xs-5">
+            <div class="col-xs-12 col-lg-5">
                 <p class="lead">Tu lista:</p>
                 <div class="table-responsive">
                     <table class="table table-striped table table-condensed" id="tbl_tupedido">
                         <thead>
                             <tr>
-                                <th style="width: 40px">Cant.</th>
+                                <th>Pedido</th>
                                 <th>Producto</th>
+                                <th>Cant.Env</th>
                                 <th>Shipping</th>
-                                <th>Peso libras</th>
+                                <th>Peso libr.</th>
                             </tr>
                         </thead>
                         <tbody>
                         </tbody>
+                        <tfoot>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th id="sumatoria_shipping"></th>
+                        <th id="sumatoria_peso_libras"></th>
+                        </tfoot>
                     </table>
                     <!-- /.box -->
                 </div>
@@ -199,13 +200,21 @@
             </div>
             <!-- /.col -->
         </div>
-
     </div>
     <div class="box-footer">
-        <button type="reset" class="btn btn-default">Cancel</button>
-        <button type="button" class="btn btn-primary">Guardar Cambios</button>
+        <a type="button" title="Volver" class="btn btn-default" href="<?= base_url() ?>operaciones/Viaje/"><i class="fa fa-chevron-left"></i> Volver</a>
+        <button type="button" class="btn btn-success pull-right"  id="btn_guardar_detalle_viaje">Guardar Cambios</button>
     </div>
+    <?php foreach ($StockProducto as $key => $value) { ?>
+        <input type="hidden" value="<?= $value ?>" id="<?= $key ?>" class="producto_hidden">
+        <?php
+    }
+    ?>
+    <input type="hidden" value="<?= $DetalleViaje->id ?>" id="viaje_id">
 </div>
+<?php
+$this->load->view('viajeros/v_error');
+?>
 
-</div>
+
 

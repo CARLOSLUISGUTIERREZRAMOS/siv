@@ -47,10 +47,20 @@ class Pedidos_model extends CI_Model {
         return $this->db->get()->row();
     }
 
-    function GetAllPedidos() {
+    function GetAllPedidos($tipo) {
         $this->db->select('P.codigo,C.nombres,P.cliente_codigo,P.presupuesto_x_compra,P.estado,P.saldo,P.precio_total');
         $this->db->from('pedido P');
         $this->db->join('cliente C', 'P.cliente_codigo = C.codigo');
+        switch ($tipo){
+            case 'PEDIDO':
+                $estado = array('VT', 'EP', 'ET', 'RL', 'EN');
+                $this->db->where_in('P.estado',$estado);
+                break;
+            case 'ENTREGA':
+                $estado = array('EP', 'ET', 'RL', 'EN');
+                $this->db->where_in('P.estado',$estado);
+                break;
+        }
         $this->db->order_by("P.codigo", "DESC");
         return $this->db->get();
     }
@@ -60,7 +70,7 @@ class Pedidos_model extends CI_Model {
                 . 'PD.costo_unitario_producto,PD.peso_libras,PD.shipping_unitario,'
                 . 'PD.ganancia_unitaria,'
                 . 'PD.precio_unitario_usd,PD.precio_total,PR.estado,'
-                . 'PD.pendiente_compra,PD.stock_producto_flag');
+                . 'PD.pendiente_compra,PD.stock_producto_flag,PD.estado');
         $this->db->from('pedido_detalle PD');
         $this->db->join('producto PR', 'PD.producto_codigo = PR.codigo');
         $this->db->where('pedido_codigo', $pedido_id);
@@ -71,7 +81,7 @@ class Pedidos_model extends CI_Model {
     }
 
     function ObtenerPedidoDetalleViaje() {
-        $this->db->select('P.codigo,PD.id,PD.cantidad,PR.nombre,PD.shipping_unitario,PD.peso_libras');
+        $this->db->select('PR.codigo as cod_prod,PD.pedido_cliente_codigo,P.codigo,PD.id,PD.cantidad,PR.nombre,PD.shipping_unitario,PD.peso_libras,PR.stock_actual');
         $this->db->from('pedido_detalle PD');
         $this->db->join('producto PR', 'PD.producto_codigo = PR.codigo');
         $this->db->join('pedido P', 'P.codigo = PD.pedido_codigo');
@@ -101,6 +111,13 @@ class Pedidos_model extends CI_Model {
         $this->db->set('saldo', $saldo_a_cobrar);
         $this->db->where('codigo', $pedido_id);
         $result = $this->db->update('pedido');
+        return $result;
+    }
+    function CambiarEstadoPedidoDetalle($pedido_id,$pedido_detalle_id,$estado){
+        $this->db->set('estado', $estado);
+        $this->db->where('id', $pedido_detalle_id);
+        $this->db->where('pedido_codigo', $pedido_id);
+        $result = $this->db->update('pedido_detalle');
         return $result;
     }
 
