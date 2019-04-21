@@ -2,7 +2,7 @@
 
 /**
  * Description of Pedidos_model
- *
+ * LOCAL
  * @author C_GGUTIERREZ
  */
 class Pedidos_model extends CI_Model {
@@ -125,7 +125,7 @@ class Pedidos_model extends CI_Model {
         $result = $this->db->update('pedido_detalle');
         return $result;
     }
-
+    //agregando costo unitario - repo
     function GetDataEnviosParciales($pedido_codigo) {
         $this->db->select(" `PROD`.`nombre`,PROD.costo_unitario,
         `PD`.`precio_unitario_usd` AS `PUV`,
