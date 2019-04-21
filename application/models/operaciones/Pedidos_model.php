@@ -2,7 +2,7 @@
 
 /**
  * Description of Pedidos_model
- *
+ * LOCAL
  * @author C_GGUTIERREZ
  */
 class Pedidos_model extends CI_Model {
