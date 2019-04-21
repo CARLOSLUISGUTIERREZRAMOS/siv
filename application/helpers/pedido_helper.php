@@ -30,6 +30,9 @@ if (!function_exists('ObtenerNombreEstado')) {
             case 'VT':
                 $nombres_estado = 'VENTA';
                 break;
+            case 'RQ':
+                $nombres_estado = 'REQUERIMIENTO';
+                break;
             case 'EP':
                 $nombres_estado = 'ENVÍO PARCIAL';
                 break;

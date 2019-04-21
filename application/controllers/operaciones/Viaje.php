@@ -80,7 +80,7 @@ class Viaje extends CI_Controller {
     public function Registrar() {
 
         $xss_post = $this->input->post(NULL, TRUE);
-        $fecha_post = $xss_post['fecha_envio'];
+        $fecha_post = fecha_iso_8601($xss_post['fecha_envio']);
         $xss_post['fecha_envio'] = (new DateTime($fecha_post))->format('Y-m-d');
         $resultado_insert = $this->Viaje_model->RegistrarViaje($xss_post);
 

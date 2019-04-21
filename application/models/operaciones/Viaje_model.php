@@ -54,9 +54,10 @@ class Viaje_model extends CI_Model {
 
     function RegistrarViajeHasPedidoDetalle($data) {
         $this->db->set($data);
-        return (bool) $this->db->insert('viaje_has_pedido_detalle');
+//        return (bool) $this->db->insert('viaje_has_pedido_detalle');
+        $this->db->insert('viaje_has_pedido_detalle');
 //         $this->db->insert('viaje_has_pedido_detalle');
-//         return $this->db->last_query();
+         return $this->db->last_query();
     }
 
     function ComprobarExisteViajeProcesado($viaje_id) {

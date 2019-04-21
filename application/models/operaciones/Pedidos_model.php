@@ -51,18 +51,24 @@ class Pedidos_model extends CI_Model {
         $this->db->select('P.codigo,C.nombres,P.cliente_codigo,P.presupuesto_x_compra,P.estado,P.saldo,P.precio_total');
         $this->db->from('pedido P');
         $this->db->join('cliente C', 'P.cliente_codigo = C.codigo');
-        switch ($tipo){
+        switch ($tipo) {
             case 'PEDIDO':
                 $estado = array('VT', 'EP', 'ET', 'RL', 'EN');
-                $this->db->where_in('P.estado',$estado);
+                $this->db->where_in('P.estado', $estado);
                 break;
             case 'ENTREGA':
                 $estado = array('EP', 'ET', 'RL', 'EN');
-                $this->db->where_in('P.estado',$estado);
+                $this->db->where_in('P.estado', $estado);
+                break;
+            case 'ENVIO_PARCIAL':
+                $estado = array('EP', 'EN', 'RQ');
+                $this->db->where_in('P.estado', $estado);
                 break;
         }
         $this->db->order_by("P.codigo", "DESC");
-        return $this->db->get();
+        RETURN $this->db->get();
+
+//        return $this->db->last_query();
     }
 
     function ObtenerPedidoDetalle($pedido_id) {
@@ -86,7 +92,7 @@ class Pedidos_model extends CI_Model {
         $this->db->join('producto PR', 'PD.producto_codigo = PR.codigo');
         $this->db->join('pedido P', 'P.codigo = PD.pedido_codigo');
         $this->db->where('PD.estado', 'EP');
-        $this->db->where('P.estado', 'VT');
+        $this->db->where_in('P.estado', 'RQ');
         $this->db->where('PR.estado', 'Y');
 
 //        $this->db->join('cliente C', 'P.cliente_codigo = C.codigo');
@@ -113,12 +119,38 @@ class Pedidos_model extends CI_Model {
         $result = $this->db->update('pedido');
         return $result;
     }
-    function CambiarEstadoPedidoDetalle($pedido_id,$pedido_detalle_id,$estado){
+
+    function CambiarEstadoPedidoDetalle($pedido_id, $pedido_detalle_id, $estado) {
         $this->db->set('estado', $estado);
         $this->db->where('id', $pedido_detalle_id);
         $this->db->where('pedido_codigo', $pedido_id);
         $result = $this->db->update('pedido_detalle');
         return $result;
+    }
+
+    function GetDataEnviosParciales($pedido_codigo) {
+        $this->db->select(" `PROD`.`nombre`,PROD.costo_unitario,
+        `PD`.`precio_unitario_usd` AS `PUV`,
+        `PD`.`cantidad` AS `cant_solic`,
+        IFNULL(`VPD`.`cantidad_envio`,0) AS cantidad_envio,
+        IFNULL((PD.cantidad - VPD.cantidad_envio),0 ) AS cant_pend_envio,
+        `PD`.`estado`,
+                IFNULL(((PD.cantidad - VPD.cantidad_envio) * PD.costo_unitario_producto),0.00) AS presupuesto_para_compra");
+        $this->db->from('pedido P');
+        $this->db->join('pedido_detalle PD', 'PD.pedido_codigo = P.codigo');
+        $this->db->join('viaje_has_pedido_detalle VPD', 'PD.id = VPD.pedido_detalle_id', 'LEFT');
+        $this->db->join('producto PROD', 'PD.producto_codigo = PROD.codigo');
+        $this->db->where('P.codigo', $pedido_codigo);
+        return $this->db->get();
+    }
+
+
+    function GetSumatoriaAbonos($codigo_pedido) {
+
+        $this->db->select_sum('monto');
+        $this->db->from('abono');
+        $this->db->where('pedido_codigo', $codigo_pedido);
+        return $this->db->get()->row()->monto;
     }
 
 }

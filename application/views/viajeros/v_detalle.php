@@ -137,13 +137,13 @@
 
                                                     <td>
                                                         <label>
-                                                            <input type="checkbox" class="flat-red pedido_detalle <?= $row->cod_prod ?>" id="<?= $key_en ?>" <?= ($row->stock_actual == '0') ? 'disabled' : '' ?>>
+                                                            <input type="checkbox" class="pedido_detalle <?= $row->cod_prod ?>" id="<?= $key_en ?>" <?= ($row->stock_actual == '0') ? 'disabled' : '' ?>>
                                                         </label>
                                                     </td>
                                                     <td class="nombre" id="<?= $key_en ?>"><?= $row->nombre ?></td>
                                                     <td class="cantidad" id="<?= $key_en ?>"><?= $row->cantidad ?></td>
                                                     <td class="stock_actual" id="<?= $row->cod_prod ?>"><?= $row->stock_actual ?></td>
-                                                    <td><input class="form-control input-sm cantidad_envio" type="number" id="<?= $row->cod_prod ?>" name="<?= $key_en ?>" <?= ($row->stock_actual == '0') ? 'disabled' : '' ?>></td>
+                                                    <td><input class="form-control input-sm cantidad_envio decimal" type="text" id="<?= $row->cod_prod ?>" name="<?= $key_en ?>" <?= ($row->stock_actual == '0') ? 'disabled' : '' ?> value="0"></td>
                                                     <td id="shipping_unitario" style="display: none"><?= $row->shipping_unitario ?></td>
                                                     <td id="peso_libras"  style="display: none"><?= $row->peso_libras ?></td>
                                                     <td id="pedido_cliente_codigo"  style="display: none"><?= $row->pedido_cliente_codigo ?></td>

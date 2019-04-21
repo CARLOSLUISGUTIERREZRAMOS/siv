@@ -1,4 +1,13 @@
 $(function () {
+
+    $(document).ready(function () {
+        $('input').iCheck({
+            checkboxClass: 'icheckbox_square-blue',
+            radioClass: 'iradio_minimal',
+            increaseArea: '20%' // optional
+        });
+    });
+
     var contador_viaje = 0;
     var CostoTotalViaje = 0;
     var productos_list = [];
@@ -10,11 +19,11 @@ $(function () {
         var dd = $(this).attr('id');
         productos_list[dd] = parseInt($(this).val());
     });
-
-
+    console.log(productos_list);
     $(".decimal").inputmask('decimal', {
         rightAlign: true
     });
+    $(".cantidad_envio").inputmask('integer', {min: 0, max: 255});
     //Date picker
     $('.datepicker').datepicker({
         format: 'dd/mm/yyyy',
@@ -101,133 +110,164 @@ $(function () {
         return CostoTotalViaje;
     }
 
-
-
-
     var CalcularMaletasObservadas = function (maletas_envidas, maletas_recepcionadas) {
         maletas_observadas = parseInt(maletas_envidas) - parseInt(maletas_recepcionadas);
         return maletas_observadas;
     }
 
-    $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
-        checkboxClass: 'icheckbox_flat-green',
-        radioClass: 'iradio_flat-green'
-    })
 
-    var RecorrerInputsIngresadosProductos = function (codigo_producto) {
-        var sum = 0;
-        $("#" + codigo_producto + ".cantidad_envio").each(function () {
-            ingresado = $(this).val();
-            if (ingresado != '' && !isNaN(ingresado)) {
-                sum = parseInt(ingresado) + sum;
+    var SetearProductoAlmacenEnCero = function (producto_codigo) {
+        $('#' + producto_codigo + '.stock_actual').text(0);
+    }
+    var DesactivarCheckboxProductoSinStock = function (producto_codigo, id_pedido_detalle_checked) {
+
+        $('.pedido_detalle.' + producto_codigo).each(function () {
+            id_pedido_detalle = $(this).attr('id');
+            if (!$('#' + id_pedido_detalle + '.pedido_detalle').is(':checked')) { // Si este elemento no esta checkeado
+//                console.log('El id_pedidod detalle '+id_pedido_detalle + ' esta checkedd!');
+                if (id_pedido_detalle != id_pedido_detalle_checked) {
+                    $('#' + id_pedido_detalle + '.pedido_detalle').iCheck('disable');
+                    $('[name="' + id_pedido_detalle + '"].cantidad_envio').prop('disabled', true);
+                }
             }
         });
-        return sum;
     }
-//Guardando item valido para envio
-    var item_pedido_memory = [];
-    $("body").on("blur", ".cantidad_envio", function () {
-//        var cantidad_envio = 0;
-//        cantidad_envio = parseInt($(this).val());
-        var resultado;
-        var codigo_producto = $(this).attr('id');
-        var item_pedido_detalle = $(this).attr('name');
-        cantidad_envio_total = RecorrerInputsIngresadosProductos(codigo_producto);
-        stock_producto = productos_list[codigo_producto];
-        stock_producto = parseInt(stock_producto);
-        procede_resta_stock_producto = (cantidad_envio_total <= stock_producto) ? true : false;
-        if (procede_resta_stock_producto) {
-            item_pedido_memory[item_pedido_detalle] = true;
-            $("#" + item_pedido_detalle + '.pedido_detalle').prop("disabled", false);
-            resultado = stock_producto - cantidad_envio_total;
-            $('#' + codigo_producto + '.stock_actual').text(resultado);
-            $('#'+codigo_producto+'.cantidad_envio').prop("disabled", false);
+    var ActivarChekboxInputProducto = function (producto_codigo) {
 
-        } else {
-            $('#texto').text('Estas intentando mandar ' + cantidad_envio_total + " productos y solo se dispone de " + stock_producto + ' en almacen.');
-            $(this).prop("disabled", true);
-            $("#" + item_pedido_detalle + '.pedido_detalle').prop("disabled", true);
-//              $("#" + item_pedido_detalle + '.pedido_detalle').removeAttr('checked').checkboxradio("refresh");
-            $('#modal-danger').modal('show');
-            $(this).val(0);
-            cantidad_envio_total = RecorrerInputsIngresadosProductos(codigo_producto);
-            resultado = stock_producto - cantidad_envio_total;
-            $('#' + codigo_producto + '.stock_actual').text(resultado);
-            $("#" + item_pedido_detalle + '.pedido_detalle').iCheck('uncheck');
-        }
-    });
-    $("body").on("ifClicked", ".pedido_detalle", function () {
+        $('.pedido_detalle.' + producto_codigo).each(function () {
+            id_pedido_detalle = $(this).attr('id');
+            $('#' + id_pedido_detalle + '.pedido_detalle').iCheck('enable');
+            $('[name="' + id_pedido_detalle + '"].cantidad_envio').prop('disabled', false);
+        });
+    }
+
+    $("body").on("ifChecked", ".pedido_detalle", function () {
 
         id = $(this).attr('id');
         var item_id_pedido_detalle = $(this).parents('tr').attr('id');
+        var item_id_pedido_detalle = parseInt(item_id_pedido_detalle);
+
 
         var pedido_codigo = $(this).parents('tr').find('td')[8].innerHTML;
-        var cantidad = $('[name="' + id + '"].cantidad_envio').val();
+        var cantidad_envio = parseInt($('[name="' + id + '"].cantidad_envio').val());
+
         var producto_codigo = $('[name="' + id + '"].cantidad_envio').attr('id');
         var nombre = $(this).parents('tr').find('td')[1].innerHTML;
-        var stock = $(this).parents('tr').find('td')[3].innerHTML;
+        var stock = parseInt($(this).parents('tr').find('td')[3].innerHTML);
         var cantidad_requerida = $(this).parents('tr').find('td')[2].innerHTML;
         var shipping = $(this).parents('tr').find('td')[5].innerHTML;
-        var res_shipping_x_cant_env = parseFloat(shipping) * parseInt(cantidad)
+        var stock_real_almacen = parseInt($('#' + producto_codigo + '.producto_hidden').val());
+        var res_shipping_x_cant_env = parseFloat(shipping) * parseInt(cantidad_envio)
         var peso_libras = $(this).parents('tr').find('td')[6].innerHTML;
         var cliente_codigo = $(this).parents('tr').find('td')[7].innerHTML;
-        var res_pesolibras_x_cant_env = parseFloat(peso_libras) * parseInt(cantidad)
-        var ACTIVO_CHECKED = $(this).iCheck('update')[0].checked;
-        procede_resta_stock_producto = (cantidad <= stock) ? true : false;
-        if (procede_resta_stock_producto === false && item_pedido_memory[item_id_pedido_detalle] != true) {
-            item_pedido_memory[item_id_pedido_detalle] = false;
-            $(this).prop("disabled", true);
+        var res_pesolibras_x_cant_env = parseFloat(peso_libras) * parseInt(cantidad_envio)
+        // MI NUEVA LOGICA PARA RESTAR O SUMAR PRODUCTOS DE LA LISTA 
+
+        flag_calculo_productos_recal = cantidad_envio + stock;
+        var add = (flag_calculo_productos_recal > stock_real_almacen) ? false : true;
+
+        if (cantidad_envio > stock_real_almacen && add) {
+//            $('#texto').text('La cantidad de envio no puede exceder el stock del almacen');
+            $('#texto').text("Cantidad inválida. Revisa el stock de tus productos.");
+            $('#modal-danger').modal('show');
+            $('[name="' + id + '"].cantidad_envio').val(0);
+            return false;
         }
-        if ((cantidad != '' && cantidad > 0) || item_pedido_memory[item_id_pedido_detalle] === true) {
-            if (procede_resta_stock_producto === true || item_pedido_memory[item_id_pedido_detalle] === true) {
-                //            val_repet.push(item_id_pedido_detalle);
-//            console.log(val_repet);
-                $('input[name="' + id + '"]').prop("disabled", true);
-                var nueva_fila_tblTuPedido = '<tr id="' + item_id_pedido_detalle + '">' +
-                        '<td id="' + contador_viaje + '" class="pedido_codigo">' + pedido_codigo + '</td>' +
-                        '<td>' + nombre + '</td>' +
-                        '<td id="' + contador_viaje + '" class="cantidad">' + cantidad + '</td>' +
-//                    '<td id="' + item_id_pedido_detalle + '" class="tulist_shipping" name="'+contador_viaje+'">' + res_shipping_x_cant_env.toFixed(2) + '</td>' +
-                        '<td id="' + contador_viaje + '" class="tulist_shipping">' + res_shipping_x_cant_env.toFixed(2) + '</td>' +
-//                    '<td id="' + item_id_pedido_detalle + '" class="tulist_pesolibras" name="'+contador_viaje+'">' + res_pesolibras_x_cant_env + '</td>' +
-                        '<td id="' + contador_viaje + '" class="tulist_pesolibras">' + res_pesolibras_x_cant_env + '</td>' +
-                        '<td  style="display: none" id="' + contador_viaje + '" class="pedido_detalle_id">' + item_id_pedido_detalle + '</td>' +
-                        '<td  style="display: none" id="' + contador_viaje + '" class="cliente_codigo">' + cliente_codigo + '</td>' +
-                        '<td  style="display: none" id="' + contador_viaje + '" class="producto_codigo">' + producto_codigo + '</td>' +
-                        '<td  style="display: none" id="' + contador_viaje + '" class="cantidad_requerida">' + cantidad_requerida + '</td>' +
-                        '</tr>';
-//            SumarShippingTuLista();
-//            delete item_pedido_memory[item_id_pedido_detalle];
-                $('#tbl_tupedido tbody').append(nueva_fila_tblTuPedido);
 
 
-                if (ACTIVO_CHECKED === false) {
-                    sum_off_shipping = res_shipping_x_cant_env + sum_off_shipping;
-                    $('#sumatoria_shipping').html(sum_off_shipping.toFixed(2));
-                    sum_off_pesolibras = res_pesolibras_x_cant_env + sum_off_pesolibras;
-                    $('#sumatoria_peso_libras').html(sum_off_pesolibras.toFixed(2));
-                    costo_total_viaje = CalcularCostoTotalViaje();
-                    saldo_para_gastos = CalcularSaldoParaGastos(sum_off_shipping, costo_total_viaje);
-                    $('#saldo_para_gastos').html(saldo_para_gastos);
-                }
-//                item_pedido_memory[item_id_pedido_detalle] = false;
-            } else {
-                $('#texto').text('Ya no dispones de este producto');
-                $('#modal-danger').modal('show');
-                    if(stock == 0){
-                    $("#" + id + '.pedido_detalle').removeAttr('checked').checkboxradio("refresh");
-                    }
+        //SI TODO ES CORRECTO ENTRA AQUI
+        if ((cantidad_envio <= stock && cantidad_envio <= stock_real_almacen) && cantidad_envio != 0) {
+
+            productos_list[producto_codigo] = productos_list[producto_codigo] - cantidad_envio;
+            $('#' + producto_codigo + '.stock_actual').text(productos_list[producto_codigo]);
+            $('[name="' + id + '"].cantidad_envio').prop('disabled', true);
+            if (productos_list[producto_codigo] === 0) {
+                SetearProductoAlmacenEnCero(producto_codigo);
+                DesactivarCheckboxProductoSinStock(producto_codigo, id);
             }
-        } else if (procede_resta_stock_producto === false) {
-            $('#texto').text('Ya no dispones de este producto');
-            $('#modal-danger').modal('show');
-            $("#" + id + '.pedido_detalle').removeAttr('checked').checkboxradio("refresh");
-        } else {
-            $('#texto').text('Debes establecer una cantidad de envio antes de agregar');
-            $('#modal-danger').modal('show');
-            $("#" + id + '.pedido_detalle').removeAttr('checked').checkboxradio("refresh");
+
+            nueva_fila_tblTuPedido = GenerarTblTuPedido(contador_viaje, item_id_pedido_detalle, pedido_codigo, nombre, cantidad_envio, res_shipping_x_cant_env, res_pesolibras_x_cant_env, cliente_codigo, producto_codigo, cantidad_requerida);
+            $('#tbl_tupedido tbody').append(nueva_fila_tblTuPedido);
+
+            sum_off_shipping = res_shipping_x_cant_env + sum_off_shipping;
+            $('#sumatoria_shipping').html(sum_off_shipping.toFixed(2));
+            sum_off_pesolibras = res_pesolibras_x_cant_env + sum_off_pesolibras;
+            $('#sumatoria_peso_libras').html(sum_off_pesolibras.toFixed(2));
+            costo_total_viaje = CalcularCostoTotalViaje();
+            saldo_para_gastos = CalcularSaldoParaGastos(sum_off_shipping, costo_total_viaje);
+            $('#saldo_para_gastos').html(saldo_para_gastos);
+            contador_viaje++;
         }
 
+    });
+
+
+
+    $("body").on("ifUnchecked", ".pedido_detalle", function () {
+
+        contador_viaje--;
+//        console.log(contador_viaje);
+
+        id = $(this).attr('id');
+        var item_id_pedido_detalle = $(this).parents('tr').attr('id');
+        var producto_codigo = $('[name="' + id + '"].cantidad_envio').attr('id');
+//        $("#"+id+'.pedido_detalle').iCheck('uncheck'); 
+        var stock = parseInt($(this).parents('tr').find('td')[3].innerHTML);
+//        $('input[name="' + id + '"]').prop("disabled", false);
+        var cantidad_envio = parseInt($('[name="' + id + '"].cantidad_envio').val());
+        var stock_real_almacen = parseInt($('#' + producto_codigo + '.producto_hidden').val());
+        if (cantidad_envio > stock_real_almacen) {
+            $('#texto').text("Cantidad inválida. Revisa el stock de tus productos.");
+            $('#modal-danger').modal('show');
+            return false;
+        }
+        var shipping = $(this).parents('tr').find('td')[5].innerHTML;
+        var peso_libras = $(this).parents('tr').find('td')[6].innerHTML;
+        // si el elemento desactivado tiene todo el stock
+        $('[name="' + id + '"].cantidad_envio').val(0);
+        if (cantidad_envio === stock_real_almacen) {
+             flag_calculo_productos_recal = cantidad_envio + stock;
+              if (flag_calculo_productos_recal > stock_real_almacen) {
+                $('#texto').text('Inconsistencia. Devuelves algo que aún no has enviado.');
+                $('#modal-danger').modal('show');
+                $('[name="' + id + '"].cantidad_envio').val(0);
+                return false;
+            }else{
+                var res_shipping_x_cant_env = parseFloat(shipping) * parseInt(cantidad_envio)
+                var res_pesolibras_x_cant_env = parseFloat(peso_libras) * parseInt(cantidad_envio)
+                productos_list[producto_codigo] = stock_real_almacen;
+                $('#' + producto_codigo + '.stock_actual').text(productos_list[producto_codigo]);
+                ActivarChekboxInputProducto(producto_codigo);
+            }
+            
+        } else {
+            //Si el elemento desactivado solo tiene parte del stock total
+            flag_calculo_productos_recal = cantidad_envio + stock;
+            if (flag_calculo_productos_recal > stock_real_almacen) {
+                $('#texto').text('Inconsistencia. Devuelves algo que aún no has enviado.');
+                $('#modal-danger').modal('show');
+                $('[name="' + id + '"].cantidad_envio').val(0);
+                return false;
+            } else {
+
+                productos_list[producto_codigo] = cantidad_envio + stock;
+                $('#' + producto_codigo + '.stock_actual').text(productos_list[producto_codigo]);
+                var res_shipping_x_cant_env = parseFloat(shipping) * parseInt(cantidad_envio)
+                var res_pesolibras_x_cant_env = parseFloat(peso_libras) * parseInt(cantidad_envio)
+                $('[name="' + id + '"].cantidad_envio').prop('disabled', false);
+            }
+        }
+        sum_off_shipping = sum_off_shipping - res_shipping_x_cant_env;
+        sum_off_pesolibras = sum_off_pesolibras - res_pesolibras_x_cant_env;
+
+        costo_total_viaje = CalcularCostoTotalViaje();
+        saldo_para_gastos = CalcularSaldoParaGastos(sum_off_shipping, costo_total_viaje);
+        $('#saldo_para_gastos').html(saldo_para_gastos);
+
+
+        $('#sumatoria_shipping').html(sum_off_shipping.toFixed(2));
+        $('#sumatoria_peso_libras').html(sum_off_pesolibras.toFixed(2));
+        $('#tbl_tupedido tbody #' + item_id_pedido_detalle).closest('tr').remove();
 
     });
 
@@ -284,58 +324,24 @@ $(function () {
         item_viaje_detalle ["sumatoria_peso_libras"] = sumatoria_peso_libras;
 
         ViajeDetalleObj.push(item_viaje_detalle);
-
         $.ajax({
             type: 'POST',
-            url: 'http://35.238.63.231/siv/operaciones/Viaje/RecibirData',
+            url: '/siv/operaciones/Viaje/RecibirData',
             data: 'json_viaje_has_pedido_detalle=' + JSON.stringify(ViajeObj) + '&json_viaje_detalle=' + JSON.stringify(ViajeDetalleObj) + '&viaje_id=' + viaje_id,
-            success: function (respuesta) {
-                console.log(respuesta);
-//                window.location.href = "http://35.238.63.231/siv/operaciones/Viaje";
+            success: function () {
+//                console.log(respuesta);
+                window.location.href = "/siv/operaciones/Viaje/";
             },
             error: function () {
-                console.log(respuesta);
-//                console.log('error');
-//                 window.location.href = "http://35.238.63.231/siv/operaciones/Viaje?error=1";
+//                console.log(respuesta);
+                console.log('error');
             }
         });
 
-//        console.log(ViajeObj);
 
     });
 
-    $("body").on("ifChecked", ".pedido_detalle", function () {
-        contador_viaje++;
-//        console.log(contador_viaje);
-    });
-    $("body").on("ifUnchecked", ".pedido_detalle", function () {
-        contador_viaje--;
-//        console.log(contador_viaje);
 
-        id = $(this).attr('id');
-        var item_id_pedido_detalle = $(this).parents('tr').attr('id');
-        $('input[name="' + id + '"]').prop("disabled", false);
-        var cantidad = $('[name="' + id + '"].cantidad_envio').val();
-        var shipping = $(this).parents('tr').find('td')[5].innerHTML;
-        var res_shipping_x_cant_env = parseFloat(shipping) * parseInt(cantidad)
-        var peso_libras = $(this).parents('tr').find('td')[6].innerHTML;
-        var res_pesolibras_x_cant_env = parseFloat(peso_libras) * parseInt(cantidad)
-
-
-        sum_off_shipping = sum_off_shipping - res_shipping_x_cant_env;
-        sum_off_pesolibras = sum_off_pesolibras - res_pesolibras_x_cant_env;
-
-        costo_total_viaje = CalcularCostoTotalViaje();
-        saldo_para_gastos = CalcularSaldoParaGastos(sum_off_shipping, costo_total_viaje);
-        $('#saldo_para_gastos').html(saldo_para_gastos);
-
-
-        $('#sumatoria_shipping').html(sum_off_shipping.toFixed(2));
-        $('#sumatoria_peso_libras').html(sum_off_pesolibras.toFixed(2));
-
-        $('#tbl_tupedido tbody #' + item_id_pedido_detalle).closest('tr').remove();
-
-    });
 
 
     var CalcularSaldoParaGastos = function (sum_shipping, costo_total_viaje) {
@@ -346,6 +352,21 @@ $(function () {
             return 0.00;
         }
 
+    }
+
+    var GenerarTblTuPedido = function (contador_viaje, item_id_pedido_detalle, pedido_codigo, nombre, cantidad_envio, res_shipping_x_cant_env, res_pesolibras_x_cant_env, cliente_codigo, producto_codigo, cantidad_requerida) {
+        var nueva_fila_tblTuPedido = '<tr id="' + item_id_pedido_detalle + '">' +
+                '<td id="' + contador_viaje + '" class="pedido_codigo">' + pedido_codigo + '</td>' +
+                '<td>' + nombre + '</td>' +
+                '<td id="' + contador_viaje + '" class="cantidad">' + cantidad_envio + '</td>' +
+                '<td id="' + contador_viaje + '" class="tulist_shipping">' + res_shipping_x_cant_env.toFixed(2) + '</td>' +
+                '<td id="' + contador_viaje + '" class="tulist_pesolibras">' + res_pesolibras_x_cant_env.toFixed(2) + '</td>' +
+                '<td  style="display: none" id="' + contador_viaje + '" class="pedido_detalle_id">' + item_id_pedido_detalle + '</td>' +
+                '<td  style="display: none" id="' + contador_viaje + '" class="cliente_codigo">' + cliente_codigo + '</td>' +
+                '<td  style="display: none" id="' + contador_viaje + '" class="producto_codigo">' + producto_codigo + '</td>' +
+                '<td  style="display: none" id="' + contador_viaje + '" class="cantidad_requerida">' + cantidad_requerida + '</td>' +
+                '</tr>';
+        return nueva_fila_tblTuPedido;
     }
 
 });
