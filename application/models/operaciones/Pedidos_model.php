@@ -127,7 +127,7 @@ class Pedidos_model extends CI_Model {
         $result = $this->db->update('pedido_detalle');
         return $result;
     }
-
+    //agregando costo unitario
     function GetDataEnviosParciales($pedido_codigo) {
         $this->db->select(" `PROD`.`nombre`,PROD.costo_unitario,
         `PD`.`precio_unitario_usd` AS `PUV`,
