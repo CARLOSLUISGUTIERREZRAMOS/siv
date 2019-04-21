@@ -126,13 +126,6 @@ class Pedidos_model extends CI_Model {
         return $result;
     }
 
-    function CambiarEstadoPedido($pedido_codigo, $estado) {
-        $this->db->set('estado', $estado);
-        $this->db->where('codigo', $pedido_codigo);
-        $result = $this->db->update('pedido');
-        return $result;
-    }
-
     function GetDataEnviosParciales($pedido_codigo) {
         $this->db->select(" `PROD`.`nombre`,PROD.costo_unitario,
         `PD`.`precio_unitario_usd` AS `PUV`,
