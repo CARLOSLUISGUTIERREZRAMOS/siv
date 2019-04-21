@@ -36,7 +36,7 @@ $config['base_url'] = 'http://35.238.63.231/siv/';
 |
 */
 //$config['index_page'] = 'index.php';
-$config['index_page'] = 'index.php';
+$config['index_page'] = '';
 
 /*
 |--------------------------------------------------------------------------
