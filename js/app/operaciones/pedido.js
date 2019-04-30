@@ -590,7 +590,6 @@ $(function () {
             "presupuesto_x_envio": presupuesto_x_envio_tbl_pedido,
             "detalle_pedido": ProductosObj
         };
-
         $.ajax({
             type: 'POST',
             url: 'http://35.238.63.231/siv/operaciones/Pedidos/CrearPedido',

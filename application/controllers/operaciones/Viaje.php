@@ -138,21 +138,22 @@ class Viaje extends CI_Controller {
             $data_insert_viaje_has_pedido_detalle['cantidad_envio'] = $item->cantidad;
             $data_insert_viaje_has_pedido_detalle['shipping'] = $item->shipping;
             $data_insert_viaje_has_pedido_detalle['pesolibra'] = $item->pesolibra;
-            
+
             $cantidad_stock_actual = $this->Productos_model->ObtenerCantidadStockProducto($item->producto_codigo);
             $this->Productos_model->ActualizarStockActualProducto($item->cantidad, $cantidad_stock_actual, $item->producto_codigo);
-            
+
             $res_insert = $this->Viaje_model->RegistrarViajeHasPedidoDetalle($data_insert_viaje_has_pedido_detalle);
-            
-            $cantidad_requerida = (int)$item->cantidad_requerida;
-            $cantidad_envio = (int)$item->cantidad;
-            echo $cantidad_requerida . ' ...' .$cantidad_envio;
-            if($cantidad_requerida === $cantidad_envio){
+
+            $cantidad_requerida = (int) $item->cantidad_requerida;
+            $cantidad_envio = (int) $item->cantidad;
+            echo $cantidad_requerida . ' ...' . $cantidad_envio;
+            if ($cantidad_requerida === $cantidad_envio) {
                 $estado_pedido_detalle = 'EN';
-            }else if($cantidad_envio < $cantidad_requerida){
+            } else if ($cantidad_envio < $cantidad_requerida) {
                 $estado_pedido_detalle = 'EP';
             }
-            $this->Pedidos_model->CambiarEstadoPedidoDetalle($item->pedido_codigo,$item->pedido_detalle_id,$estado_pedido_detalle);
+            $this->Pedidos_model->CambiarEstadoPedidoDetalle($item->pedido_codigo, $item->pedido_detalle_id, $estado_pedido_detalle);
+            $this->Pedidos_model->CambiarEstadoPedido($item->pedido_codigo, 'EP');
 
             if ($res_insert) {
                 $this->session->set_flashdata('INSERTO', TRUE);
