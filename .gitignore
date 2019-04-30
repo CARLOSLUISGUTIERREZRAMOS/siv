@@ -20,5 +20,4 @@ nbproject/project.xml
 nbproject/project.properties
 /nbproject/private/
 application/config/config.php
-application/config/config.php
 application/config/database.php
