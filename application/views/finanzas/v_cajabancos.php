@@ -14,7 +14,7 @@
     </div>
     <div class="col-lg-2 col-xs-6">
         <label>&nbsp;</label>
-        <button type="button" class="btn btn-block btn-default" id="btn_busqueda">Busqueda</button>
+        <button type="button" class="btn btn-block btn-default" id="btn_busqueda"><i class="fa fa-search"></i></button>
     </div>
 </div>
 
