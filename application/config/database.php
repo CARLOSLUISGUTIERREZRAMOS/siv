@@ -7,12 +7,9 @@ $query_builder = TRUE;
 
 $db['default'] = array(
     'dsn' => '',
-//    'hostname' => '104.198.247.7',
-//    'username' => 'root',
-//    'password' => 'DK7C54HCkQ4GXWh', 
-    'hostname' => '127.0.0.1',
+    'hostname' => '104.198.247.7',
     'username' => 'root',
-    'password' => '',
+    'password' => 'DK7C54HCkQ4GXWh',
     'database' => 'db_siv',
     'dbdriver' => 'mysqli',
     'dbprefix' => '',
