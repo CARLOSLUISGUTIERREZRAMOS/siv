@@ -1,4 +1,5 @@
 <?php
+//ICONOS
 if (!defined('BASEPATH')){exit('No direct script access allowed');}
 if (!function_exists('armaMenu_Grupo')) {
     //creamos la funcion y no explico mas sobre que es cada linea por que eso ya es otro tema.
@@ -29,9 +30,10 @@ if (!function_exists('armaMenu_Grupo')) {
                            SIGNIFICA QUE ESE FORMULARIO ES LA CABECERA Y PRESENTA OTRO SUBNIVEL, POR LO CUAL ENTRA EN ESTA CONDICION: */
                             
                         if($formulario->nivel1 == 1 && $formulario->id_formulario_n1 == null){
+                            $icon = $formulario->icon;
                             $submenu .= '<li class="treeview">';
                             $submenu .= '<a href="'.base_url().$formulario->ubicacion_formulario.'">
-                                            <i class="fa fa-circle-o"></i>
+                                            <i class="'.$icon.'"></i>
                                               <span class="pull-right-container">
                                                     <i class="fa fa-angle-left pull-right"></i>
                                               </span>
@@ -80,7 +82,8 @@ if (!function_exists('armaMenu_Grupo')) {
                     }
                     /* SI ENTRA EN ESTA CONDICION SIGNIFICA QUE SOLO ES UN SUBNIVEL (2)*/
                     elseif($formulario->nivel2 == 0 && $formulario->nivel1 != 0){
-                        $submenu.='<a href="'.base_url().$formulario->ubicacion_formulario.'"><i class="fa fa-circle-o text-aqua"></i>'.utf8_encode(utf8_decode($formulario->nombre_formulario)).'</a>'."\n";
+                        $icon_submenu2 = $formulario->icon;
+                        $submenu.='<a href="'.base_url().$formulario->ubicacion_formulario.'"><i class="'.$icon_submenu2.'"></i>'.utf8_encode(utf8_decode($formulario->nombre_formulario)).'</a>'."\n";
                     }
                            
                 }
