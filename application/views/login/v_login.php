@@ -1,10 +1,18 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <style>
+            
+        body {
+
+	background: url(img/img.gif) no-repeat center top;
+
+}
+        </style>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>SIS.STARPERU | Log in</title>
-        <link rel="icon" type="image/png" href="<?= base_url() . 'img/icostar.jpg' ?>">
+        <link rel="icon" type="image/png" href="<?= base_url() . 'img/compra.ico' ?>">
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <?php echo link_tag('css/bootstrap/bootstrap.min.css'); ?>
         <?php echo link_tag('css/font-awesome/css/font-awesome.min.css'); ?> 
@@ -42,14 +50,13 @@
 
             <footer class="footer">
                 <div class="text-right">
-                    <b>Sistema de Pedidos</b> v1.1
+                    <b>Sistema de Inventarios y Ventas</b> v1.6
                 </div>
 
             </footer>  
         </div>
         <?php echo script_tag('js/jquery/jquery.min.js'); ?>
         <?php echo script_tag('js/bootstrap/bootstrap.min.js'); ?>
-        <?php echo script_tag('js/login/registro.js'); ?>
 <?php // echo script_tag('js/plugins/icheck.min.js');  ?>
     </body>
 </html>

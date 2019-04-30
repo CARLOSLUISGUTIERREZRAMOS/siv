@@ -17,6 +17,12 @@ class Usuario_Model extends CI_Model {
         $this->load->library('Seguridad/Password');
     }
 
+    public function GetPassUser($codUsuario) {
+        $this->db->select('pass');
+        $res = $this->db->get_where('usuario', array('codigo' => $codUsuario), 1);
+        return $res->row()->pass;
+    }
+
     public function registra($data) {
         $res = $this->db->insert('usuario', $data);
         if ($res == FALSE) {

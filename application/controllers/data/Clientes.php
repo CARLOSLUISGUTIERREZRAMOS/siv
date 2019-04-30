@@ -10,13 +10,16 @@ class Clientes extends CI_Controller{
     
     public function __construct() {
         parent::__construct();
+        if(!isset($this->session->username)):
+             redirect('/');
+         endif;
         $this->load->library('form_validation');
         $this->load->helper("security");
         $this->template->add_css('css/datatables/dataTables.bootstrap.min.css');
         $this->template->add_js('js/clientes/clientes.js');
         $this->template->add_js('js/datatables/jquery.dataTables.min.js');
         $this->template->add_js('js/datatables/dataTables.bootstrap.min.js');
-        $this->load->model('clientes_productos/Clientes_model');
+        $this->load->model('data/Clientes_model');
     }
     
     public function index(){
@@ -24,7 +27,7 @@ class Clientes extends CI_Controller{
          $data['ClientesObject'] = $this->Clientes_model->GetAllClientes();
 //         var_dump($res_clientes);die;
 //         echo $res_clientes;die;
-         $this->template->load(5, 'clientes_productos/v_clientes',$data);
+         $this->template->load(5, 'data/v_clientes',$data);
     }
     
     public function Registro(){
@@ -41,7 +44,7 @@ class Clientes extends CI_Controller{
             );
             $res = $this->Clientes_model->RegistrarNuevoCliente($data);
             if($res === TRUE){
-                header("Location: " . base_url().'clientes_productos/Clientes');
+                header("Location: " . base_url().'index.php/data/Clientes');
             }else{
                 echo "ERROR EN INSERTAR";
             }

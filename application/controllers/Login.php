@@ -10,7 +10,7 @@ class Login extends CI_Controller {
 //        $this->load->model('adm/usuario_model');
         $this->load->library('form_validation');
         $this->load->library('Seguridad/Password');
-        $this->load->model("adm/usuario_model");
+        $this->load->model("adm/Usuario_model");
     }
 
     function index() {
@@ -22,12 +22,13 @@ class Login extends CI_Controller {
             $this->load->view('login/v_login');
         } else {
             $xss_post = $this->input->post(NULL, TRUE);
-            $usuarioValido = $this->usuario_model->verificaUsuario($xss_post['codigoUsuario']);
+            $usuarioValido = $this->Usuario_model->verificaUsuario($xss_post['codigoUsuario']);
             if ($usuarioValido) {
-                $res = $this->password->validarPassword($xss_post['password'], '$2y$10$3ogGt6bedniV5zZ17ggd.eFWd9kC6QXJjbK0n5Z1T9ni73.Cc9hg.');
+                $pass_db =  $this->Usuario_model->GetPassUser($xss_post['codigoUsuario']);
+                $res = $this->password->validarPassword($xss_post['password'], $pass_db);
                 if ($res) {
                     $this->setDatosSesion($xss_post['codigoUsuario']);
-                    redirect('interno/main');
+                    redirect('interno/Main');
                 } else {
                     redirect('/');
                 }

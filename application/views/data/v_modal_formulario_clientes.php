@@ -7,7 +7,7 @@
                 <h4 class="modal-title">Añadir Cliente</h4>
             </div>
             <div class="modal-body">
-                <?= form_open('clientes_productos/Clientes/Registro') ?>
+                <?= form_open('data/Clientes/Registro') ?>
                     <div class="box-body">
                         <div class="form-group">
                             <label for="exampleInputEmail1">Codigo Cliente</label>
