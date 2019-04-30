@@ -1,5 +1,4 @@
 <?php
-//ICONOS
 if (!defined('BASEPATH')){exit('No direct script access allowed');}
 if (!function_exists('armaMenu_Grupo')) {
     //creamos la funcion y no explico mas sobre que es cada linea por que eso ya es otro tema.
