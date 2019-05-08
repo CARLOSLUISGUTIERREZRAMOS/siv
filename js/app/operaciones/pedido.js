@@ -41,7 +41,7 @@ $(function () {
     }
 
     $("body").on("click", "#anadir", function () {
-        $('#codigo_cliente').prop("disabled", true);
+//        $('#codigo_cliente').prop("disabled", true);
         $(".bloque_pedido").css("display", "block");
         codigo_cliente = $('#codigo_cliente').val();
         //CALCULANDO SUMATORIA DEL COSTO UNITARIO TOTAL
@@ -54,10 +54,12 @@ $(function () {
         }
 
 //FINCALCULANDO SUMATORIA DEL COSTO UNITARIO TOTAL
-
+//            var dhjs = $('#codigo_cliente').val();
+//            console.log(dhjs);
+//            return false;
 
         if ($('#codigo_cliente').val() && $('#producto').val()) {
-
+            $('#codigo_cliente').prop("disabled", true);
 
             numero_pedido = $('#nro_pedido').val();
             $('#span_nro_pedido').text(numero_pedido);
@@ -75,6 +77,7 @@ $(function () {
 
         } else {
             $('#TxtMsg').html('Debe establecer todos los campos');
+//            $('#codigo_cliente').prop("disabled", false);
             $('#v_modal_error').modal({
                 show: true,
                 keyboard: false
@@ -434,6 +437,8 @@ $(function () {
 
 
     });
+
+
     var agregarFila = function (codigo_producto, nombre_producto, cantidad_requerida, costo_total_unitario, peso_producto) {
         shipping_unitario = peso_producto * costo_x_libra_del_dia;
         costo_unit_total = parseFloat(costo_unitario_producto) + shipping_unitario;
@@ -452,6 +457,10 @@ $(function () {
                 '<td><input type="text" size="3" id="' + contador_productos + '" class="precio_unitario_venta"></td>' +
                 '<td><input type="text" size="3" id="' + contador_productos + '" class="precio_unitario_venta_soles"></td>' +
                 '<td id="precio_total_' + contador_productos + '"></td>' +
+                '<td>' +
+                '<div class="tools">' +
+                '<i class="fa fa-trash-o del_prod_add" id="' + contador_productos + '"></i>' +
+                '</div></td>' +
                 '</tr>';
         $('#tablapedido tbody').append(htmlTags);
         //BLOQUE CALCULO SUMATORIA COSTO UNITARIO TOTAL
@@ -714,4 +723,28 @@ $(function () {
         });
     });
     $('#tbl_list_pedidos').DataTable();
+
+    $("body").on("click", ".del_prod_add", function () {
+//        var posicion_fila = $(this).find("td:last-child").html();   
+        var posicion_prod_del = parseInt($(this).attr('id'));
+        console.log(posicion_prod_del);
+        $(this).closest('tr').remove();
+        var para = contador_productos - 1;
+        
+        var k = 0;
+        var j = posicion_prod_del;
+//        k = posicion_prod_del;
+        for (var i = posicion_prod_del; i < para; i++) {
+                k = j;
+                j++;
+                $("#td_cod_producto_" + j).attr("id", "td_cod_producto_"+k);
+                $("#"+j+'.del_prod_add').attr("id", k);
+                k++;
+        }
+
+
+
+        contador_productos--;
+    });
+
 });

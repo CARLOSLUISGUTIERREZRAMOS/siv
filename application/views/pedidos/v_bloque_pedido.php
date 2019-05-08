@@ -42,6 +42,7 @@
                         <th>Precio Unit. de Venta (USD)</th>
                         <th>Precio Unit. de Venta (PEN)</th>
                         <th>Precio total</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -62,6 +63,7 @@
                          <th></th>
                          <th></th>
                          <th class="precio_total_sumatoria"></th>
+                         <th></th>
                     </tr>
                 </tfoot>
             </table>
