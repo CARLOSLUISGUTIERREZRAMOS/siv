@@ -102,7 +102,7 @@ if (isset($data_ingresada)) {
                                     <td><?= $item->ganancia_unitaria ?></td>
                                     <td><?= $item->precio_unitario_usd ?></td>
                                     <td><?= $item->precio_total ?></td>
-                                    <td><i class="fa fa-trash-o del_prodpedido" id="<?=$item->id?>"></i></td>
+                                    <td><i class="fa fa-trash-o del_prodpedido" style="color: red" id="<?= $item->id ?>" title="Retirar producto"></i></td>
                                 </tr>
                                 <?php
                             }
@@ -110,6 +110,7 @@ if (isset($data_ingresada)) {
 
 
                         </tbody>
+
                         <tfoot>
                             <tr>
                                 <td></td>
@@ -152,7 +153,7 @@ if (isset($data_ingresada)) {
                     </thead>
                     <tbody>
                         <?php foreach ($pedido_detalle->Result() as $item) { ?>
-                            <tr>
+                            <tr id="<?= $item->id ?>">
                                 <td><?= $item->nombre ?></td>
                                 <td><?= $item->cantidad ?></td>
                                 <td><?= $item->stock_producto_flag ?></td>
@@ -167,21 +168,21 @@ if (isset($data_ingresada)) {
                                     }
                                     ?><?= $pendiente_compra ?></td>
                                 <td><?= $item->costo_unitario_producto ?></td>
-                                    <?php
-                                    if ($pendiente_compra === 0) {
-                                        $fondo = "bg-yellow";
-                                        $msg = 'PDT. ENVIO';
-                                    } else {
-                                        $fondo = "bg-red";
-                                        $msg = 'PDT. COMPRA';
-                                    }
-                                    ?>
+                                <?php
+                                if ($pendiente_compra === 0) {
+                                    $fondo = "bg-yellow";
+                                    $msg = 'PDT. ENVIO';
+                                } else {
+                                    $fondo = "bg-red";
+                                    $msg = 'PDT. COMPRA';
+                                }
+                                ?>
                                 <td><span class="badge <?= $fondo ?>"><?= $msg ?></span></td>
 
                             </tr>
-    <?php
-}
-?>
+                            <?php
+                        }
+                        ?>
 
 
                     </tbody>
@@ -197,28 +198,28 @@ if (isset($data_ingresada)) {
                     <tbody>
                         <tr>
                             <th><button type="button" class="btn btn-dropbox btn-sm btn-flat" id="btn_agregar_abono" title="Agregar abono"><i class="fa fa-plus"></i></button></th>
-                            <th style="width:3%">N° Abono:</th>
+                            <th style="width:15%">N° Abono:</th>
                             <th style="width:20%">Monto:</th>
                             <th>Cuenta de Abono:</th>
                             <th></th>
                         </tr>
 
-<?php
+                        <?php
 //SUMATARIA TOTAL ABONO
-if ($EXISTE_ABONO) {
-    foreach ($abonos->Result() as $abono) {
-        //LOGICA PARA CONVERTIR EL ABONO REGISTRADO A USD CON EL TIPO DE CAMBIO DE ESE DÍA
-        ?>
+                        if ($EXISTE_ABONO) {
+                            foreach ($abonos->Result() as $abono) {
+                                //LOGICA PARA CONVERTIR EL ABONO REGISTRADO A USD CON EL TIPO DE CAMBIO DE ESE DÍA
+                                ?>
                                 <tr>
                                     <td></td>
                                     <td><?= $abono->numero_abono ?></td>
                                     <td><input type="text" class="form-control input-sm monto_abono" id="<?= $abono->numero_abono ?>" disabled value="<?= $abono->monto ?>"></td>
                                     <td id="bloque_select_cuentas">
                                         <select class="form-control select_cuentas" id="<?= $abono->numero_abono ?>" disabled>
-        <?php
-        foreach ($cuentas_bancarias->Result() as $cuenta) {
-            $selected = ($abono->cuentas_bancarias_id === $cuenta->id) ? 'selected' : '';
-            ?>
+                                            <?php
+                                            foreach ($cuentas_bancarias->Result() as $cuenta) {
+                                                $selected = ($abono->cuentas_bancarias_id === $cuenta->id) ? 'selected' : '';
+                                                ?>
                                                 <option id="<?= $cuenta->id ?>" value="<?= $cuenta->tipo_moneda ?>" <?= $selected ?>><?= $cuenta->banco . "-" . $cuenta->tipo_moneda ?></option>
                                                 <?php
                                             }
@@ -226,20 +227,24 @@ if ($EXISTE_ABONO) {
                                         </select>
                                     </td>
                                     <td><input type="hidden" id="<?= $abono->numero_abono ?>" class="monto_usd" value="<?= $abono->monto ?>"></td>
+                                    <td>
+                                        <i class="fa fa-fw fa-pencil-square-o ico_edit_abono" style="color: blue" title="Modificar abono" id="<?= $abono->numero_abono ?>"></i>
+                                        <i class="fa fa-fw fa-trash-o ico_delete_abono" style="color: red" title="Eliminar abono" id="<?= $abono->numero_abono ?>"></i>
+                                    </td>
                                 </tr>
-        <?php
-    }
-} else {
-    ?>
+                                <?php
+                            }
+                        } else {
+                            ?>
                             <tr>
                                 <td></td> 
                                 <td><?= $last_abono ?></td>
                                 <td><input type="text" class="form-control input-sm monto_abono" id="<?= $last_abono ?>" value=""></td>
                                 <td id="bloque_select_cuentas">
                                     <select class="form-control select_cuentas" id="1">
-    <?php
-    foreach ($cuentas_bancarias->Result() as $cuenta) {
-        ?>
+                                        <?php
+                                        foreach ($cuentas_bancarias->Result() as $cuenta) {
+                                            ?>
                                             <option id="<?= $cuenta->id ?>" value="<?= $cuenta->tipo_moneda ?>"><?= $cuenta->banco . "-" . $cuenta->tipo_moneda ?></option>
                                             <?php
                                         }
@@ -248,9 +253,9 @@ if ($EXISTE_ABONO) {
                                 </td>
                                 <td><input type="hidden" id="<?= $last_abono ?>" class="monto_usd" value=""></td>
                             </tr>
-    <?php
-}
-?>    
+                            <?php
+                        }
+                        ?>    
 
                     </tbody>
                     <tfoot>
