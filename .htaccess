@@ -17,5 +17,3 @@
 RewriteEngine on 
 RewriteCond $1 !^(index.php|html|css|js|scss|images|img|pdf|json|fonts|robots.txt) 
 RewriteRule ^(.*)$ /siv/index.php/$1 [L]
-
-</IfModule>

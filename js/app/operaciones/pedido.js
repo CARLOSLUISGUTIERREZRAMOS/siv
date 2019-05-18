@@ -108,7 +108,6 @@ $(function () {
 
 
     $("body").on("blur", "#abono", function () {
-
         total_all_pedido = $('#total_all_pedido').text();
         abono = $(this).val();
         saldo = CalcularSaldo(total_all_pedido, abono);
