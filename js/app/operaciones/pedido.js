@@ -707,11 +707,12 @@ $(function () {
 
         var tbl_abonos = '<tr>' +
                 '<td></td>' +
-                '<td>' + i_abono + '</td>' +
+                '<td class="indice_abono">' + i_abono + '</td>' +
                 '<td><input type="text" class="form-control input-sm monto_abono" id="' + i_abono + '"></td>' +
                 '<td>' + select_body + '</td>' +
-                '<td><input type="hidden" id="' + i_abono + '" class="monto_usd"></td>'
-        '</tr>';
+                '<td><input type="hidden" id="' + i_abono + '" class="monto_usd"></td>' +
+                '<td><i class="fa fa-fw fa-trash-o ico_delete_abono" style="color: red" title="Eliminar abono" id="' + i_abono + '"></i></td>' +
+                '</tr>';
 
 //        console.log(select_body);
 //        return false;
@@ -756,9 +757,11 @@ $(function () {
         var sumatoria_monto_total = 0;
         for (var i = 1; i < i_abono; i++) {
             var monto_usd_hidden = $('#' + i + '.monto_usd').val();
-            if (monto_usd_hidden != '') {
-                var monto_usd = parseFloat(monto_usd_hidden);
-                var sumatoria_monto_total = monto_usd + sumatoria_monto_total;
+            if(!isNaN(monto_usd_hidden) || monto_usd_hidden ==='undefined'){
+                if (monto_usd_hidden != '') {
+                    var monto_usd = parseFloat(monto_usd_hidden);
+                    var sumatoria_monto_total = monto_usd + sumatoria_monto_total;
+                }
             }
         }
         $('#monto_total_cal').text(sumatoria_monto_total.toFixed(2));
@@ -922,13 +925,72 @@ $(function () {
         //FIN BLOQUE CALCULO SUMATORIA GANANCIA TOTAL
 
     });
-    
-        $("body").on("click", ".del_prodpedido", function () {
-            $(this).closest('tr').hide();
-            
-            
-            
-        
+
+    $("body").on("click", ".del_prodpedido", function () {
+
+        var sum_cup = 0;
+        var sum_cant_lib = 0;
+        var sum_shipp_unit = 0;
+        var sum_gan_uni = 0;
+        var sum_puv = 0;
+        var sum_prec_tot = 0;
+        var id_ped_detalle = $(this).attr('id');
+        $(this).closest('tr').remove();
+        $('#' + id_ped_detalle).closest('tr').remove();
+
+        $('#tbl_detalle_pedido tbody').each(function () {
+
+            var cup = parseFloat($(this).find("td").eq(3).html());
+            var cant_lib = parseFloat($(this).find("td").eq(4).html());
+            var shipp_unit = parseFloat($(this).find("td").eq(5).html());
+            var gan_uni = parseFloat($(this).find("td").eq(6).html());
+            var puv = parseFloat($(this).find("td").eq(7).html());
+            var prec_tot = parseFloat($(this).find("td").eq(8).html());
+
+            sum_cup += cup;
+            sum_prec_tot += prec_tot;
+
+
+        });
+        sum_cup = (isNaN(sum_cup)) ? 0.00 : sum_cup;
+        sum_prec_tot = (isNaN(sum_prec_tot)) ? 0.00 : sum_prec_tot;
+        $('#costo_unit_tot').text(sum_cup.toFixed(2));
+        $('#precio_total_sumatoria').text(sum_prec_tot.toFixed(2));
+
     });
+
+    $("body").on("click", ".ico_delete_abono", function () {
+        var id_abono = $(this).attr('id');
+        $('#' + id_abono + '.monto_abono').prop("disabled", false);
+        $(this).closest('tr').remove();
+        i_abono--;
+
+        RecalcularTblAbono(i_abono);
+        
+        //Calculando la cantidad de filas de la tabla abono
+//         var cant_filas_tbl_abono = 0;
+//          $('#tbl_lista_pedido_detalle tbody').each(function () {
+//              var fila_abono = parseInt($(this).find("td").eq(1).html());
+//             cant_filas_tbl_abono += fila_abono; 
+//          });
+//          
+//          cant_filas_tbl_abono;
+    });
+
+    $("body").on("click", ".ico_edit_abono", function () {
+        var id_abono = $(this).attr('id');
+        $('#' + id_abono + '.monto_abono').prop("disabled", false);
+        $('#' + id_abono + '.select_cuentas').prop("disabled", false);
+//         $(this).closest('tr').remove();
+    });
+
+    var RecalcularTblAbono = function (i_final) {
+
+        for (var i = 1; i <= i_final; i++) {
+            $('#tbl_lista_pedido_detalle tbody').find('tr').eq(i).find('td').eq(1).html(i);
+        }
+    }
+
+
 
 });
