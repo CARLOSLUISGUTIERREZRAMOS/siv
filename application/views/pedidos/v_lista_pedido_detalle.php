@@ -102,6 +102,7 @@ if (isset($data_ingresada)) {
                                     <td><?= $item->ganancia_unitaria ?></td>
                                     <td><?= $item->precio_unitario_usd ?></td>
                                     <td><?= $item->precio_total ?></td>
+                                    <td><i class="fa fa-trash-o del_prodpedido" ></i></td>
                                 </tr>
                                 <?php
                             }
@@ -231,7 +232,7 @@ if (isset($data_ingresada)) {
                                 <?php
                             }
                         } else {
-                            ?>
+                            ?>  
                             <tr>
                                 <td></td> 
                                 <td><?= $last_abono ?></td>

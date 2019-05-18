@@ -163,7 +163,7 @@
     <!-- this row will not appear when printing -->
     <div class="row no-print">
         <div class="col-xs-12">
-            <!--<a href="invoice-print.html" target="_blank" class="btn btn-default"><i class="fa fa-print"></i> Print</a>-->
+            <a href="<?= base_url()?>operaciones/Pedidos/ListarPedidos" class="btn btn-default"><i class="fa fa-close"></i> Cancelar Pedido</a>
             <button type="button" class="btn btn-success pull-right btn_crear_pedido"><i class="fa fa-shopping-cart"></i> Crear Pedido</button>
         </div>
     </div>
