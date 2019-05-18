@@ -350,7 +350,13 @@ $(function () {
         //FINBLOQUE CALCULO SUMATORIA  PRESUPUESTO X COMPRA
     });
     $("body").on("blur", ".precio_unitario_venta", function () { // USD
+
+        //CAP CAMPO OCULTO ELEMENTO DESCARTADO 
+        //FIN CAP CAMPO OCULTO ELEMENTO DESCARTADO 
+
         var numero_fila = $(this).attr('id');
+//        var cadena_restringe_calculo = $('#'+numero_fila+'.del_prod_add').attr('class');
+
         $('#' + numero_fila + '.precio_unitario_venta_soles').val(0);
         var precio_unitario_venta_fila = $(this).val();
         var costo_unitario_total_fila = $('#costo_unitario_total_' + numero_fila).text();
@@ -363,11 +369,13 @@ $(function () {
 
         var sumatoria = 0;
         for (var i = 0; i < contador_productos; i++) {
+            var cap_campo_no_calculo = $('#' + i + '.del_prod_add').attr('name');
+            if (cap_campo_no_calculo != 'no_calculo') {
+                precio_total_fila = $('#precio_total_' + i).text();
+                if (precio_total_fila != '') {
 
-            precio_total_fila = $('#precio_total_' + i).text();
-            if (precio_total_fila != '') {
-
-                sumatoria = parseFloat(precio_total_fila) + sumatoria;
+                    sumatoria = parseFloat(precio_total_fila) + sumatoria;
+                }
             }
         }
         $('.precio_total_sumatoria').text(sumatoria);
@@ -459,7 +467,7 @@ $(function () {
                 '<td id="precio_total_' + contador_productos + '"></td>' +
                 '<td>' +
                 '<div class="tools">' +
-                '<i class="fa fa-trash-o del_prod_add" id="' + contador_productos + '"></i>' +
+                '<i title="click para borrar" class="fa fa-trash-o del_prod_add" id="' + contador_productos + '" name="si"></i>' +
                 '</div></td>' +
                 '</tr>';
         $('#tablapedido tbody').append(htmlTags);
@@ -725,26 +733,155 @@ $(function () {
     $('#tbl_list_pedidos').DataTable();
 
     $("body").on("click", ".del_prod_add", function () {
-//        var posicion_fila = $(this).find("td:last-child").html();   
-        var posicion_prod_del = parseInt($(this).attr('id'));
-        console.log(posicion_prod_del);
-        $(this).closest('tr').remove();
-        var para = contador_productos - 1;
-        
-        var k = 0;
-        var j = posicion_prod_del;
-//        k = posicion_prod_del;
-        for (var i = posicion_prod_del; i < para; i++) {
-                k = j;
-                j++;
-                $("#td_cod_producto_" + j).attr("id", "td_cod_producto_"+k);
-                $("#"+j+'.del_prod_add').attr("id", k);
-                k++;
+        $(this).closest('tr').hide();
+        $(this).attr('name', 'no_calculo');
+
+
+        //BLOQUE CALCULO SUMATORIA COSTO UNITARIO TOTAL
+        var sumatoria = 0;
+        for (var i = 0; i <= contador_productos; i++) {
+//            if (item_no_calculo != i) {
+            var cap_campo_no_calculo = $('#' + i + '.del_prod_add').attr('name');
+            if (cap_campo_no_calculo === 'si') {
+                costo_unitario_total_fila = $('#costo_unitario_total_' + i).text();
+                if (costo_unitario_total_fila != '') {
+                    sumatoria = parseFloat(costo_unitario_total_fila) + sumatoria;
+                    $('.costo_unitario_total_sumatoria').text(sumatoria.toFixed(2));
+                }
+
+            }
         }
+        //FIN BLOQUE CALCULO SUMATORIA COSTO UNITARIO TOTAL
+
+        //BLOQUE CALCULO SUMATORIA PRECIO TOTAL
+
+        var sumatoria = 0;
+        for (var i = 0; i < contador_productos; i++) {
+//            if (item_no_calculo != i) {
+            var cap_campo_no_calculo = $('#' + i + '.del_prod_add').attr('name');
+            if (cap_campo_no_calculo === 'si') {
+                precio_total_fila = $('#precio_total_' + i).text();
+                if (precio_total_fila != '') {
+
+                    sumatoria = parseFloat(precio_total_fila) + sumatoria;
+                }
+            }
+        }
+        $('.precio_total_sumatoria').text(sumatoria);
+        $('#total_all_pedido').text(sumatoria.toFixed(2));
+        //FINBLOQUE CALCULO SUMATORIA PRECIO TOTAL
+
+        //BLOQUE CALCULO SUMATORIA SHIPPING TOTAL
+        var sumatoria = 0;
+        for (var i = 0; i <= contador_productos; i++) {
+//            if (item_no_calculo != i) {
+            var cap_campo_no_calculo = $('#' + i + '.del_prod_add').attr('name');
+            if (cap_campo_no_calculo === 'si') {
+                var cantidad = parseInt($('#' + i + '.cantidad').val());
+                var shipping_unitario = parseFloat($('#shipping_unitario_' + i).text());
+                var operacion_calculo_shipping = cantidad * shipping_unitario;
+                sumatoria = operacion_calculo_shipping + sumatoria;
+            }
+        }
+        if (isNaN(sumatoria)) {
+            sumatoria = 0;
+        }
+        $('#shipping_all_pedido').text(sumatoria);
+        $('#presupuesto_x_envio').text(sumatoria);
+        //FIN BLOQUE CALCULO SUMATORIA SHIPPING TOTAL
+
+        //BLOQUE CALCULO SUMATORIA COSTOS TOTALES
+
+        var sumatoria = 0;
+        for (var i = 0; i <= contador_productos; i++) {
+            var cap_campo_no_calculo = $('#' + i + '.del_prod_add').attr('name');
+            if (cap_campo_no_calculo === 'si') {
+                costo_total_producto_fila = $('#costo_total_producto_' + i).text();
+                if (costo_total_producto_fila != '') {
+
+                    sumatoria = parseFloat(costo_total_producto_fila) + sumatoria;
+                }
+            }
+        }
+        $('#costos_totales_all').text(sumatoria.toFixed(2));
+        //FINBLOQUE CALCULO SUMATORIA  COSTOS TOTALES
+
+        //BLOQUE CALCULO SUMATORIA PRESUPUESTO X COMPRA
+        var sumatoria = 0;
+        for (var i = 0; i <= contador_productos; i++) {
+            var cap_campo_no_calculo = $('#' + i + '.del_prod_add').attr('name');
+            if (cap_campo_no_calculo === 'si') {
+
+                var cantidad_fila = parseInt($('#' + i + '.cantidad').val());
+                var costo_unitario_fila = parseFloat($('#' + i + '.costo_unitario').val());
+                var obteniendo_presupuesto = cantidad_fila * costo_unitario_fila;
+                sumatoria = parseFloat(obteniendo_presupuesto) + sumatoria;
+            }
+        }
+        $('#presupuesto_x_compra').text(sumatoria.toFixed(2));
+        //FINBLOQUE CALCULO SUMATORIA  PRESUPUESTO X COMPRA
 
 
 
-        contador_productos--;
+//        $("#td_cod_producto_" + j).attr("id", "td_cod_producto_"+k);
+//        
+////        var posicion_fila = $(this).find("td:last-child").html();   
+//        var posicion_prod_del = parseInt($(this).attr('id'));
+//        console.log(posicion_prod_del);
+//        $(this).closest('tr').remove();
+//        var para = contador_productos - 1;
+//        var k = 0;
+//        var j = posicion_prod_del;
+//        for (var i = posicion_prod_del; i < para; i++) {
+//                k = j;
+//                j++;
+//                $("#td_cod_producto_" + j).attr("id", "td_cod_producto_"+k);
+//                $("#"+j+'.del_prod_add').attr("id", k);
+//                k++;
+//        }
+
+
+
+//        contador_productos--;
+    });
+
+    $("body").on("click", ".del_prodpedido", function () {
+        
+        var sum_cup = 0;
+        var sum_cant_lib = 0;
+        var sum_shipp_unit = 0;
+        var sum_gan_uni = 0;
+        var sum_puv = 0;
+        var sum_prec_tot = 0;
+        
+        $(this).closest('tr').remove();
+
+        $('#tbl_detalle_pedido tbody').each(function () {
+
+            var cup = parseFloat($(this).find("td").eq(3).html());
+            var cant_lib = parseFloat($(this).find("td").eq(4).html());
+            var shipp_unit = parseFloat($(this).find("td").eq(5).html());
+            var gan_uni = parseFloat($(this).find("td").eq(6).html());
+            var puv = parseFloat($(this).find("td").eq(7).html());
+            var prec_tot = parseFloat($(this).find("td").eq(8).html());
+            
+            sum_cup += cup;
+            sum_prec_tot += prec_tot;
+            
+//            console.log(cup);
+//            console.log(cant_lib);
+//            console.log(shipp_unit);
+//            console.log(gan_uni);
+//            console.log(puv);
+//            console.log(prec_tot);
+//            console.log(sum_cup);
+
+        });
+        sum_cup = (isNaN(sum_cup))? 0.00 : sum_cup;
+        sum_prec_tot = (isNaN(sum_prec_tot))? 0.00 : sum_prec_tot;
+        $('#costo_unit_tot').text(sum_cup.toFixed(2));
+        $('#precio_total_sumatoria').text(sum_prec_tot.toFixed(2));
+
     });
 
 });
