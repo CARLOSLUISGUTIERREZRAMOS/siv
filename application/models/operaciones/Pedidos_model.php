@@ -72,7 +72,7 @@ class Pedidos_model extends CI_Model {
     }
 
     function ObtenerPedidoDetalle($pedido_id) {
-        $this->db->select('PD.producto_codigo,PR.nombre,PR.stock_actual,PD.cantidad,'
+        $this->db->select('PD.id,PD.producto_codigo,PR.nombre,PR.stock_actual,PD.cantidad,'
                 . 'PD.costo_unitario_producto,PD.peso_libras,PD.shipping_unitario,'
                 . 'PD.ganancia_unitaria,'
                 . 'PD.precio_unitario_usd,PD.precio_total,PR.estado,'

@@ -685,7 +685,7 @@ $(function () {
         }
         $.ajax({
             type: 'POST',
-            url: 'http://35.238.63.231/siv/operaciones/Pedidos/CrearPedido',
+            url: 'Pedidos/CrearPedido',
             data: 'json=' + JSON.stringify(myObjPedido),
             success: function (respuesta) {
 //                console.log(respuesta);
@@ -755,9 +755,9 @@ $(function () {
         }
 
         var sumatoria_monto_total = 0;
-        for (var i = 1; i < i_abono; i++) {
+        for (var i = 1; i <= i_abono; i++) {
             var monto_usd_hidden = $('#' + i + '.monto_usd').val();
-            if(!isNaN(monto_usd_hidden) || monto_usd_hidden ==='undefined'){
+            if (!isNaN(monto_usd_hidden) || monto_usd_hidden === 'undefined') {
                 if (monto_usd_hidden != '') {
                     var monto_usd = parseFloat(monto_usd_hidden);
                     var sumatoria_monto_total = monto_usd + sumatoria_monto_total;
@@ -796,11 +796,13 @@ $(function () {
 
         $.ajax({
             type: 'POST',
-            url: 'http://35.238.63.231/siv/operaciones/Pedidos/GuardarAbonos',
+//            url: 'http://35.238.63.231/siv/operaciones/Pedidos/GuardarAbonos',
+            url: 'GuardarAbonos',
             data: 'json=' + JSON.stringify(MontosObj) + '&codigo_pedido=' + codigo_pedido + '&pedido_cliente_codigo=' + cliente_codigo + '&saldo_por_cobrar=' + saldo_por_cobrar,
             success: function (respuesta) {
                 console.log(respuesta);
-                window.location.href = "http://35.238.63.231/siv/operaciones/Pedidos/VerDetallePedido?codigo_pedido=" + codigo_pedido;
+//                window.location.href = "http://35.238.63.231/siv/operaciones/Pedidos/VerDetallePedido?codigo_pedido=" + codigo_pedido;
+                window.location.href = "VerDetallePedido?codigo_pedido=" + codigo_pedido;
             },
             error: function () {
 //                console.log(respuesta);
@@ -813,10 +815,6 @@ $(function () {
     $("body").on("click", ".del_prod_add", function () {
         $(this).closest('tr').hide();
         $(this).attr('name', 'no_calculo');
-
-
-
-
         //BLOQUE CALCULO SUMATORIA COSTO UNITARIO TOTAL
         var sumatoria = 0;
         for (var i = 0; i <= contador_productos; i++) {
@@ -824,18 +822,14 @@ $(function () {
             var cap_campo_no_calculo = $('#' + i + '.del_prod_add').attr('name');
             if (cap_campo_no_calculo === 'si') {
                 costo_unitario_total_fila = $('#costo_unitario_total_' + i).text();
-
                 if (costo_unitario_total_fila != '') {
                     sumatoria = parseFloat(costo_unitario_total_fila) + sumatoria;
                 }
-
             }
         }
         $('.costo_unitario_total_sumatoria').text(sumatoria.toFixed(2));
         //FIN BLOQUE CALCULO SUMATORIA COSTO UNITARIO TOTAL
-
         //BLOQUE CALCULO SUMATORIA PRECIO TOTAL
-
         var sumatoria = 0;
         for (var i = 0; i < contador_productos; i++) {
 //            if (item_no_calculo != i) {
@@ -857,7 +851,6 @@ $(function () {
         var recalculo_saldo = parseFloat(cap_precio_total_pedido) - parseFloat(cap_abono);
 
         $('#saldo').text(recalculo_saldo);
-
 
         //BLOQUE CALCULO SUMATORIA SHIPPING TOTAL
         var sumatoria = 0;
@@ -935,62 +928,61 @@ $(function () {
         var sum_puv = 0;
         var sum_prec_tot = 0;
         var id_ped_detalle = $(this).attr('id');
+
+        cup_item_retirado = parseFloat($(this).parents("tr").find("td")[3].innerHTML);
+        precio_t_retirado = parseFloat($(this).parents("tr").find("td")[8].innerHTML);
+
         $(this).closest('tr').remove();
         $('#' + id_ped_detalle).closest('tr').remove();
+        //CAPTURAMOS EL VALOR ACTUAL DEL TOTAL DE CUP
+        var cap_costo_unit_tot = parseFloat($('#costo_unit_tot').text());
+        var cap_precio_t_sum = parseFloat($('#precio_total_sumatoria').text());
+        //CALCULAMOS EL NUEVO VALOR
+        var nuevo_valor_costo_unit_tot = cap_costo_unit_tot - cup_item_retirado;
+        var nuevo_precio_t_sum = cap_precio_t_sum - precio_t_retirado;
 
-        $('#tbl_detalle_pedido tbody').each(function () {
-
-            var cup = parseFloat($(this).find("td").eq(3).html());
-            var cant_lib = parseFloat($(this).find("td").eq(4).html());
-            var shipp_unit = parseFloat($(this).find("td").eq(5).html());
-            var gan_uni = parseFloat($(this).find("td").eq(6).html());
-            var puv = parseFloat($(this).find("td").eq(7).html());
-            var prec_tot = parseFloat($(this).find("td").eq(8).html());
-
-            sum_cup += cup;
-            sum_prec_tot += prec_tot;
-
-
-        });
-        sum_cup = (isNaN(sum_cup)) ? 0.00 : sum_cup;
-        sum_prec_tot = (isNaN(sum_prec_tot)) ? 0.00 : sum_prec_tot;
-        $('#costo_unit_tot').text(sum_cup.toFixed(2));
-        $('#precio_total_sumatoria').text(sum_prec_tot.toFixed(2));
+        $('#costo_unit_tot').text(nuevo_valor_costo_unit_tot.toFixed(2));
+        $('#precio_total_sumatoria').text(nuevo_precio_t_sum.toFixed(2));
+        var cap_monto_total = parseFloat($('#monto_total_cal').text());
+        var nuevo_saldo_recalc = nuevo_precio_t_sum - cap_monto_total;
+        $('#saldo').text(nuevo_saldo_recalc.toFixed(2));
 
     });
 
     $("body").on("click", ".ico_delete_abono", function () {
         var id_abono = $(this).attr('id');
+        abono_retirado = parseFloat($(this).parents("tr").find("td")[2].innerHTML);
+        cap_precio_total_sumatoria = parseFloat($('#precio_total_sumatoria').text());
+        
         $('#' + id_abono + '.monto_abono').prop("disabled", false);
+        
         $(this).closest('tr').remove();
         i_abono--;
-
-        RecalcularTblAbono(i_abono);
+        var res_abonos_sumatoria_recal = RecalcularTblAbono(i_abono);
+        var nuevo_saldo =  cap_precio_total_sumatoria - res_abonos_sumatoria_recal;
+        $('#saldo').text(nuevo_saldo.toFixed(2));
         
-        //Calculando la cantidad de filas de la tabla abono
-//         var cant_filas_tbl_abono = 0;
-//          $('#tbl_lista_pedido_detalle tbody').each(function () {
-//              var fila_abono = parseInt($(this).find("td").eq(1).html());
-//             cant_filas_tbl_abono += fila_abono; 
-//          });
-//          
-//          cant_filas_tbl_abono;
     });
 
     $("body").on("click", ".ico_edit_abono", function () {
         var id_abono = $(this).attr('id');
         $('#' + id_abono + '.monto_abono').prop("disabled", false);
         $('#' + id_abono + '.select_cuentas').prop("disabled", false);
-//         $(this).closest('tr').remove();
     });
 
+    var sumatoria_abonos = 0;
     var RecalcularTblAbono = function (i_final) {
 
         for (var i = 1; i <= i_final; i++) {
             $('#tbl_lista_pedido_detalle tbody').find('tr').eq(i).find('td').eq(1).html(i);
+//            var data_input = $('#tbl_lista_pedido_detalle tbody').find('tr').eq(i).find('td').eq(2).html();
+            var cap_montos = $('#tbl_lista_pedido_detalle tbody').find('tr').eq(i).find('td').eq(2).find(':input').val();
+//            if(cap_montos != '' || cap_montos != 'undefined' || !isNaN(cap_montos)){
+            if ($.isNumeric(cap_montos)) {
+                sumatoria_abonos += parseFloat(cap_montos);
+            }
         }
+        $('#monto_total_cal').text(sumatoria_abonos);
+        return sumatoria_abonos;
     }
-
-
-
 });

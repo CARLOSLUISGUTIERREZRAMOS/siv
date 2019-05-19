@@ -71,7 +71,7 @@ if (isset($data_ingresada)) {
             <!-- /.box-header -->
             <div class="box-body no-padding">
                 <div class="col-xs-12 table-responsive">
-                    <table class="table table-striped">
+                    <table class="table table-striped tbl_detalle_pedido">
                         <thead>
                             <tr>
                                 <th>Cod. Producto</th>
@@ -102,7 +102,7 @@ if (isset($data_ingresada)) {
                                     <td><?= $item->ganancia_unitaria ?></td>
                                     <td><?= $item->precio_unitario_usd ?></td>
                                     <td><?= $item->precio_total ?></td>
-                                    <td><i class="fa fa-trash-o del_prodpedido" ></i></td>
+                                    <td><i class="fa fa-trash-o del_prodpedido" style="color: red" id="<?= $item->id ?>" title="Retirar <?=$item->nombre?>" ></i></td>
                                 </tr>
                                 <?php
                             }
@@ -116,7 +116,7 @@ if (isset($data_ingresada)) {
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td>$ <?= $sumatoria_costo_unitario_total ?></td>
+                                <td>$ <span id="costo_unit_tot"><?= $sumatoria_costo_unitario_total ?></span></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
