@@ -731,11 +731,13 @@ $(function () {
             var monto_usd = parseFloat(monto_usd_hidden);
             var sumatoria_monto_total = monto_usd + sumatoria_monto_total;
         }
-        $('#monto_total_cal').text(sumatoria_monto_total.toFixed(2));
-        var precio_total_sumatoria = parseFloat($('#precio_total_sumatoria').text());
-        var res_saldo = precio_total_sumatoria - sumatoria_monto_total;
-        $('#saldo').text(res_saldo.toFixed(2));
-        $('#saldo_por_cobrar').text(res_saldo.toFixed(2));
+        if($.isNumeric(sumatoria_monto_total) && $.isNumeric(res_saldo) && $.isNumeric(precio_total_sumatoria)){
+            $('#monto_total_cal').text(sumatoria_monto_total.toFixed(2));
+            var precio_total_sumatoria = parseFloat($('#precio_total_sumatoria').text());
+            var res_saldo = precio_total_sumatoria - sumatoria_monto_total;
+            $('#saldo').text(res_saldo.toFixed(2));
+            $('#saldo_por_cobrar').text(res_saldo.toFixed(2));
+        }
 
     });
     $("body").on("blur", ".monto_abono", function () {
@@ -952,16 +954,17 @@ $(function () {
     $("body").on("click", ".ico_delete_abono", function () {
         var id_abono = $(this).attr('id');
         abono_retirado = parseFloat($(this).parents("tr").find("td")[2].innerHTML);
+
         cap_precio_total_sumatoria = parseFloat($('#precio_total_sumatoria').text());
-        
+
         $('#' + id_abono + '.monto_abono').prop("disabled", false);
-        
+
         $(this).closest('tr').remove();
         i_abono--;
         var res_abonos_sumatoria_recal = RecalcularTblAbono(i_abono);
-        var nuevo_saldo =  cap_precio_total_sumatoria - res_abonos_sumatoria_recal;
+        var nuevo_saldo = cap_precio_total_sumatoria - res_abonos_sumatoria_recal;
         $('#saldo').text(nuevo_saldo.toFixed(2));
-        
+
     });
 
     $("body").on("click", ".ico_edit_abono", function () {
@@ -972,11 +975,18 @@ $(function () {
 
     var sumatoria_abonos = 0;
     var RecalcularTblAbono = function (i_final) {
-
         for (var i = 1; i <= i_final; i++) {
             $('#tbl_lista_pedido_detalle tbody').find('tr').eq(i).find('td').eq(1).html(i);
+            var tipo_moneda_establecida = $("#" + i + '.select_cuentas').val();
 //            var data_input = $('#tbl_lista_pedido_detalle tbody').find('tr').eq(i).find('td').eq(2).html();
-            var cap_montos = $('#tbl_lista_pedido_detalle tbody').find('tr').eq(i).find('td').eq(2).find(':input').val();
+            if (tipo_moneda_establecida === 'PEN') {
+                var cap_montos = $('#tbl_lista_pedido_detalle tbody').find('tr').eq(i).find('td').eq(4).find(':input').val();
+            } else if (tipo_moneda_establecida === 'USD') {
+                var cap_montos = $('#tbl_lista_pedido_detalle tbody').find('tr').eq(i).find('td').eq(2).find(':input').val();
+
+            } else {
+
+            }
 //            if(cap_montos != '' || cap_montos != 'undefined' || !isNaN(cap_montos)){
             if ($.isNumeric(cap_montos)) {
                 sumatoria_abonos += parseFloat(cap_montos);
