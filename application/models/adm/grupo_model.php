@@ -14,7 +14,7 @@ class Grupo_model extends CI_Model{
     }
     
     public function obtener_grupos($id_usuario){
-        
+        //test
         $this->db->distinct();
         $this->db->select('G.id_grupo,nombre_grupo,icon_grupo');
         $this->db->join('usuario_has_formulario_grupo as UFG','G.id_grupo = UFG.id_grupo');
