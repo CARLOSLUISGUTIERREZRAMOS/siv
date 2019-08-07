@@ -110,7 +110,7 @@ $(function () {
 //    $('.pedido_detalle').on('ifUnchecked', function (event) {
          var item_id_pedido_detalle = $(this).parents('tr').attr('id');
          console.log(item_id_pedido_detalle);
-          $('#tbl_tupedido').parents("tr #"+item_id_pedido_detalle).remove();
+          $('#tbl_tupedido').parents("tr").remove();
 //         $('#tbl_tupedido').closest('tr').remove();
     });
 
