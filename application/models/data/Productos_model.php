@@ -68,7 +68,18 @@ class Productos_model extends CI_Model {
 //        $this->db->update('producto', array('stock_actual' => $stock_set));
 //        return $this->db->last_query();
         
-        return true;
+//        return true;
+    }
+    
+    public function GuardarDetalleDeCompra($producto_codigo,$cantidad,$monto,$fecha_compra){
+        
+        $this->db->set('producto_codigo',$producto_codigo);
+        $this->db->set('cantidad',$cantidad);
+        $this->db->set('precio',$monto);
+        $this->db->set('fecha_compra',$fecha_compra);
+        $res_insert = $this->db->insert('compra');
+        return $res_insert;
+        
     }
 
 }

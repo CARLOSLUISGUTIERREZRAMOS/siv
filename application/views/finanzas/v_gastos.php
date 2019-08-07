@@ -59,6 +59,7 @@
         <table id="tbl_gastos" class="table table-bordered table-striped">
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Fecha</th>
                     <th>Importe</th>
                     <th>Moneda</th>
@@ -68,6 +69,7 @@
             <tbody>
                 <?php foreach ($listado_gastos->result() as $item_gasto) { ?>
                 <tr>
+                    <td><?= $item_gasto->id?></td>
                     <td><?= $item_gasto->fecha?></td>
                     <td><?= $item_gasto->importe?></td>
                     <td><?= $item_gasto->moneda?></td>

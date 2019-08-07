@@ -13,7 +13,7 @@ if (isset($msg_tipo_cambio)) {
     <?php } else {
         ?>
         <div class="callout callout-danger">
-            <h4>Error</h4>
+            <h4>Error</h4> 
 
             <p>Error al registrar el tipo de cambio del día. Comuniquese con el Area de Sistemas.</p>
         </div>

@@ -37,6 +37,7 @@ class Viaje extends CI_Controller {
         $this->load->model('operaciones/Viaje_model');
         $this->load->model('data/Aerolinea_model');
         $this->load->model('operaciones/Pedidos_model');
+        $this->load->model('data/Productos_model');
     }
 
     public function index() {
@@ -44,33 +45,42 @@ class Viaje extends CI_Controller {
 
         $data['lista_aerolineas'] = $this->Aerolinea_model->GetAllAreolineas();
         $data['lista_viajeros'] = $this->Viaje_model->GetAllViaje();
-        
+
 //        $JsonPedidosViaje = ArmarJsonPedidosDetalles($PedidosDetalle);
 //        echo "<pre>";
 //        var_dump($JsonPedidosViaje);
 //        echo "</pre>";die;
         $this->template->load(null, 'viajeros/v_viajeros', $data);
-        
     }
 
-    public function VerDetalleViaje(){
-         $this->template->set('titulo', 'Detalle de viaje');
-        $data['lista_aerolineas'] = $this->Aerolinea_model->GetAllAreolineas();
+    public function VerDetalleViaje() {
+
+
         $codigo_viaje = $_GET['codigo_viaje'];
-        $data['DetalleViaje'] = $this->Viaje_model->GetDetalleViaje($codigo_viaje);
-        $PedidosDetalle = $this->Pedidos_model->ObtenerPedidoDetalleViaje();
-//        var_dump($PedidosDetalle);die;
-       
+        $viaje_procesado_isset = $this->Viaje_model->ComprobarExisteViajeProcesado($codigo_viaje);
+        if ($viaje_procesado_isset) {
+            $this->template->set('titulo', 'Detalle de viaje procesado');
+            
+            $data['detalle_viaje'] = $this->Viaje_model->ObtenerListaTuPedidoViajeProcesado($codigo_viaje);
+            $data['detalle_viaje_list_prod'] = $this->Viaje_model->GetDetalleProductosViajeProcesado($codigo_viaje);
+            
 
-        $data['JsonPedidosViaje'] = ArmarJsonPedidosDetalles($PedidosDetalle);
-        $this->template->load(2,'viajeros/v_detalle', $data);
+            $this->template->load(2, 'viajeros/v_detalle_viaje_procesado',$data);
+        } else {
+            $this->template->set('titulo', 'Detalle de viaje');
+            $data['lista_aerolineas'] = $this->Aerolinea_model->GetAllAreolineas();
+            $data['DetalleViaje'] = $this->Viaje_model->GetDetalleViaje($codigo_viaje);
+            $PedidosDetalle = $this->Pedidos_model->ObtenerPedidoDetalleViaje();
+            $data['JsonPedidosViaje'] = ArmarJsonPedidosDetalles($PedidosDetalle);
+            $data['StockProducto'] = ObtenerStockProductos($PedidosDetalle);
+            $this->template->load(2, 'viajeros/v_detalle', $data);
+        }
     }
-
 
     public function Registrar() {
 
         $xss_post = $this->input->post(NULL, TRUE);
-        $fecha_post = $xss_post['fecha_envio'];
+        $fecha_post = fecha_iso_8601($xss_post['fecha_envio']);
         $xss_post['fecha_envio'] = (new DateTime($fecha_post))->format('Y-m-d');
         $resultado_insert = $this->Viaje_model->RegistrarViaje($xss_post);
 
@@ -109,5 +119,46 @@ class Viaje extends CI_Controller {
         }
     }
 
+    function RecibirData() {
+
+        $viaje_id = $_POST['viaje_id'];
+        $JsonViajePedidoDetalle = json_decode($_POST['json_viaje_has_pedido_detalle']);
+        $JsonViajeDetalle = json_decode($_POST['json_viaje_detalle']);
+
+        $data_insert_viaje_detalle = FormarInsertTblViajeDetalle($viaje_id, $JsonViajeDetalle);
+//        var_dump($data_insert_viaje_detalle);
+        $this->Viaje_model->RegistrarViajeDetalle($data_insert_viaje_detalle);
+        foreach ($JsonViajePedidoDetalle as $item) {
+            $data_insert_viaje_has_pedido_detalle = array();
+            $data_insert_viaje_has_pedido_detalle['viaje_id'] = $viaje_id;
+            $data_insert_viaje_has_pedido_detalle['pedido_detalle_id'] = $item->pedido_detalle_id;
+            $data_insert_viaje_has_pedido_detalle['pedido_detalle_pedido_codigo'] = $item->pedido_codigo;
+            $data_insert_viaje_has_pedido_detalle['pedido_detalle_pedido_cliente_codigo'] = $item->cliente_codigo;
+            $data_insert_viaje_has_pedido_detalle['pedido_detalle_producto_codigo'] = $item->producto_codigo;
+            $data_insert_viaje_has_pedido_detalle['cantidad_envio'] = $item->cantidad;
+            $data_insert_viaje_has_pedido_detalle['shipping'] = $item->shipping;
+            $data_insert_viaje_has_pedido_detalle['pesolibra'] = $item->pesolibra;
+            
+            $cantidad_stock_actual = $this->Productos_model->ObtenerCantidadStockProducto($item->producto_codigo);
+            $this->Productos_model->ActualizarStockActualProducto($item->cantidad, $cantidad_stock_actual, $item->producto_codigo);
+            
+            $res_insert = $this->Viaje_model->RegistrarViajeHasPedidoDetalle($data_insert_viaje_has_pedido_detalle);
+            
+            $cantidad_requerida = (int)$item->cantidad_requerida;
+            $cantidad_envio = (int)$item->cantidad;
+            echo $cantidad_requerida . ' ...' .$cantidad_envio;
+            if($cantidad_requerida === $cantidad_envio){
+                $estado_pedido_detalle = 'EN';
+            }else if($cantidad_envio < $cantidad_requerida){
+                $estado_pedido_detalle = 'EP';
+            }
+            $this->Pedidos_model->CambiarEstadoPedidoDetalle($item->pedido_codigo,$item->pedido_detalle_id,$estado_pedido_detalle);
+
+            if ($res_insert) {
+                $this->session->set_flashdata('INSERTO', TRUE);
+                $this->session->set_flashdata('msg_viajero', 'Se registro la informacion ingresada para el viaje ' . $viaje_id);
+            }
+        }
+    }
 
 }

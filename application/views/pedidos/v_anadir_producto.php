@@ -67,7 +67,7 @@
                 </div>
                 <!-- /.box-body -->
                 <div class="box-footer">
-                    <button type="reset" class="btn btn-default">Borrar</button>
+                    <!--<button type="reset" class="btn btn-default">Borrar</button>-->
                     <button id="anadir" type="button" class="btn btn-info pull-right"><i class="fa fa-plus"></i> Añadir Producto</button>
                 </div>
                 <!-- /.box-footer -->

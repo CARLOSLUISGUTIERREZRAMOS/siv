@@ -45,11 +45,17 @@
                         <input type="number" name="cantidad" class="form-control" id="inputPassword3">
                     </div>
                 </div>
+                <div class="form-group">
+                    <label for="monto" class="col-sm-2 control-label">Monto</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="monto" class="form-control" id="monto">
+                    </div>
+                </div>
             </div>
             <!-- /.box-body -->
             <div class="box-footer">
                 <button type="reset" class="btn btn-default">Borrar</button>
-                <button type="submit" class="btn btn-info pull-right">Cargar compra</button>
+                <button type="button" id="btn_envio_form" class="btn btn-info pull-right">Cargar compra</button>
             </div>
     </div>
     <!-- /.box-footer -->

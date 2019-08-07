@@ -16,4 +16,20 @@ $(function () {
 //        $('#form_ingreso_gastos').css( "display", "block" );
     })
 
+    $("#btn_envio_form").click(function () {
+
+        $.ajax({
+            url: 'CargarCompra',
+            type: 'post',
+//            dataType: 'json',
+            data: $('#form_ingreso_compras').serialize(),
+            success: function (data) {
+                console.log(data);
+            }
+        });
+
+//        $("#myForm").submit(); // Submit the form
+    });
+
+
 });

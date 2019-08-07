@@ -41,8 +41,8 @@ if (isset($data_ingresada)) {
         <!-- /.col -->
         <div class="col-sm-4 invoice-col">
             <address>
-                <b>Presupuesto para compra: </b><?= $pedido->presupuesto_x_compra ?><br>
-                <b>Presupuesto para envío:</b><?= $pedido->presupuesto_x_envio ?> <br>
+                <b>Presupuesto para compra: </b>$ <?= $pedido->presupuesto_x_compra ?><br>
+                <b>Presupuesto para envío: </b>$ <?= $pedido->presupuesto_x_envio ?> <br>
             </address>
         </div>
         <!-- /.col -->
@@ -71,7 +71,7 @@ if (isset($data_ingresada)) {
             <!-- /.box-header -->
             <div class="box-body no-padding">
                 <div class="col-xs-12 table-responsive">
-                    <table class="table table-striped">
+                    <table class="table table-striped tbl_detalle_pedido">
                         <thead>
                             <tr>
                                 <th>Cod. Producto</th>
@@ -102,6 +102,7 @@ if (isset($data_ingresada)) {
                                     <td><?= $item->ganancia_unitaria ?></td>
                                     <td><?= $item->precio_unitario_usd ?></td>
                                     <td><?= $item->precio_total ?></td>
+                                    <td><i class="fa fa-trash-o del_prodpedido" style="color: red" id="<?= $item->id ?>" title="Retirar <?=$item->nombre?>" ></i></td>
                                 </tr>
                                 <?php
                             }
@@ -109,12 +110,13 @@ if (isset($data_ingresada)) {
 
 
                         </tbody>
+
                         <tfoot>
                             <tr>
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td>$ <?= $sumatoria_costo_unitario_total ?></td>
+                                <td>$ <span id="costo_unit_tot"><?= $sumatoria_costo_unitario_total ?></span></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -151,15 +153,19 @@ if (isset($data_ingresada)) {
                     </thead>
                     <tbody>
                         <?php foreach ($pedido_detalle->Result() as $item) { ?>
-                            <tr>
+                            <tr id="<?= $item->id ?>">
                                 <td><?= $item->nombre ?></td>
                                 <td><?= $item->cantidad ?></td>
                                 <td><?= $item->stock_producto_flag ?></td>
                                 <td><?php
                                     $pendiente_compra = 0;
-                                    if ($item->stock_producto_flag > $item->cantidad) {
+                                    if((float)$item->pendiente_compra > 0){
+                                        $pendiente_compra = $item->pendiente_compra;
+                                    }
+                                    else if ($item->stock_producto_flag > $item->cantidad) {
                                         $pendiente_compra;
-                                    } else {
+                                    }     
+                                    else {
                                         $pendiente_compra = (int) $item->cantidad - (int) $item->stock_actual;
                                     }
                                     ?><?= $pendiente_compra ?></td>
@@ -194,7 +200,7 @@ if (isset($data_ingresada)) {
                     <tbody>
                         <tr>
                             <th><button type="button" class="btn btn-dropbox btn-sm btn-flat" id="btn_agregar_abono" title="Agregar abono"><i class="fa fa-plus"></i></button></th>
-                            <th style="width:3%">N° Abono:</th>
+                            <th style="width:15%">N° Abono:</th>
                             <th style="width:20%">Monto:</th>
                             <th>Cuenta de Abono:</th>
                             <th></th>
@@ -223,11 +229,15 @@ if (isset($data_ingresada)) {
                                         </select>
                                     </td>
                                     <td><input type="hidden" id="<?= $abono->numero_abono ?>" class="monto_usd" value="<?= $abono->monto ?>"></td>
+                                    <td>
+                                        <i class="fa fa-fw fa-pencil-square-o ico_edit_abono" style="color: blue" title="Modificar abono" id="<?= $abono->numero_abono ?>"></i>
+                                        <i class="fa fa-fw fa-trash-o ico_delete_abono" style="color: red" title="Eliminar abono" id="<?= $abono->numero_abono ?>"></i>
+                                    </td>
                                 </tr>
                                 <?php
                             }
                         } else {
-                            ?>
+                            ?>  
                             <tr>
                                 <td></td> 
                                 <td><?= $last_abono ?></td>

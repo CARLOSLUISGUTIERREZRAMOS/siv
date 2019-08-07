@@ -9,9 +9,9 @@ class Productos extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
-        if(!isset($this->session->username)):
-             redirect('/');
-         endif;
+        if (!isset($this->session->username)):
+            redirect('/');
+        endif;
         $this->load->library('form_validation');
         $this->load->helper("security");
         $this->template->add_css('css/datatables/dataTables.bootstrap.min.css');
@@ -67,27 +67,18 @@ class Productos extends CI_Controller {
     public function Comprar() {
         $this->template->set('titulo', 'Nueva Compra');
         $data['ProductosObject'] = $this->Productos_model->GetAllProductos();
-        
+
         $this->template->load(9, 'data/v_compras', $data);
     }
-    
-    public function CargarCompra(){
+
+    public function CargarCompra() {
         
-//        print_r($_POST);die;
-//        $stock_actual = $this->Productos_model->ObtenerCantidadStockProducto($_POST['cod_producto']);
-        $cantidad_producto_agregar = $_POST['cantidad'];
-        $cod_producto = $_POST['codigo'];
-        $stock_actual = $this->Productos_model->AgregarAStockActual($cantidad_producto_agregar,$cod_producto);
-        
-//        var_dump($stock_actual);die;
-        
-        if($stock_actual){
-            
+        $fecha_compra = date('Y-m-d H:i:s');
+        $stock_actual = $this->Productos_model->AgregarAStockActual($_POST['cantidad'],$_POST['codigo']);
+        $this->Productos_model->GuardarDetalleDeCompra($_POST['codigo'],$_POST['cantidad'],$_POST['monto'],$fecha_compra);
+        if ($stock_actual) {
             $this->Comprar();
         }
-        
     }
-    
-
 
 }

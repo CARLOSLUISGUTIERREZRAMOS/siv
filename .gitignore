@@ -19,3 +19,7 @@ nbproject/private/private.properties
 nbproject/project.xml
 nbproject/project.properties
 /nbproject/private/
+application/config/database.php
+
+js/app/operaciones/siv.code-workspace
+siv.code-workspace

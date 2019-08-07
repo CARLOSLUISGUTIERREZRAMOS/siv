@@ -93,7 +93,7 @@ class Pedidos extends CI_Controller {
             $res = $this->Abono_model->VerificarExisteNumeroAbonoRegistrado($abono->numero_abono, $codigo_pedido);
 //            // SI NO EXISTE REGSITRO ENTRA A LA VALIDACION Y SE REGISTRA ABONO
             if ($res === 0) {
-                $res_insert = $this->Abono_model->RegistrarAbonoDePedido($abono->numero_abono, $abono->monto, $codigo_pedido, $cliente_codigo, $abono->cuenta_id,$abono->monto_usd,$abono->moneda);
+                $res_insert = $this->Abono_model->RegistrarAbonoDePedido($abono->numero_abono, $abono->monto, $codigo_pedido, $cliente_codigo, $abono->cuenta_id, $abono->monto_usd, $abono->moneda);
                 if ($res_insert) {
                     $this->session->set_flashdata('EXITO', TRUE);
                     $data[] = 'Se registro abono N° ' . $abono->numero_abono;
@@ -101,7 +101,7 @@ class Pedidos extends CI_Controller {
                     $data[] = 'Ocurrió un error en el registro del abono N° ' . $abono->numero_abono . ' con número de pedido ' . $codigo_pedido;
                     $this->session->set_flashdata('EXITO', FALSE);
                 }
-            } 
+            }
 //            else {
 //                $res_upd = $this->Abono_model->ActualizarAbonoDePedido($abono->numero_abono, $codigo_pedido, $abono->cuenta_id);
 //
@@ -143,8 +143,10 @@ class Pedidos extends CI_Controller {
             'presupuesto_x_envio' => $ObjPedido->presupuesto_x_envio,
             'tax_id' => $this->Tax_model->ObtenerTipoCambioDelDia()->id
         );
-
+        var_dump($data_insert_pedido);
+        echo "<br>";
         $pedido_codigo = $this->Pedidos_model->IngresarPedido($data_insert_pedido);
+        var_dump($pedido_codigo);
 
 //        $data_json = (array)$JsonDataPedido;
 
@@ -167,16 +169,24 @@ class Pedidos extends CI_Controller {
                 'precio_total' => $producto->precio_total,
                 'stock_producto_flag' => $stock_act_producto
             );
-            $this->Pedidos_model->RegistrarPedidoDetalle($data_insert_pedido_detalle);
-//            var_dump($res);
+            echo "<br>";
+            var_dump($data_insert_pedido_detalle);
+
+            $res_insert_pedido_detalle = $this->Pedidos_model->RegistrarPedidoDetalle($data_insert_pedido_detalle);
+            var_dump($res_insert_pedido_detalle);
             $calculo_presupuesto_para_compra += $this->CalcularPresupuestoParaCompra($pendiente_compra, $producto->costo_unitario_producto);
-            $this->Productos_model->ActualizarStockActualProducto($producto->cantidad, $stock_act_producto, $producto->codigo_producto);
+            var_dump($calculo_presupuesto_para_compra);
+//            $this->Productos_model->ActualizarStockActualProducto($producto->cantidad, $stock_act_producto, $producto->codigo_producto);
         }
+
         $REGISTRO_DE_ABONO = ((double) $ObjPedido->abono > 0) ? TRUE : FALSE;
+        var_dump($REGISTRO_DE_ABONO);
         if ($REGISTRO_DE_ABONO) {
-            $this->Abono_model->RegistrarAbonoDePedido(1, $ObjPedido->abono, $pedido_codigo, $ObjPedido->cliente_codigo, 2,$ObjPedido->abono,'USD');
+            $res_registro_abono_pedido = $this->Abono_model->RegistrarAbonoDePedido(1, $ObjPedido->abono, $pedido_codigo, $ObjPedido->cliente_codigo, 2, $ObjPedido->abono, 'USD');
+            echo "RegAbono".var_dump($res_registro_abono_pedido);
         }
-        $this->Pedidos_model->RegistrarPresupuestoParaCompra($pedido_codigo, $calculo_presupuesto_para_compra);
+        $res_registro_presupuesto_para_compra = $this->Pedidos_model->RegistrarPresupuestoParaCompra($pedido_codigo, $calculo_presupuesto_para_compra);
+        var_dump($res_registro_presupuesto_para_compra);
         $this->session->set_flashdata('nuevo_pedido', $pedido_codigo);
     }
 
@@ -221,8 +231,8 @@ class Pedidos extends CI_Controller {
         $this->template->add_js('js/datatables/jquery.dataTables.min.js');
         $this->template->add_js('js/datatables/dataTables.bootstrap.min.js');
         $this->template->set('titulo', 'Listado de Pedidos');
-        $data['pedidos'] = $this->Pedidos_model->GetAllPedidos();
-
+        $data['pedidos'] = $this->Pedidos_model->GetAllPedidos('PEDIDO');
+        $data['controlador'] = 'Pedidos';
         $this->template->load(10, 'pedidos/v_lista_pedidos', $data);
     }
 

@@ -1,18 +1,34 @@
 <?php
 $msg_viajero = $this->session->flashdata('msg_viajero');
 $INSERTO = $this->session->flashdata('INSERTO');
+if (isset($_GET['error']) && $_GET['error'] == '1') {
+    ?>
+
+    <div class="alert alert-danger alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <h4><i class="icon fa fa-warning"></i> Error</h4>
+
+        <p>El viaje ya fue registrado, la duplicidad de información no esta permitida en el sistema.</p>
+    </div>
+    <?php
+}
+
+
+//if (isset($msg_viajero) || (isset($_GET['error']) && $_GET['error'] != 1)) {
 if (isset($msg_viajero)) {
     if ($INSERTO) {
         ?>
-        <div class="callout callout-success">
-            <h4>Exito!</h4>
+        <div class="alert alert-success alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <h4><i class="icon fa fa-check"></i> Exito!</h4>
             <p> <i class="fa fa-check-square-o"></i> <?= $msg_viajero ?></p>
         </div>
     <?php } else {
         ?>
-        <div class="callout callout-danger">
-            <h4>Error</h4>
-            <p>Error al registrar la recepción. Comuniquese con el Area de Sistemas.</p>
+         <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <h4><i class="icon fa fa-warning"></i> Error</h4>
+            <p>Error al registrar el viaje. Comuniquese con el administrador del sistema.</p>
         </div>
 
         <?php
@@ -143,7 +159,7 @@ if (isset($msg_viajero)) {
                                 <?= (is_null($viajero->maletas_observadas)) ? '' : $viajero->maletas_observadas ?>
                             </td>
                             <td>
-                                <a type="button" class="btn btn-default" href="<?= base_url() ?>operaciones/Viaje/VerDetalleViaje?codigo_viaje=<?= $viajero->id ?>"><i class="fa fa-th-list"></i></button></a>
+                                <a type="button" class="btn btn-default" href="<?= base_url() ?>operaciones/Viaje/VerDetalleViaje?codigo_viaje=<?= $viajero->id ?>&arg2=<?=$viajero->maletas_enviadas?>&arg3=<?=$viajero->nombre?>&arg4=<?=$viajero->nombres_viajero?>"><i class="fa fa-th-list"></i></button></a>
                                 <!--<button type="button" id="<?= $viajero->id ?>" class="btn btn-default btn_verDetalle" title="Ver detalle" data-toggle="modal" data-target="#modal-detalle"><i class="fa fa-list-alt"></i></button>-->
                             </td>
                             <td>
