@@ -15,9 +15,8 @@ class Template {
     function add_css($pathfile){
         $this->styles.= link_tag($pathfile);
     }
-    function add_js($pathfile){
-        $this->scripts.= script_tag($pathfile);
-        
+    function add_js($pathfile,$band=null) {
+        $this->scripts .= script_tag($pathfile.($band == 1 ? '?v='.strtotime("now") : ''));
     }
     function load($id_formulario, $view = '' , $view_data = array(), $return = FALSE){ 
         

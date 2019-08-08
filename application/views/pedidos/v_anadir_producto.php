@@ -1,11 +1,7 @@
 <div class="box box-primary">
-
-
     <div class="box-header with-border">
         <h3 class="box-title">Creación del Pedido</h3>
     </div>
-
-
     <div class="box-body">
         <div class="row">
             <div class="col-md-6">
@@ -79,12 +75,7 @@
         </div>
 
     </div>
-
-
-
-
 </div>
-
 <?php
 $data['costo_libra_today'] = $costo_libra_today;
 $data['tipo_cambio_compra_today'] = $tipo_cambio_compra_today;

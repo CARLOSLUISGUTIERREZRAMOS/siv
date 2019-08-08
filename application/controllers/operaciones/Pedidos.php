@@ -54,6 +54,7 @@ class Pedidos extends CI_Controller {
     }
 
     public function VerDetallePedido() {
+        $this->template->add_js('js/app/operaciones/pedido_detalle.js',true);
         $this->template->set('titulo', '');
         $codigo_pedido = $_GET['codigo_pedido'];
         $data['pedido'] = $this->Pedidos_model->ObtenerPedido($codigo_pedido);
