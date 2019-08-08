@@ -79,8 +79,23 @@ class Pedidos extends CI_Controller {
 //        echo $data['tipo_cambio'];die;
         $data['cuentas_bancarias'] = $this->Cuentas_bancarias_model->GetCuentasBancarias();
         $data['pedido_detalle'] = $this->Pedidos_model->ObtenerPedidoDetalle($codigo_pedido);
+        
+        $data['presupuestoEnvio'] = $this->obtenerPresupuestoEnvio($data['pedido_detalle']);
+
+        // var_dump($presupuestoEnvio);
 
         $this->template->load(10, 'pedidos/v_lista_pedido_detalle', $data);
+    }
+
+    function obtenerPresupuestoEnvio($dataPedidoDetalle)
+    {
+        $presupuestoEnvio = 0;
+        foreach($dataPedidoDetalle->Result() as $row)
+        {
+            $presupuestoEnvio += $row->shipping_unitario * $row->stock_producto_flag;
+            
+        }
+        return $presupuestoEnvio;
     }
 
     function GuardarAbonos() {
@@ -144,13 +159,9 @@ class Pedidos extends CI_Controller {
             'presupuesto_x_envio' => $ObjPedido->presupuesto_x_envio,
             'tax_id' => $this->Tax_model->ObtenerTipoCambioDelDia()->id
         );
-        var_dump($data_insert_pedido);
-        echo "<br>";
+        
         $pedido_codigo = $this->Pedidos_model->IngresarPedido($data_insert_pedido);
-        var_dump($pedido_codigo);
-
-//        $data_json = (array)$JsonDataPedido;
-
+        
         foreach ($ObjPedido->detalle_pedido as $producto) {
             $stock_act_producto = $this->Productos_model->ObtenerCantidadStockProducto($producto->codigo_producto);
             $pendiente_compra = $this->ObtenerPendienteDeCompra($stock_act_producto, $producto->cantidad);
@@ -170,24 +181,18 @@ class Pedidos extends CI_Controller {
                 'precio_total' => $producto->precio_total,
                 'stock_producto_flag' => $stock_act_producto
             );
-            echo "<br>";
-            var_dump($data_insert_pedido_detalle);
 
             $res_insert_pedido_detalle = $this->Pedidos_model->RegistrarPedidoDetalle($data_insert_pedido_detalle);
-            var_dump($res_insert_pedido_detalle);
             $calculo_presupuesto_para_compra += $this->CalcularPresupuestoParaCompra($pendiente_compra, $producto->costo_unitario_producto);
-            var_dump($calculo_presupuesto_para_compra);
 //            $this->Productos_model->ActualizarStockActualProducto($producto->cantidad, $stock_act_producto, $producto->codigo_producto);
         }
 
         $REGISTRO_DE_ABONO = ((double) $ObjPedido->abono > 0) ? TRUE : FALSE;
-        var_dump($REGISTRO_DE_ABONO);
         if ($REGISTRO_DE_ABONO) {
             $res_registro_abono_pedido = $this->Abono_model->RegistrarAbonoDePedido(1, $ObjPedido->abono, $pedido_codigo, $ObjPedido->cliente_codigo, 2, $ObjPedido->abono, 'USD');
             echo "RegAbono".var_dump($res_registro_abono_pedido);
         }
         $res_registro_presupuesto_para_compra = $this->Pedidos_model->RegistrarPresupuestoParaCompra($pedido_codigo, $calculo_presupuesto_para_compra);
-        var_dump($res_registro_presupuesto_para_compra);
         $this->session->set_flashdata('nuevo_pedido', $pedido_codigo);
     }
 
@@ -217,7 +222,7 @@ class Pedidos extends CI_Controller {
         return $id_codigo + 1;
     }
 
-    //Genera un numero de pedido fiticio.
+    //Genera un numero de pedido ficticio.
     public function CreaPedido() {
 
         $ResModel_IdPedido = $this->Pedidos_model->GetLastId();

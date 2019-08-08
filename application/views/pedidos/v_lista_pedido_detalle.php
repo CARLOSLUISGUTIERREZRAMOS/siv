@@ -42,7 +42,7 @@ if (isset($data_ingresada)) {
         <div class="col-sm-4 invoice-col">
             <address>
                 <b>Presupuesto para compra: </b>$ <?= $pedido->presupuesto_x_compra ?><br>
-                <b>Presupuesto para envío: </b>$ <?= $pedido->presupuesto_x_envio ?> <br>
+                <b>Presupuesto para envío: </b>$ <?= $presupuestoEnvio ?> <br>
             </address>
         </div>
         <!-- /.col -->
