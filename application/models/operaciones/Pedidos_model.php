@@ -154,4 +154,9 @@ class Pedidos_model extends CI_Model {
         return $this->db->get()->row()->monto;
     }
 
+    function EliminarProductoPedido($pedido_detalle_id){
+
+     
+    }
+
 }

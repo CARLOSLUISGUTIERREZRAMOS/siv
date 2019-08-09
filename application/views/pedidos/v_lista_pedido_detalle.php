@@ -102,7 +102,7 @@ if (isset($data_ingresada)) {
                                     <td><?= $item->ganancia_unitaria ?></td>
                                     <td><?= $item->precio_unitario_usd ?></td>
                                     <td><?= $item->precio_total ?></td>
-                                    <td><i class="fa fa-trash-o del_prodpedido" style="color: red" id="<?= $item->id ?>" title="Retirar <?=$item->nombre?>" ></i></td>
+                                    <td><i class="fa fa-trash-o del_prodpedido" style="color: red" id="<?= $item->id ?>" title="Retirar <?=$item->nombre?>"></i></td>
                                 </tr>
                                 <?php
                             }
