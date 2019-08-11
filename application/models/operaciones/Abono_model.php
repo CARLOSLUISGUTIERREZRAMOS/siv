@@ -65,10 +65,10 @@ class Abono_model extends CI_Model {
     }
 
     function ObtenerAbonosPedido($pedido_codigo) {
-        $this->db->select('abono.*,cuentas_bancarias.tipo_moneda');
+        $this->db->select('abono.*,CB.numero_cuenta,CB.titular,CB.banco,CB.tipo_moneda');
         $this->db->from('abono');
         $this->db->where('pedido_codigo', $pedido_codigo);
-        $this->db->join('cuentas_bancarias', 'abono.cuentas_bancarias_id = cuentas_bancarias.id', 'left');
+        $this->db->join('cuentas_bancarias CB', 'abono.cuentas_bancarias_id = CB.id', 'left');
         $this->db->order_by('numero_abono', 'ASC');
         $resultado = $this->db->get();
 //        return $this->db->last_query();
@@ -116,5 +116,6 @@ class Abono_model extends CI_Model {
         $this->db->where('abono <=', $fecha);
         return $this->db->get();
     }
+   
 
 }

@@ -11,7 +11,7 @@ class Pedidos extends CI_Controller {
             redirect('/');
         endif;
         $this->load->model('data/Clientes_model');
-        $this->load->helper('pedido');
+        $this->load->helper(array('pedido','ctabancarias'));
         $this->load->model('data/Productos_model');
         $this->load->model('data/Cuentas_bancarias_model');
         $this->load->model('operaciones/Pedidos_model');
@@ -55,6 +55,9 @@ class Pedidos extends CI_Controller {
 
     public function VerDetallePedido() {
         $this->template->add_js('js/app/operaciones/pedido_detalle.js',true);
+        $this->template->add_css('css/sweetalert2/sweetalert2.min.css',true);
+        $this->template->add_css('css/sweetalert2/styles.css',true);
+        $this->template->add_js('js/sweetalert2/sweetalert2.min.js',true);
         $this->template->set('titulo', '');
         $codigo_pedido = $_GET['codigo_pedido'];
         $data['pedido'] = $this->Pedidos_model->ObtenerPedido($codigo_pedido);
@@ -80,13 +83,25 @@ class Pedidos extends CI_Controller {
         $data['cuentas_bancarias'] = $this->Cuentas_bancarias_model->GetCuentasBancarias();
         $data['pedido_detalle'] = $this->Pedidos_model->ObtenerPedidoDetalle($codigo_pedido);
         
+        $data['presupuestoCompra'] = $this->obtenerPresupuestoCompra($data['pedido_detalle']);
         $data['presupuestoEnvio'] = $this->obtenerPresupuestoEnvio($data['pedido_detalle']);
 
         // var_dump($presupuestoEnvio);
 
         $this->template->load(10, 'pedidos/v_lista_pedido_detalle', $data);
+        $this->load->view('pedidos/v_modal_editar_pedido');
     }
-
+    
+    public function ObtenerAbono()
+    {
+        // $numAbono = $_POST['numAbono'];
+        // $codigoPedido = $_POST['codigoPedido'];
+        // $res = $this->Pedidos_model->GetAbono($numAbono,$codigoPedido);
+        // $data_vista['dataAbonoPedido'] = $res;
+        // $this->template->load(10, 'pedidos/v_modal_editar_pedido', $data_vista);
+        $res = $this->load->view('pedidos/v_modal_editar_pedido',false,true);
+        var_dump($res);
+    }
     function obtenerPresupuestoEnvio($dataPedidoDetalle)
     {
         $presupuestoEnvio = 0;
@@ -97,6 +112,17 @@ class Pedidos extends CI_Controller {
         }
         return $presupuestoEnvio;
     }
+    function obtenerPresupuestoCompra($dataPedidoDetalle)
+    {
+        $presupuestoCompra = 0;
+        foreach($dataPedidoDetalle->Result() as $row)
+        {
+            $presupuestoCompra += $row->pendiente_compra * $row->costo_unitario_producto;
+            
+        }
+        return $presupuestoCompra;
+    }
+
 
     function GuardarAbonos() {
         $data = [];
@@ -242,4 +268,14 @@ class Pedidos extends CI_Controller {
         $this->template->load(10, 'pedidos/v_lista_pedidos', $data);
     }
 
+    public function EliminarPedido()
+    {
+        $id = $_POST['pedido_detalle_id'];
+        $res_upd = $this->Pedidos_model->EliminarProductoPedido($id);
+        echo $res_upd;
+    }
+    public function EditarAbono()
+    {
+        echo "Enviado";
+    }
 }

@@ -80,6 +80,7 @@ class Pedidos_model extends CI_Model {
         $this->db->from('pedido_detalle PD');
         $this->db->join('producto PR', 'PD.producto_codigo = PR.codigo');
         $this->db->where('pedido_codigo', $pedido_id);
+        $this->db->where('estado_registro', 'Y');
 
 //        $this->db->join('cliente C', 'P.cliente_codigo = C.codigo');
 //        $this->db->order_by("P.codigo", "DESC");
@@ -155,8 +156,22 @@ class Pedidos_model extends CI_Model {
     }
 
     function EliminarProductoPedido($pedido_detalle_id){
-
+        $this->db->set('estado_registro', 'N');
+        $this->db->where('id', $pedido_detalle_id);
+        $result = $this->db->update('pedido_detalle');
+        return $result;
      
+    }
+    function GetAbono($numAbono, $codigoPedido){
+        $this->db->select('A.numero_abono,A.fecha,A.monto,A.monto_pen,CB.numero_cuenta,CB.banco,CB.tipo_moneda');
+        $this->db->from('pedido P');        
+        $this->db->join('ABONO A', 'P.codigo =  A.pedido_codigo');
+        $this->db->join('cuentas_bancarias CB', 'A.cuentas_bancarias_id = CB.id');
+        $this->db->where('P.codigo', $codigoPedido);
+        $this->db->where('P.estado_registro', 'Y');
+        $this->db->where('A.numero_abono', $numAbono);
+        $res_query = $this->db->get();
+        return $res_query->row();
     }
 
 }

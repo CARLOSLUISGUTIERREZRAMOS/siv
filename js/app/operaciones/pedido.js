@@ -923,31 +923,31 @@ $(function () {
 
     $("body").on("click", ".del_prodpedido", function () {
 
-        var sum_cup = 0;
-        var sum_cant_lib = 0;
-        var sum_shipp_unit = 0;
-        var sum_gan_uni = 0;
-        var sum_puv = 0;
-        var sum_prec_tot = 0;
-        var id_ped_detalle = $(this).attr('id');
+        // var sum_cup = 0;
+        // var sum_cant_lib = 0;
+        // var sum_shipp_unit = 0;
+        // var sum_gan_uni = 0;
+        // var sum_puv = 0;
+        // var sum_prec_tot = 0;
+        // var id_ped_detalle = $(this).attr('id');
 
-        cup_item_retirado = parseFloat($(this).parents("tr").find("td")[3].innerHTML);
-        precio_t_retirado = parseFloat($(this).parents("tr").find("td")[8].innerHTML);
+        // cup_item_retirado = parseFloat($(this).parents("tr").find("td")[3].innerHTML);
+        // precio_t_retirado = parseFloat($(this).parents("tr").find("td")[8].innerHTML);
 
-        $(this).closest('tr').remove();
-        $('#' + id_ped_detalle).closest('tr').remove();
-        //CAPTURAMOS EL VALOR ACTUAL DEL TOTAL DE CUP
-        var cap_costo_unit_tot = parseFloat($('#costo_unit_tot').text());
-        var cap_precio_t_sum = parseFloat($('#precio_total_sumatoria').text());
-        //CALCULAMOS EL NUEVO VALOR
-        var nuevo_valor_costo_unit_tot = cap_costo_unit_tot - cup_item_retirado;
-        var nuevo_precio_t_sum = cap_precio_t_sum - precio_t_retirado;
+        // $(this).closest('tr').remove();
+        // $('#' + id_ped_detalle).closest('tr').remove();
+        // //CAPTURAMOS EL VALOR ACTUAL DEL TOTAL DE CUP
+        // var cap_costo_unit_tot = parseFloat($('#costo_unit_tot').text());
+        // var cap_precio_t_sum = parseFloat($('#precio_total_sumatoria').text());
+        // //CALCULAMOS EL NUEVO VALOR
+        // var nuevo_valor_costo_unit_tot = cap_costo_unit_tot - cup_item_retirado;
+        // var nuevo_precio_t_sum = cap_precio_t_sum - precio_t_retirado;
 
-        $('#costo_unit_tot').text(nuevo_valor_costo_unit_tot.toFixed(2));
-        $('#precio_total_sumatoria').text(nuevo_precio_t_sum.toFixed(2));
-        var cap_monto_total = parseFloat($('#monto_total_cal').text());
-        var nuevo_saldo_recalc = nuevo_precio_t_sum - cap_monto_total;
-        $('#saldo').text(nuevo_saldo_recalc.toFixed(2));
+        // $('#costo_unit_tot').text(nuevo_valor_costo_unit_tot.toFixed(2));
+        // $('#precio_total_sumatoria').text(nuevo_precio_t_sum.toFixed(2));
+        // var cap_monto_total = parseFloat($('#monto_total_cal').text());
+        // var nuevo_saldo_recalc = nuevo_precio_t_sum - cap_monto_total;
+        // $('#saldo').text(nuevo_saldo_recalc.toFixed(2));
 
     });
 
@@ -967,11 +967,11 @@ $(function () {
 
     });
 
-    $("body").on("click", ".ico_edit_abono", function () {
-        var id_abono = $(this).attr('id');
-        $('#' + id_abono + '.monto_abono').prop("disabled", false);
-        $('#' + id_abono + '.select_cuentas').prop("disabled", false);
-    });
+    // $("body").on("click", ".ico_edit_abono", function () {
+    //     var id_abono = $(this).attr('id');
+    //     $('#' + id_abono + '.monto_abono').prop("disabled", false);
+    //     $('#' + id_abono + '.select_cuentas').prop("disabled", false);
+    // });
 
     var sumatoria_abonos = 0;
     var RecalcularTblAbono = function (i_final) {

@@ -41,7 +41,7 @@ if (isset($data_ingresada)) {
         <!-- /.col -->
         <div class="col-sm-4 invoice-col">
             <address>
-                <b>Presupuesto para compra: </b>$ <?= $pedido->presupuesto_x_compra ?><br>
+                <b>Presupuesto para compra: </b>$ <?= $presupuestoCompra ?><br>
                 <b>Presupuesto para envío: </b>$ <?= $presupuestoEnvio ?> <br>
             </address>
         </div>
@@ -215,7 +215,10 @@ if (isset($data_ingresada)) {
                                 <tr>
                                     <td></td>
                                     <td><?= $abono->numero_abono ?></td>
-                                    <td><input type="text" class="form-control input-sm monto_abono" id="<?= $abono->numero_abono ?>" disabled value="<?= $abono->monto ?>"></td>
+                                    <!-- <td><input type="text" class="form-control input-sm monto_abono" id="<?= $abono->numero_abono ?>" disabled value="<?= $abono->monto ?>"></td> -->
+                                    <td><p class="abono" id="<?= $abono->numero_abono ?>"> <?=$abono->monto ?></p></td>
+
+                                    
                                     <td id="bloque_select_cuentas">
                                         <select class="form-control select_cuentas" id="<?= $abono->numero_abono ?>" disabled>
                                             <?php
@@ -230,8 +233,9 @@ if (isset($data_ingresada)) {
                                     </td>
                                     <td><input type="hidden" id="<?= $abono->numero_abono ?>" class="monto_usd" value="<?= $abono->monto ?>"></td>
                                     <td>
-                                        <i class="fa fa-fw fa-pencil-square-o ico_edit_abono" style="color: blue" title="Modificar abono" id="<?= $abono->numero_abono ?>"></i>
-                                        <i class="fa fa-fw fa-trash-o ico_delete_abono" style="color: red" title="Eliminar abono" id="<?= $abono->numero_abono ?>"></i>
+                                    <td><button type="button" class="btn btn-twitter" data-toggle="modal" data-target="#editaAbonoModal" data-numeroabono="<?=$abono->numero_abono?>" data-codigopedido="<?=$pedido->codigo?>" data-titular="<?=$abono->titular?>" data-moneda="<?=$abono->tipo_moneda?>" data-numcuenta="<?=$abono->numero_cuenta?>" data-montousd="<?=$abono->monto?>" data-montopen="<?=$abono->monto_pen?>" data-cuentabancaria="<?= $abono->cuenta_bancaria_id?>"><i class="glyphicon glyphicon-edit" title="Modificar abono"></i></button></td>
+                                        <!-- <i class="fa fa-fw fa-pencil-square-o ico_edit_abono" data-pedido="<?=$pedido->codigo?>" style="color: blue" title="Modificar abono" id="<?= $abono->numero_abono ?>"></i> -->
+                                        <!-- <i class="fa fa-fw fa-trash-o ico_delete_abono" style="color: red" title="Eliminar abono" id="<?= $abono->numero_abono ?>"></i> -->
                                     </td>
                                 </tr>
                                 <?php
