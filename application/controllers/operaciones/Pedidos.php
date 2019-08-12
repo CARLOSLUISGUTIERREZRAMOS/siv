@@ -12,11 +12,7 @@ class Pedidos extends CI_Controller {
         endif;
         $this->load->model('data/Clientes_model');
         $this->load->helper(array('pedido','ctabancarias'));
-        $this->load->model('data/Productos_model');
-        $this->load->model('data/Cuentas_bancarias_model');
-        $this->load->model('operaciones/Pedidos_model');
-        $this->load->model('operaciones/Abono_model');
-        $this->load->model('finanzas/Tax_model');
+        $this->load->model(array('data/Productos_model','data/Cuentas_bancarias_model','operaciones/Pedidos_model','operaciones/Abono_model','finanzas/Tax_model'));
         $this->template->add_js('js/app/operaciones/pedido.js');
         $this->template->add_js('js/bootstrap-datepicker/bootstrap-datepicker.min.js');
         $this->template->add_js('js/datatables/jquery.dataTables.min.js');
@@ -267,15 +263,28 @@ class Pedidos extends CI_Controller {
         $data['controlador'] = 'Pedidos';
         $this->template->load(10, 'pedidos/v_lista_pedidos', $data);
     }
-
+    
     public function EliminarPedido()
     {
         $id = $_POST['pedido_detalle_id'];
         $res_upd = $this->Pedidos_model->EliminarProductoPedido($id);
         echo $res_upd;
     }
-    public function EditarAbono()
+    public function ModificarAbono()
     {
-        echo "Enviado";
+        $pedidoCodigo = $_POST['pedidoCodigo'];
+        $numeroAbono = $_POST['numeroAbono'];
+        $cuentaBancaria = $_POST['cuentaBancaria'];
+        $condiciones_modelo_ctasBancarias = array('id' => $cuentaBancaria);
+        $resDataCtaBancaria = $this->Cuentas_bancarias_model->GetDetalleCtaBancaria($condiciones_modelo_ctasBancarias);
+        if($resDataCtaBancaria->tipo_moneda === 'PEN'){
+            //APLICAMOS EL CAMBIO
+            $tipoCambio = $_POST['tipoCambio'];
+        }
+        var_dump($resDataCtaBancaria);die;
+        $setMonto = array('monto'=>$_POST['montoAbono']);
+
+        $this->Abono_model->ActualizarAbonoDePedido();
     }
 }
+

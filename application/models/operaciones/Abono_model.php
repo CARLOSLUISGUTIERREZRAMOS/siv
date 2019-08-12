@@ -30,9 +30,10 @@ class Abono_model extends CI_Model {
         return $result;
     }
 
-    function ActualizarAbonoDePedido($numero_abono, $pedido_codigo, $cuentas_bancarias_id) {
+    // function ActualizarAbonoDePedido($numero_abono, $pedido_codigo, $cuentas_bancarias_id) {
+    function ActualizarAbonoDePedido($numero_abono, $pedido_codigo, $camposSet) {
 
-        $this->db->set('cuentas_bancarias_id', $cuentas_bancarias_id);
+        $this->db->set($camposSet);
         $this->db->where('numero_abono', $numero_abono);
         $this->db->where('pedido_codigo', $pedido_codigo);
         $result = $this->db->update('abono');

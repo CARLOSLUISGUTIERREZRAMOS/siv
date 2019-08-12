@@ -17,6 +17,7 @@ if (isset($data_ingresada)) {
     <?php
 }
 ?>
+
 <section class="invoice">
     <!-- title row -->
     <div class="row">
@@ -233,7 +234,7 @@ if (isset($data_ingresada)) {
                                     </td>
                                     <td><input type="hidden" id="<?= $abono->numero_abono ?>" class="monto_usd" value="<?= $abono->monto ?>"></td>
                                     <td>
-                                    <td><button type="button" class="btn btn-twitter" data-toggle="modal" data-target="#editaAbonoModal" data-numeroabono="<?=$abono->numero_abono?>" data-codigopedido="<?=$pedido->codigo?>" data-titular="<?=$abono->titular?>" data-moneda="<?=$abono->tipo_moneda?>" data-numcuenta="<?=$abono->numero_cuenta?>" data-montousd="<?=$abono->monto?>" data-montopen="<?=$abono->monto_pen?>" data-cuentabancaria="<?= $abono->cuenta_bancaria_id?>"><i class="glyphicon glyphicon-edit" title="Modificar abono"></i></button></td>
+                                    <td><button type="button" class="btn btn-twitter" data-toggle="modal" data-target="#editaAbonoModal" data-numeroabono="<?=$abono->numero_abono?>" data-codigopedido="<?=$pedido->codigo?>" data-titular="<?=$abono->titular?>" data-moneda="<?=$abono->tipo_moneda?>" data-numcuenta="<?=$abono->numero_cuenta?>" data-montousd="<?=$abono->monto?>" data-montopen="<?=$abono->monto_pen?>" data-tipocambio="<?=$tipo_cambio?>" data-cuentabancaria="<?= $abono->cuentas_bancarias_id?>"><i class="glyphicon glyphicon-edit" title="Modificar abono"></i></button></td>
                                         <!-- <i class="fa fa-fw fa-pencil-square-o ico_edit_abono" data-pedido="<?=$pedido->codigo?>" style="color: blue" title="Modificar abono" id="<?= $abono->numero_abono ?>"></i> -->
                                         <!-- <i class="fa fa-fw fa-trash-o ico_delete_abono" style="color: red" title="Eliminar abono" id="<?= $abono->numero_abono ?>"></i> -->
                                     </td>
@@ -309,3 +310,12 @@ if (isset($data_ingresada)) {
 <input type="hidden" value="<?= $pedido->codigo ?>" id="codigo_pedido">
 <input type="hidden" value="<?= $pedido->cliente_codigo ?>" id="cliente_codigo">
 <input type="hidden" value="<?= $last_abono ?>" id="last_abono">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script>
+		$(document).ready(function(){
+			load(1);
+		});
+	</script>
+
+
