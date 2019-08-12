@@ -5,25 +5,29 @@ if (isset($data_ingresada)) {
     $alert = ($EXITO) ? 'succes' : 'danger';
     ?>
 <br>
-    <div class="alert alert-success <?=$alert?>">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-        <h4><i class="icon fa fa-check"></i> Exito!</h4>
-        <?php 
-        foreach($data_ingresada as $item){
-            echo $item."<br>";
+<div class="alert alert-success <?= $alert ?>">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+    <h4><i class="icon fa fa-check"></i> Exito!</h4>
+    <?php
+        foreach ($data_ingresada as $item) {
+            echo $item . "<br>";
         }
         ?>
-    </div>
-    <?php
+</div>
+<?php
 }
 ?>
 
 <section class="invoice">
     <!-- title row -->
+    <?php
+    $msg_proccess = $this->session->flashdata('msg');
+
+    ?>
     <div class="row">
         <div class="col-xs-12">
             <h2 class="page-header">
-<!--                <i class="fa fa-globe"></i> Detalle de Pedido-->
+                <!--                <i class="fa fa-globe"></i> Detalle de Pedido-->
                 <?= img('img/pedido_detalle_search.png') ?> Detalle de Pedido #<?= $pedido->codigo ?>
                 <small class="pull-right"><i class="fa fa-calendar"></i> Fecha Pedido: <?= (new DateTime($pedido->fecha_pedido))->format('d/m/Y') ?></small>
             </h2>
@@ -49,7 +53,7 @@ if (isset($data_ingresada)) {
         <!-- /.col -->
         <div class="col-sm-4 invoice-col">
             <address>
-                <b>Saldo por cobrar: $ </b><span id="saldo_por_cobrar"></span><br>
+                <b>Saldo por cobrar: $ </b><span class="<?= ($saldoPorCobrar < 0) ? 'text-red' : ''; ?>"><?=$saldoPorCobrar?></span><br>
             </address>
         </div>
         <!-- /.col -->
@@ -93,19 +97,19 @@ if (isset($data_ingresada)) {
 
                                 $sumatoria_costo_unitario_total = $item->costo_unitario_producto + $sumatoria_costo_unitario_total;
                                 ?>
-                                <tr>
-                                    <td><?= $item->producto_codigo ?></td>
-                                    <td><?= $item->nombre ?></td>
-                                    <td><?= $item->cantidad ?></td>
-                                    <td><?= $item->costo_unitario_producto ?></td>
-                                    <td><?= $item->peso_libras ?></td>
-                                    <td><?= $item->shipping_unitario ?></td>
-                                    <td><?= $item->ganancia_unitaria ?></td>
-                                    <td><?= $item->precio_unitario_usd ?></td>
-                                    <td><?= $item->precio_total ?></td>
-                                    <td><i class="fa fa-trash-o del_prodpedido" style="color: red" id="<?= $item->id ?>" title="Retirar <?=$item->nombre?>"></i></td>
-                                </tr>
-                                <?php
+                            <tr>
+                                <td><?= $item->producto_codigo ?></td>
+                                <td><?= $item->nombre ?></td>
+                                <td><?= $item->cantidad ?></td>
+                                <td><?= $item->costo_unitario_producto ?></td>
+                                <td><?= $item->peso_libras ?></td>
+                                <td><?= $item->shipping_unitario ?></td>
+                                <td><?= $item->ganancia_unitaria ?></td>
+                                <td><?= $item->precio_unitario_usd ?></td>
+                                <td><?= $item->precio_total ?></td>
+                                <td><i class="fa fa-trash-o del_prodpedido" style="color: red" id="<?= $item->id ?>" title="Retirar <?= $item->nombre ?>"></i></td>
+                            </tr>
+                            <?php
                             }
                             ?>
 
@@ -122,7 +126,7 @@ if (isset($data_ingresada)) {
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td>$<span id="precio_total_sumatoria"><?= $pedido->precio_total ?></span> </td>
+                                <td>$<span id="precio_total_sumatoria"><?= $precioTotalPedido ?></span> </td>
                             </tr>
                         </tfoot>
                     </table>
@@ -154,24 +158,22 @@ if (isset($data_ingresada)) {
                     </thead>
                     <tbody>
                         <?php foreach ($pedido_detalle->Result() as $item) { ?>
-                            <tr id="<?= $item->id ?>">
-                                <td><?= $item->nombre ?></td>
-                                <td><?= $item->cantidad ?></td>
-                                <td><?= $item->stock_producto_flag ?></td>
-                                <td><?php
+                        <tr id="<?= $item->id ?>">
+                            <td><?= $item->nombre ?></td>
+                            <td><?= $item->cantidad ?></td>
+                            <td><?= $item->stock_producto_flag ?></td>
+                            <td><?php
                                     $pendiente_compra = 0;
-                                    if((float)$item->pendiente_compra > 0){
+                                    if ((float) $item->pendiente_compra > 0) {
                                         $pendiente_compra = $item->pendiente_compra;
-                                    }
-                                    else if ($item->stock_producto_flag > $item->cantidad) {
+                                    } else if ($item->stock_producto_flag > $item->cantidad) {
                                         $pendiente_compra;
-                                    }     
-                                    else {
+                                    } else {
                                         $pendiente_compra = (int) $item->cantidad - (int) $item->stock_actual;
                                     }
                                     ?><?= $pendiente_compra ?></td>
-                                <td><?= $item->costo_unitario_producto ?></td>
-                                <?php
+                            <td><?= $item->costo_unitario_producto ?></td>
+                            <?php
                                 if ($pendiente_compra === 0) {
                                     $fondo = "bg-yellow";
                                     $msg = 'PDT. ENVIO';
@@ -180,10 +182,10 @@ if (isset($data_ingresada)) {
                                     $msg = 'PDT. COMPRA';
                                 }
                                 ?>
-                                <td><span class="badge <?= $fondo ?>"><?= $msg ?></span></td>
+                            <td><span class="badge <?= $fondo ?>"><?= $msg ?></span></td>
 
-                            </tr>
-                            <?php
+                        </tr>
+                        <?php
                         }
                         ?>
 
@@ -208,59 +210,68 @@ if (isset($data_ingresada)) {
                         </tr>
 
                         <?php
+
+                        if (isset($msg_proccess)) {
+                            $res = MostrarBloqueAviso($msg_proccess, NULL);
+                            echo $res;
+                        }
                         //SUMATARIA TOTAL ABONO
                         if ($EXISTE_ABONO) {
                             foreach ($abonos->Result() as $abono) {
                                 //LOGICA PARA CONVERTIR EL ABONO REGISTRADO A USD CON EL TIPO DE CAMBIO DE ESE DÍA
                                 ?>
-                                <tr>
-                                    <td></td>
-                                    <td><?= $abono->numero_abono ?></td>
-                                    <!-- <td><input type="text" class="form-control input-sm monto_abono" id="<?= $abono->numero_abono ?>" disabled value="<?= $abono->monto ?>"></td> -->
-                                    <td><p class="abono" id="<?= $abono->numero_abono ?>"> <?=$abono->monto ?></p></td>
+                        <tr>
+                            <td></td>
+                            <td><?= $abono->numero_abono ?></td>
+                            <!-- <td><input type="text" class="form-control input-sm monto_abono" id="<?= $abono->numero_abono ?>" disabled value="<?= $abono->monto ?>"></td> -->
+                            <td>
+                                <p class="abono" id="<?= $abono->numero_abono ?>"> <?= $abono->monto ?></p>
+                            </td>
 
-                                    
-                                    <td id="bloque_select_cuentas">
-                                        <select class="form-control select_cuentas" id="<?= $abono->numero_abono ?>" disabled>
-                                            <?php
+
+                            <td id="bloque_select_cuentas">
+                                <select class="form-control select_cuentas" id="<?= $abono->numero_abono ?>" disabled>
+                                    <?php
                                             foreach ($cuentas_bancarias->Result() as $cuenta) {
                                                 $selected = ($abono->cuentas_bancarias_id === $cuenta->id) ? 'selected' : '';
                                                 ?>
-                                                <option id="<?= $cuenta->id ?>" value="<?= $cuenta->tipo_moneda ?>" <?= $selected ?>><?= $cuenta->banco . "-" . $cuenta->tipo_moneda ?></option>
-                                                <?php
+                                    <option id="<?= $cuenta->id ?>" value="<?= $cuenta->tipo_moneda ?>" <?= $selected ?>><?= $cuenta->banco . "-" . $cuenta->tipo_moneda ?></option>
+                                    <?php
                                             }
                                             ?>
-                                        </select>
-                                    </td>
-                                    <td><input type="hidden" id="<?= $abono->numero_abono ?>" class="monto_usd" value="<?= $abono->monto ?>"></td>
-                                    <td>
-                                    <td><button type="button" class="btn btn-sm" title="Editar abono <?= $abono->numero_abono ?>" data-toggle="modal" data-target="#editaAbonoModal" data-numeroabono="<?=$abono->numero_abono?>" data-codigopedido="<?=$pedido->codigo?>" data-titular="<?=$abono->titular?>" data-moneda="<?=$abono->tipo_moneda?>" data-numcuenta="<?=$abono->numero_cuenta?>" data-montousd="<?=$abono->monto?>" data-montopen="<?=$abono->monto_pen?>" data-tipocambio="<?=$tipo_cambio?>" data-cuentabancaria="<?= $abono->cuentas_bancarias_id?>"><i class="glyphicon glyphicon-edit"></i></button></td>
-                                    </td>
-                                </tr>
-                                <?php
+                                </select>
+                            </td>
+                            <td><input type="hidden" id="<?= $abono->numero_abono ?>" class="monto_usd" value="<?= $abono->monto ?>"></td>
+                            <td>
+                            <td><button type="button" class="btn btn-sm" title="Editar abono <?= $abono->numero_abono ?>" data-toggle="modal" data-target="#editaAbonoModal" data-numeroabono="<?= $abono->numero_abono ?>" data-codigopedido="<?= $pedido->codigo ?>" data-titular="<?= $abono->titular ?>" data-moneda="<?= $abono->tipo_moneda ?>" data-numcuenta="<?= $abono->numero_cuenta ?>" data-montousd="<?= $abono->monto ?>" data-montopen="<?= $abono->monto_pen ?>" data-tipocambio="<?= $tipo_cambio ?>" data-cuentabancaria="<?= $abono->cuentas_bancarias_id ?>"><i class="fa fa-pencil"></i></button></td>
+
+
+                            </td>
+                        </tr>
+                        <?php
                             }
                         } else {
-                            ?>  
-                            <tr>
-                                <td></td> 
-                                <td><?= $last_abono ?></td>
-                                <td><input type="text" class="form-control input-sm monto_abono" id="<?= $last_abono ?>" value=""></td>
-                                <td id="bloque_select_cuentas">
-                                    <select class="form-control select_cuentas" id="1">
-                                        <?php
+                            ?>
+                        <tr>
+                            <td></td>
+                            <td><?= $last_abono ?></td>
+                            <td><input type="text" class="form-control input-sm monto_abono" id="<?= $last_abono ?>" value=""></td>
+                            <td id="bloque_select_cuentas">
+                                <select class="form-control select_cuentas" id="1">
+                                    <?php
                                         foreach ($cuentas_bancarias->Result() as $cuenta) {
                                             ?>
-                                            <option id="<?= $cuenta->id ?>" value="<?= $cuenta->tipo_moneda ?>"><?= $cuenta->banco . "-" . $cuenta->tipo_moneda ?></option>
-                                            <?php
+                                    <option id="<?= $cuenta->id ?>" value="<?= $cuenta->tipo_moneda ?>"><?= $cuenta->banco . "-" . $cuenta->tipo_moneda ?></option>
+                                    <?php
                                         }
                                         ?>
-                                    </select>
-                                </td>
-                                <td><input type="hidden" id="<?=$last_abono?>" class="monto_usd" value=""></td>
-                            </tr>
-                            <?php
+                                </select>
+                            </td>
+                            <td><input type="hidden" id="<?= $last_abono ?>" class="monto_usd" value=""></td>
+                        </tr>
+                        <?php
                         }
-                        ?>    
+                        ?>
 
                     </tbody>
                     <tfoot>
@@ -308,12 +319,3 @@ if (isset($data_ingresada)) {
 <input type="hidden" value="<?= $pedido->codigo ?>" id="codigo_pedido">
 <input type="hidden" value="<?= $pedido->cliente_codigo ?>" id="cliente_codigo">
 <input type="hidden" value="<?= $last_abono ?>" id="last_abono">
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script>
-		$(document).ready(function(){
-			load(1);
-		});
-	</script>
-
-

@@ -11,7 +11,7 @@ class Pedidos extends CI_Controller {
             redirect('/');
         endif;
         $this->load->model('data/Clientes_model');
-        $this->load->helper(array('pedido','ctabancarias'));
+        $this->load->helper(array('pedido','ctabancarias','procesos'));
         $this->load->model(array('data/Productos_model','data/Cuentas_bancarias_model','operaciones/Pedidos_model','operaciones/Abono_model','finanzas/Tax_model'));
         $this->template->add_js('js/app/operaciones/pedido.js');
         $this->template->add_js('js/bootstrap-datepicker/bootstrap-datepicker.min.js');
@@ -82,10 +82,24 @@ class Pedidos extends CI_Controller {
         $data['presupuestoCompra'] = $this->obtenerPresupuestoCompra($data['pedido_detalle']);
         $data['presupuestoEnvio'] = $this->obtenerPresupuestoEnvio($data['pedido_detalle']);
 
-        // var_dump($presupuestoEnvio);
-
+        $data['precioTotalPedido'] = $this->CalcularPrecioTotalDePedido($data['pedido_detalle']);
+        $data['saldoPorCobrar'] = $this->CalcularSaldoPorCobrar($data['precioTotalPedido'], $data['sum_abono']);
         $this->template->load(10, 'pedidos/v_lista_pedido_detalle', $data);
         $this->load->view('pedidos/v_modal_editar_pedido');
+    }
+
+    private function CalcularPrecioTotalDePedido($dataPedidoDetalle){
+        $precioTotalPedido = 0;
+        foreach ($dataPedidoDetalle->Result() as $campo)
+        {
+            $precioTotalPedido += (double)$campo->precio_total;
+        }
+        return round($precioTotalPedido,2);
+    }
+
+    private function CalcularSaldoPorCobrar($precioTotalPedido,$sumAbonos)
+    {
+        return $precioTotalPedido - $sumAbonos;
     }
     
     public function ObtenerAbono()
