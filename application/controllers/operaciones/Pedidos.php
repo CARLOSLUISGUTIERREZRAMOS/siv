@@ -272,19 +272,28 @@ class Pedidos extends CI_Controller {
     }
     public function ModificarAbono()
     {
+        $setMonto = [];
         $pedidoCodigo = $_POST['pedidoCodigo'];
         $numeroAbono = $_POST['numeroAbono'];
-        $cuentaBancaria = $_POST['cuentaBancaria'];
+        $cuentaBancaria = $_POST['select_cuentas'];
+        $montoAbono = $_POST['montoAbono'];
+        $tipoCambio = $_POST['tipoCambio'];
         $condiciones_modelo_ctasBancarias = array('id' => $cuentaBancaria);
         $resDataCtaBancaria = $this->Cuentas_bancarias_model->GetDetalleCtaBancaria($condiciones_modelo_ctasBancarias);
         if($resDataCtaBancaria->tipo_moneda === 'PEN'){
             //APLICAMOS EL CAMBIO
-            $tipoCambio = $_POST['tipoCambio'];
+            $setMonto['monto_pen'] = $montoAbono;
+            $montoAbono = (double)$montoAbono / $tipoCambio;
+            $setMonto['monto'] = round($montoAbono,2);
+        }else{
+            $setMonto['monto'] = $montoAbono;
+            $montoAbonoPen = (double)$montoAbono * (double)$tipoCambio;
+            $setMonto['monto_pen'] = round($montoAbonoPen,2);
         }
-        var_dump($resDataCtaBancaria);die;
-        $setMonto = array('monto'=>$_POST['montoAbono']);
-
-        $this->Abono_model->ActualizarAbonoDePedido();
+        $setMonto['cuentas_bancarias_id'] = $cuentaBancaria;
+        $bool_upd = $this->Abono_model->ActualizarAbonoDePedido($numeroAbono,$pedidoCodigo,$setMonto);
+        $msg = ($bool_upd) ? 'Abono actulizado.' : 'Error al editar abono';
+        $this->session->set_flashdata('msg', $msg); 
     }
 }
 

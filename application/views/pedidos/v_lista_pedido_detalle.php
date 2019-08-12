@@ -234,9 +234,7 @@ if (isset($data_ingresada)) {
                                     </td>
                                     <td><input type="hidden" id="<?= $abono->numero_abono ?>" class="monto_usd" value="<?= $abono->monto ?>"></td>
                                     <td>
-                                    <td><button type="button" class="btn btn-twitter" data-toggle="modal" data-target="#editaAbonoModal" data-numeroabono="<?=$abono->numero_abono?>" data-codigopedido="<?=$pedido->codigo?>" data-titular="<?=$abono->titular?>" data-moneda="<?=$abono->tipo_moneda?>" data-numcuenta="<?=$abono->numero_cuenta?>" data-montousd="<?=$abono->monto?>" data-montopen="<?=$abono->monto_pen?>" data-tipocambio="<?=$tipo_cambio?>" data-cuentabancaria="<?= $abono->cuentas_bancarias_id?>"><i class="glyphicon glyphicon-edit" title="Modificar abono"></i></button></td>
-                                        <!-- <i class="fa fa-fw fa-pencil-square-o ico_edit_abono" data-pedido="<?=$pedido->codigo?>" style="color: blue" title="Modificar abono" id="<?= $abono->numero_abono ?>"></i> -->
-                                        <!-- <i class="fa fa-fw fa-trash-o ico_delete_abono" style="color: red" title="Eliminar abono" id="<?= $abono->numero_abono ?>"></i> -->
+                                    <td><button type="button" class="btn btn-sm" title="Editar abono <?= $abono->numero_abono ?>" data-toggle="modal" data-target="#editaAbonoModal" data-numeroabono="<?=$abono->numero_abono?>" data-codigopedido="<?=$pedido->codigo?>" data-titular="<?=$abono->titular?>" data-moneda="<?=$abono->tipo_moneda?>" data-numcuenta="<?=$abono->numero_cuenta?>" data-montousd="<?=$abono->monto?>" data-montopen="<?=$abono->monto_pen?>" data-tipocambio="<?=$tipo_cambio?>" data-cuentabancaria="<?= $abono->cuentas_bancarias_id?>"><i class="glyphicon glyphicon-edit"></i></button></td>
                                     </td>
                                 </tr>
                                 <?php

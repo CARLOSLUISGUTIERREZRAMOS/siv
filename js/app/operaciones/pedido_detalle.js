@@ -36,20 +36,19 @@ $(function () {
         var codigoPedido = button.data('codigopedido');
         var cuenta_bancaria_id = button.data('cuentabancaria');
         var modal = $(this)
-        modal.find('.modal-title').text('Detalle de Abono N° ' + numeroabono)
+        modal.find('.modal-title').text('Detalles de abono N° ' + numeroabono)
         modal.find('.modal-body #montoAbonado').val((moneda === 'USD') ? montoUsd : montoPen);
         modal.find('.modal-body #numeroAbono').val(numeroabono);
         modal.find('.modal-body #pedidoCodigo').val(codigoPedido);
         modal.find('.modal-body #cuentaBancaria').val(cuenta_bancaria_id);
-        $('#select_cuentas').val(cuenta_bancaria_id).prop('selecsted', true);
+        modal.find('.modal-body #tipoCambio').val(tipoCambio);
+        $('.select_cuentas_modal').val(cuenta_bancaria_id).prop('selected', true);
     })
 
     $("#actualidarDatos").submit(function (event) {
         
         var parametros = $(this).serialize();
         console.log(parametros);
-
-
         $.ajax({
             type: "POST",
             url: "/siv/operaciones/Pedidos/ModificarAbono",
@@ -58,10 +57,7 @@ $(function () {
                 $("#datos_ajax").html("Guardando cambios...");
             },
             success: function (datos) {
-                console.log(datos);
-                // $("#datos_ajax").html(datos);
-
-                load(1);
+                location.reload();
             }
         });
         event.preventDefault();
