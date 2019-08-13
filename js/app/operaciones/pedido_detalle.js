@@ -46,7 +46,7 @@ $(function () {
     })
 
     $("#actualidarDatos").submit(function (event) {
-        
+
         var parametros = $(this).serialize();
         console.log(parametros);
         $.ajax({
@@ -84,23 +84,55 @@ $(function () {
     });
 });
 
+function eliminarAbono(elemento) {
 
+    var codigoPedido = $(elemento).data('codigopedido');
+    var numeroAbono = $(elemento).data('numeroabono');
 
-function redireccionar() {
-    location.reload();
+    Swal.fire({
+        title: '¿Seguro de eliminar?',
+        text: "Eliminarás el abono N° " + numeroAbono + ' del Pedido',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, estoy seguro.',
+
+    }).then((result) => {
+        if (result.value) {
+            $.post("/siv/operaciones/Pedidos/EliminarAbono", { codigopedido: codigoPedido, numeroAbono: numeroAbono })
+                .done(function (data) {
+
+                   /*  setTimeout(function () {
+                        RecargaPagina('Abono eliminado');
+                    }, 2000); */
+                    location.reload();
+                });
+        }
+    })
+
 }
 
+function agregarAbono(){
 
-
-
-function eliminarProductoPedido(id) {
-
-    console.log(id);
 }
 
+function RecargaPagina() {
+
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000
+    })
+
+    Toast.fire({
+        type: 'success',
+        title: 'Abono eliminado!'
+    })
+
+}
 function calcularPresupuestoEnvio(stockProducto, shippingUnitario) {
-
-
     return presupuestoEnvio;
 }
 
@@ -109,18 +141,3 @@ function useReturnData(data) {
 
 };
 
-function load(page){
-    var parametros = {"action":"ajax","page":page};
-    $("#loader").fadeIn('slow');
-    $.ajax({
-        url:'/siv/operaciones/Pedidos/VerDetallePedido',
-        data: parametros,
-         beforeSend: function(objeto){
-        $("#loader").html("<img src='loader.gif'>");
-        },
-        success:function(data){
-            $(".outer_div").html(data).fadeIn('slow');
-            $("#loader").html("");
-        }
-    })
-}

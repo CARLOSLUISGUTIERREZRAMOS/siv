@@ -53,7 +53,7 @@ if (isset($data_ingresada)) {
         <!-- /.col -->
         <div class="col-sm-4 invoice-col">
             <address>
-                <b>Saldo por cobrar: $ </b><span class="<?= ($saldoPorCobrar < 0) ? 'text-red' : ''; ?>"><?=$saldoPorCobrar?></span><br>
+                <b>Saldo por cobrar: $ </b><span class="<?= ($saldoPorCobrar < 0) ? 'text-red' : ''; ?>"><?= $saldoPorCobrar ?></span><br>
             </address>
         </div>
         <!-- /.col -->
@@ -197,18 +197,20 @@ if (isset($data_ingresada)) {
         <!-- /.col -->
         <div class="col-xs-12 col-lg-6">
             <p class="lead"><span class="label bg-light-blue">Abonos: </span></p>
-
+            
             <div class="table-responsive">
+            <div>
+                <p>hsajd</p>
+            </div>
                 <table class="table" id="tbl_lista_pedido_detalle">
                     <tbody>
                         <tr>
-                            <th><button type="button" class="btn btn-dropbox btn-sm btn-flat" id="btn_agregar_abono" title="Agregar abono"><i class="fa fa-plus"></i></button></th>
+                            <th><button type="button" class="btn btn-dropbox btn-sm btn-flat" id="btn_agregar_abono" title="Agregar abono" onclick="agregarAbono()"><i class="fa fa-plus"></i></button></th>
                             <th style="width:15%">N° Abono:</th>
                             <th style="width:20%">Monto:</th>
                             <th>Cuenta de Abono:</th>
                             <th></th>
                         </tr>
-
                         <?php
 
                         if (isset($msg_proccess)) {
@@ -225,7 +227,7 @@ if (isset($data_ingresada)) {
                             <td><?= $abono->numero_abono ?></td>
                             <!-- <td><input type="text" class="form-control input-sm monto_abono" id="<?= $abono->numero_abono ?>" disabled value="<?= $abono->monto ?>"></td> -->
                             <td>
-                                <p class="abono" id="<?= $abono->numero_abono ?>"> <?= $abono->monto ?></p>
+                                <?= $abono->monto ?>
                             </td>
 
 
@@ -243,7 +245,12 @@ if (isset($data_ingresada)) {
                             </td>
                             <td><input type="hidden" id="<?= $abono->numero_abono ?>" class="monto_usd" value="<?= $abono->monto ?>"></td>
                             <td>
-                            <td><button type="button" class="btn btn-sm" title="Editar abono <?= $abono->numero_abono ?>" data-toggle="modal" data-target="#editaAbonoModal" data-numeroabono="<?= $abono->numero_abono ?>" data-codigopedido="<?= $pedido->codigo ?>" data-titular="<?= $abono->titular ?>" data-moneda="<?= $abono->tipo_moneda ?>" data-numcuenta="<?= $abono->numero_cuenta ?>" data-montousd="<?= $abono->monto ?>" data-montopen="<?= $abono->monto_pen ?>" data-tipocambio="<?= $tipo_cambio ?>" data-cuentabancaria="<?= $abono->cuentas_bancarias_id ?>"><i class="fa fa-pencil"></i></button></td>
+                                <div class="text-center">
+                                    <button type="button" class="btn btn-sm" title="Editar abono <?= $abono->numero_abono ?>" data-toggle="modal" data-target="#editaAbonoModal" data-numeroabono="<?= $abono->numero_abono ?>" data-codigopedido="<?= $pedido->codigo ?>" data-titular="<?= $abono->titular ?>" data-moneda="<?= $abono->tipo_moneda ?>" data-numcuenta="<?= $abono->numero_cuenta ?>" data-montousd="<?= $abono->monto ?>" data-montopen="<?= $abono->monto_pen ?>" data-tipocambio="<?= $tipo_cambio ?>" data-cuentabancaria="<?= $abono->cuentas_bancarias_id ?>"><i class="fa fa-pencil"></i></button>
+                                    <button  type="button" class="btn btn-sm" title="Eliminar abono <?= $abono->numero_abono ?>" onclick="eliminarAbono(this)" data-numeroabono="<?= $abono->numero_abono ?>" data-codigopedido="<?= $pedido->codigo ?>"><i class="fa fa-trash-o"></i></button>
+                                </div>
+                            </td>
+
 
 
                             </td>
@@ -287,12 +294,12 @@ if (isset($data_ingresada)) {
                             <td></td>
                             <td></td>
                         </tr>
-                        <tr>
+                        <!-- <tr>
                             <td></td>
                             <td>SALDO: </td>
                             <td>$ <span id="saldo"><?= $SALDO_TOTAL ?></span></td>
                             <td></td>
-                        </tr>
+                        </tr> -->
 
                     </tfoot>
                 </table>

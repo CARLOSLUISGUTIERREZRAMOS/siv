@@ -96,6 +96,7 @@ class Pedidos extends CI_Controller {
         }
         return round($precioTotalPedido,2);
     }
+  
 
     private function CalcularSaldoPorCobrar($precioTotalPedido,$sumAbonos)
     {
@@ -235,6 +236,14 @@ class Pedidos extends CI_Controller {
     public function CalcularPresupuestoParaCompra($pendiente_compra, $costo_unitario_producto) {
 
         return ((float) $costo_unitario_producto * $pendiente_compra);
+    }
+
+    public function EliminarAbono(){
+        $id_pedido = $_POST['codigopedido'];
+        $numero_abono = $_POST['numeroAbono'];
+        $camposSet = array('estado' => 'N');
+        $this->Abono_model->ActualizarAbonoDePedido($numero_abono, $id_pedido,$camposSet);
+        $this->session->set_flashdata('msg', 'Abono N° '.$numero_abono.' eliminado. '); 
     }
 
     public function ObtenerPendienteDeCompra($stock_act_producto, $cant_producto_req) {

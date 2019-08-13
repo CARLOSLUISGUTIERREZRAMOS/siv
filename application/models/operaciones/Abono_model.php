@@ -69,6 +69,7 @@ class Abono_model extends CI_Model {
         $this->db->select('abono.*,CB.numero_cuenta,CB.titular,CB.banco,CB.tipo_moneda');
         $this->db->from('abono');
         $this->db->where('pedido_codigo', $pedido_codigo);
+        $this->db->where('abono.estado', 'Y');
         $this->db->join('cuentas_bancarias CB', 'abono.cuentas_bancarias_id = CB.id', 'left');
         $this->db->order_by('numero_abono', 'ASC');
         $resultado = $this->db->get();
@@ -95,6 +96,7 @@ class Abono_model extends CI_Model {
     function SumarAbonosExistentes($pedido_codigo) {
         $this->db->select_sum('monto');
         $this->db->where('pedido_codigo', $pedido_codigo);
+        $this->db->where('estado', 'Y');
         $res_suma_abonos = $this->db->get('abono');
         return $res_suma_abonos->row()->monto;
     }

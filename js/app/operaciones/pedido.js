@@ -699,27 +699,27 @@ $(function () {
     });
 
     var i_abono = parseInt($('#last_abono').val()) + 1;
-    $("body").on("click", "#btn_agregar_abono", function () {
-        var select_body = '';
-        select_body = "<select class='form-control select_cuentas' id=" + i_abono + ">";
-        select_body += $('.select_cuentas').html();
-        select_body += "</select>";
+//     $("body").on("click", "#btn_agregar_abono", function () {
+//         var select_body = '';
+//         select_body = "<select class='form-control select_cuentas' id=" + i_abono + ">";
+//         select_body += $('.select_cuentas').html();
+//         select_body += "</select>";
 
-        var tbl_abonos = '<tr>' +
-                '<td></td>' +
-                '<td class="indice_abono">' + i_abono + '</td>' +
-                '<td><input type="text" class="form-control input-sm monto_abono" id="' + i_abono + '"></td>' +
-                '<td>' + select_body + '</td>' +
-                '<td><input type="hidden" id="' + i_abono + '" class="monto_usd"></td>' +
-                '<td><i class="fa fa-fw fa-trash-o ico_delete_abono" style="color: red" title="Eliminar abono" id="' + i_abono + '"></i></td>' +
-                '</tr>';
+//         var tbl_abonos = '<tr>' +
+//                 '<td></td>' +
+//                 '<td class="indice_abono">' + i_abono + '</td>' +
+//                 '<td><input type="text" class="form-control input-sm monto_abono" id="' + i_abono + '"></td>' +
+//                 '<td>' + select_body + '</td>' +
+//                 '<td><input type="hidden" id="' + i_abono + '" class="monto_usd"></td>' +
+//                 '<td><i class="fa fa-fw fa-trash-o ico_delete_abono" style="color: red" title="Eliminar abono" id="' + i_abono + '"></i></td>' +
+//                 '</tr>';
 
-//        console.log(select_body);
-//        return false;
-        $('#tbl_lista_pedido_detalle tbody').append(tbl_abonos);
+// //        console.log(select_body);
+// //        return false;
+//         $('#tbl_lista_pedido_detalle tbody').append(tbl_abonos);
 
-        i_abono++;
-    });
+//         i_abono++;
+//     });
     $('#saldo_por_cobrar').text($('#saldo').text());
     $("body").on("change", ".select_cuentas", function () {
         var fila_select = $(this).attr('id');
