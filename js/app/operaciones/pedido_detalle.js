@@ -28,7 +28,7 @@ $(function () {
 
     $('#editaAbonoModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget) // Botón que activó el modal
-        var numeroabono = button.data('numeroabono'); // Extraer la información de atributos de datos
+        var idabono = button.data('idabono'); // Extraer la información de atributos de datos
         var montoPen = button.data('montopen');
         var montoUsd = button.data('montousd');
         var tipoCambio = button.data('tipocambio');
@@ -36,9 +36,9 @@ $(function () {
         var codigoPedido = button.data('codigopedido');
         var cuenta_bancaria_id = button.data('cuentabancaria');
         var modal = $(this)
-        modal.find('.modal-title').text('Detalles de abono N° ' + numeroabono)
+        modal.find('.modal-title').text('Detalles de abono N° ' + idabono)
         modal.find('.modal-body #montoAbonado').val((moneda === 'USD') ? montoUsd : montoPen);
-        modal.find('.modal-body #numeroAbono').val(numeroabono);
+        modal.find('.modal-body #idabono').val(idabono);
         modal.find('.modal-body #pedidoCodigo').val(codigoPedido);
         modal.find('.modal-body #cuentaBancaria').val(cuenta_bancaria_id);
         modal.find('.modal-body #tipoCambio').val(tipoCambio);
@@ -61,9 +61,9 @@ $(function () {
         });
         event.preventDefault();
     });
+
     $("#agregarAbono").submit(function (event) {
         var parametros = $(this).serialize();
-
         $.ajax({
             type: "POST",
             url: "/siv/operaciones/Pedidos/AgregarAbono",
@@ -84,35 +84,35 @@ $(function () {
         event.preventDefault();
     });
 
-    $("body").on("click", ".ico_edit_abono", function () {
+//     $("body").on("click", ".ico_edit_abono", function () {
 
 
-        var codigoPedido = $(this).attr("data-pedido");
-        var numAbono = $(this).attr("id");
-        $('#exampleModal').modal({
-            show: true
-        });
+//         var codigoPedido = $(this).attr("data-pedido");
+//         var numAbono = $(this).attr("id");
+//         $('#exampleModal').modal({
+//             show: true
+//         });
 
-        return false;
+//         return false;
 
-        $.post("/siv/operaciones/Pedidos/ObtenerAbono", { numAbono: numAbono, codigoPedido: codigoPedido })
-            .done(function (data) {
-                console.log(data);
-                $('#exampleModal').modal('show');
-            });
+//         $.post("/siv/operaciones/Pedidos/ObtenerAbono", { numAbono: numAbono, codigoPedido: codigoPedido })
+//             .done(function (data) {
+//                 console.log(data);
+//                 $('#exampleModal').modal('show');
+//             });
 
 
-    });
+//     });
 });
 
 function eliminarAbono(elemento) {
 
     var codigoPedido = $(elemento).data('codigopedido');
-    var numeroAbono = $(elemento).data('numeroabono');
+    var idAbono = $(elemento).data('idabono');
 
     Swal.fire({
         title: '¿Seguro de eliminar?',
-        text: "Eliminarás el abono N° " + numeroAbono + ' del Pedido',
+        text: "Eliminarás el abono N° " + idAbono + ' del Pedido',
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -121,7 +121,7 @@ function eliminarAbono(elemento) {
 
     }).then((result) => {
         if (result.value) {
-            $.post("/siv/operaciones/Pedidos/AgregarAbono", { codigopedido: codigoPedido, numeroAbono: numeroAbono })
+            $.post("/siv/operaciones/Pedidos/EliminarAbono", { codigopedido: codigoPedido, idabono:idAbono})
                 .done(function (data) {
 
                     /*  setTimeout(function () {
@@ -178,5 +178,6 @@ function calcularPresupuestoEnvio(stockProducto, shippingUnitario) {
 function useReturnData(data) {
     result = data;
 
-};
+}
+
 

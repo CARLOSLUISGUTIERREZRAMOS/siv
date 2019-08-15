@@ -17,7 +17,7 @@
             <label for="recipient-name" class="control-label">Cuentas Bancarias:</label>
             <?= armarSelectCtasBancarias() ?>
           </div>
-          <input type="hidden" class="form-control" id="numeroAbono" name="numeroAbono">
+          <input type="hidden" class="form-control" id="idabono" name="idabono">
           <input type="hidden" class="form-control" id="pedidoCodigo" name="pedidoCodigo">
           <input type="hidden" class="form-control" id="cuentaBancaria" name="cuentaBancaria">
           <input type="hidden" class="form-control" id="tipoCambio" name="tipoCambio">

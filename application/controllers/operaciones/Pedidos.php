@@ -1,25 +1,28 @@
 <?php
 
-class Pedidos extends CI_Controller {
+class Pedidos extends CI_Controller
+{
 
     protected $presupuesto_por_compra;
 
-    public function __construct() {
+    public function __construct()
+    {
 
         parent::__construct();
-        if (!isset($this->session->username)):
+        if (!isset($this->session->username)) :
             redirect('/');
         endif;
         $this->load->model('data/Clientes_model');
-        $this->load->helper(array('pedido','ctabancarias','procesos'));
-        $this->load->model(array('data/Productos_model','data/Cuentas_bancarias_model','operaciones/Pedidos_model','operaciones/Abono_model','finanzas/Tax_model'));
+        $this->load->helper(array('pedido', 'ctabancarias', 'procesos'));
+        $this->load->model(array('data/Productos_model', 'data/Cuentas_bancarias_model', 'operaciones/Pedidos_model', 'operaciones/Abono_model', 'finanzas/Tax_model'));
         $this->template->add_js('js/app/operaciones/pedido.js');
         $this->template->add_js('js/bootstrap-datepicker/bootstrap-datepicker.min.js');
         $this->template->add_js('js/datatables/jquery.dataTables.min.js');
         $this->template->add_js('js/datatables/dataTables.bootstrap.min.js');
     }
 
-    public function index() {
+    public function index()
+    {
         $tax_cargado = $this->Tax_model->VerificarExisteTipoCambioDelDia();
         if ($tax_cargado) {
 
@@ -35,32 +38,35 @@ class Pedidos extends CI_Controller {
         }
     }
 
-    public function RegistrarPedido() {
+    public function RegistrarPedido()
+    {
 
-//        var_dump($_POST);
+        //        var_dump($_POST);
         echo $this->Pedidos_model->IngresarPedido($_POST);
     }
 
-    function CalcularSumatoriaAbonos($abonos_data, $tipo_cambio) {
+    function CalcularSumatoriaAbonos($abonos_data, $tipo_cambio)
+    {
 
         foreach ($abonos_data->Result() as $abono) {
-//           echo $abono->tipo_moneda;
-//           echo $abono->tipo_moneda;
+            //           echo $abono->tipo_moneda;
+            //           echo $abono->tipo_moneda;
         }
     }
 
-    public function VerDetallePedido() {
-        $this->template->add_js('js/app/operaciones/pedido_detalle.js',true);
-        $this->template->add_css('css/sweetalert2/sweetalert2.min.css',true);
-        $this->template->add_css('css/sweetalert2/styles.css',true);
-        $this->template->add_js('js/sweetalert2/sweetalert2.min.js',true);
+    public function VerDetallePedido()
+    {
+        $this->template->add_js('js/app/operaciones/pedido_detalle.js', true);
+        $this->template->add_css('css/sweetalert2/sweetalert2.min.css', true);
+        $this->template->add_css('css/sweetalert2/styles.css', true);
+        $this->template->add_js('js/sweetalert2/sweetalert2.min.js', true);
         $this->template->set('titulo', '');
         $codigo_pedido = $_GET['codigo_pedido'];
         $data['pedido'] = $this->Pedidos_model->ObtenerPedido($codigo_pedido);
         $cantidad_abonos = $this->Abono_model->ObtenerCantidadDeAbonos($codigo_pedido);
         if ($cantidad_abonos > 0) {
             $data['EXISTE_ABONO'] = TRUE;
-            $data['last_abono'] = $this->Abono_model->ObtenerUltimoNumeroAbono($codigo_pedido);
+            // $data['last_abono'] = $this->Abono_model->ObtenerUltimoNumeroAbono($codigo_pedido);
             $data['sum_abono'] = $this->Abono_model->SumarAbonosExistentes($codigo_pedido);
             $data['SALDO_TOTAL'] = (float) $data['pedido']->precio_total - $data['sum_abono'];
         } else {
@@ -72,13 +78,13 @@ class Pedidos extends CI_Controller {
 
         $data['abonos'] = $this->Abono_model->ObtenerAbonosPedido($codigo_pedido);
         $fecha_sql = (new DateTime($data['pedido']->fecha_pedido))->format('Y-m-d');
-//        echo $fecha_sql;die;
+        //        echo $fecha_sql;die;
         $data['tipo_cambio'] = $this->Pedidos_model->ObtenerTipoCambioPedido($fecha_sql)->tipo_cambio_compra;
         $data['tc_today'] = $this->Tax_model->ObtenerTipoCambioDelDia()->tipo_cambio_compra;
-//        echo $data['tipo_cambio'];die;
+        //        echo $data['tipo_cambio'];die;
         $data['cuentas_bancarias'] = $this->Cuentas_bancarias_model->GetCuentasBancarias();
         $data['pedido_detalle'] = $this->Pedidos_model->ObtenerPedidoDetalle($codigo_pedido);
-        
+
         $data['presupuestoCompra'] = $this->obtenerPresupuestoCompra($data['pedido_detalle']);
         $data['presupuestoEnvio'] = $this->obtenerPresupuestoEnvio($data['pedido_detalle']);
 
@@ -88,21 +94,21 @@ class Pedidos extends CI_Controller {
         $this->load->view('pedidos/v_modal_editar_pedido');
     }
 
-    private function CalcularPrecioTotalDePedido($dataPedidoDetalle){
+    private function CalcularPrecioTotalDePedido($dataPedidoDetalle)
+    {
         $precioTotalPedido = 0;
-        foreach ($dataPedidoDetalle->Result() as $campo)
-        {
-            $precioTotalPedido += (double)$campo->precio_total;
+        foreach ($dataPedidoDetalle->Result() as $campo) {
+            $precioTotalPedido += (float) $campo->precio_total;
         }
-        return round($precioTotalPedido,2);
+        return round($precioTotalPedido, 2);
     }
-  
 
-    private function CalcularSaldoPorCobrar($precioTotalPedido,$sumAbonos)
+
+    private function CalcularSaldoPorCobrar($precioTotalPedido, $sumAbonos)
     {
         return $precioTotalPedido - $sumAbonos;
     }
-    
+
     public function ObtenerAbono()
     {
         // $numAbono = $_POST['numAbono'];
@@ -110,32 +116,29 @@ class Pedidos extends CI_Controller {
         // $res = $this->Pedidos_model->GetAbono($numAbono,$codigoPedido);
         // $data_vista['dataAbonoPedido'] = $res;
         // $this->template->load(10, 'pedidos/v_modal_editar_pedido', $data_vista);
-        $res = $this->load->view('pedidos/v_modal_editar_pedido',false,true);
+        $res = $this->load->view('pedidos/v_modal_editar_pedido', false, true);
         var_dump($res);
     }
     function obtenerPresupuestoEnvio($dataPedidoDetalle)
     {
         $presupuestoEnvio = 0;
-        foreach($dataPedidoDetalle->Result() as $row)
-        {
+        foreach ($dataPedidoDetalle->Result() as $row) {
             $presupuestoEnvio += $row->shipping_unitario * $row->stock_producto_flag;
-            
         }
         return $presupuestoEnvio;
     }
     function obtenerPresupuestoCompra($dataPedidoDetalle)
     {
         $presupuestoCompra = 0;
-        foreach($dataPedidoDetalle->Result() as $row)
-        {
+        foreach ($dataPedidoDetalle->Result() as $row) {
             $presupuestoCompra += $row->pendiente_compra * $row->costo_unitario_producto;
-            
         }
         return $presupuestoCompra;
     }
 
 
-    function GuardarAbonos() {
+    function GuardarAbonos()
+    {
         $data = [];
         $JsonDataAbono = $_POST['json'];
         $cliente_codigo = $_POST['pedido_cliente_codigo'];
@@ -144,7 +147,7 @@ class Pedidos extends CI_Controller {
         $ObjAbono = json_decode($JsonDataAbono);
         foreach ($ObjAbono as $abono) {
             $res = $this->Abono_model->VerificarExisteNumeroAbonoRegistrado($abono->numero_abono, $codigo_pedido);
-//            // SI NO EXISTE REGSITRO ENTRA A LA VALIDACION Y SE REGISTRA ABONO
+            //            // SI NO EXISTE REGSITRO ENTRA A LA VALIDACION Y SE REGISTRA ABONO
             if ($res === 0) {
                 $res_insert = $this->Abono_model->RegistrarAbonoDePedido($abono->numero_abono, $abono->monto, $codigo_pedido, $cliente_codigo, $abono->cuenta_id, $abono->monto_usd, $abono->moneda);
                 if ($res_insert) {
@@ -155,16 +158,16 @@ class Pedidos extends CI_Controller {
                     $this->session->set_flashdata('EXITO', FALSE);
                 }
             }
-//            else {
-//                $res_upd = $this->Abono_model->ActualizarAbonoDePedido($abono->numero_abono, $codigo_pedido, $abono->cuenta_id);
-//
-//                if ($res_upd) {
-//                    $data[] = 'Se actualizo el abono N° ' . $abono->numero_abono . ' del pedido ' . $codigo_pedido . ' exitosamente';
-//                } else {
-//                    $data[] = 'Ocurrió un error en la actualización del abono N° ' . $abono->numero_abono . ' con número de pedido ' . $codigo_pedido;
-//                    $this->session->set_flashdata('EXITO', TRUE);
-//                }
-//            }
+            //            else {
+            //                $res_upd = $this->Abono_model->ActualizarAbonoDePedido($abono->numero_abono, $codigo_pedido, $abono->cuenta_id);
+            //
+            //                if ($res_upd) {
+            //                    $data[] = 'Se actualizo el abono N° ' . $abono->numero_abono . ' del pedido ' . $codigo_pedido . ' exitosamente';
+            //                } else {
+            //                    $data[] = 'Ocurrió un error en la actualización del abono N° ' . $abono->numero_abono . ' con número de pedido ' . $codigo_pedido;
+            //                    $this->session->set_flashdata('EXITO', TRUE);
+            //                }
+            //            }
         }
 
 
@@ -179,9 +182,10 @@ class Pedidos extends CI_Controller {
         $this->session->set_flashdata('data_ingresada', $data);
     }
 
-    function CrearPedido() {
+    function CrearPedido()
+    {
         $calculo_presupuesto_para_compra = 0;
-//        $presupuesto_para_compra = 0;
+        //        $presupuesto_para_compra = 0;
         $JsonDataPedido = $_POST['json'];
         $ObjPedido = json_decode($JsonDataPedido);
 
@@ -196,9 +200,9 @@ class Pedidos extends CI_Controller {
             'presupuesto_x_envio' => $ObjPedido->presupuesto_x_envio,
             'tax_id' => $this->Tax_model->ObtenerTipoCambioDelDia()->id
         );
-        
+
         $pedido_codigo = $this->Pedidos_model->IngresarPedido($data_insert_pedido);
-        
+
         foreach ($ObjPedido->detalle_pedido as $producto) {
             $stock_act_producto = $this->Productos_model->ObtenerCantidadStockProducto($producto->codigo_producto);
             $pendiente_compra = $this->ObtenerPendienteDeCompra($stock_act_producto, $producto->cantidad);
@@ -221,32 +225,35 @@ class Pedidos extends CI_Controller {
 
             $res_insert_pedido_detalle = $this->Pedidos_model->RegistrarPedidoDetalle($data_insert_pedido_detalle);
             $calculo_presupuesto_para_compra += $this->CalcularPresupuestoParaCompra($pendiente_compra, $producto->costo_unitario_producto);
-//            $this->Productos_model->ActualizarStockActualProducto($producto->cantidad, $stock_act_producto, $producto->codigo_producto);
+            //            $this->Productos_model->ActualizarStockActualProducto($producto->cantidad, $stock_act_producto, $producto->codigo_producto);
         }
 
-        $REGISTRO_DE_ABONO = ((double) $ObjPedido->abono > 0) ? TRUE : FALSE;
+        $REGISTRO_DE_ABONO = ((float) $ObjPedido->abono > 0) ? TRUE : FALSE;
         if ($REGISTRO_DE_ABONO) {
-            $res_registro_abono_pedido = $this->Abono_model->RegistrarAbonoDePedido(1, $ObjPedido->abono, $pedido_codigo, $ObjPedido->cliente_codigo, 2, $ObjPedido->abono, 'USD');
-            echo "RegAbono".var_dump($res_registro_abono_pedido);
+            $res_registro_abono_pedido = $this->Abono_model->RegistrarAbonoDePedido($ObjPedido->abono, $pedido_codigo, $ObjPedido->cliente_codigo, 2, $ObjPedido->abono, 'USD');
+            echo "RegAbono" . var_dump($res_registro_abono_pedido);
         }
         $res_registro_presupuesto_para_compra = $this->Pedidos_model->RegistrarPresupuestoParaCompra($pedido_codigo, $calculo_presupuesto_para_compra);
         $this->session->set_flashdata('nuevo_pedido', $pedido_codigo);
     }
 
-    public function CalcularPresupuestoParaCompra($pendiente_compra, $costo_unitario_producto) {
+    public function CalcularPresupuestoParaCompra($pendiente_compra, $costo_unitario_producto)
+    {
 
         return ((float) $costo_unitario_producto * $pendiente_compra);
     }
 
-    public function EliminarAbono(){
+    public function EliminarAbono()
+    {
         $id_pedido = $_POST['codigopedido'];
-        $numero_abono = $_POST['numeroAbono'];
+        $id_abono = $_POST['idabono'];
         $camposSet = array('estado' => 'N');
-        $this->Abono_model->ActualizarAbonoDePedido($numero_abono, $id_pedido,$camposSet);
-        $this->session->set_flashdata('msg', 'Abono N° '.$numero_abono.' eliminado. '); 
+        $this->Abono_model->ActualizarAbonoDePedido($id_abono, $id_pedido, $camposSet);
+        $this->session->set_flashdata('msg', 'Abono eliminado. ');
     }
 
-    public function ObtenerPendienteDeCompra($stock_act_producto, $cant_producto_req) {
+    public function ObtenerPendienteDeCompra($stock_act_producto, $cant_producto_req)
+    {
 
         if ((int) $stock_act_producto < (int) $cant_producto_req) {
             return $cant_producto_req - $stock_act_producto;
@@ -254,13 +261,14 @@ class Pedidos extends CI_Controller {
         return 0;
     }
 
-    public function ObtenerNuevoCodigoPedido() {
+    public function ObtenerNuevoCodigoPedido()
+    {
 
         $ResModel_IdPedido = $this->Pedidos_model->GetLastId();
         foreach ($ResModel_IdPedido->result() as $pedido) {
 
             $id_codigo = (empty($pedido->codigo)) ? 0 : (int) $pedido->codigo;
-//            var_dump($id_codigo);
+            //            var_dump($id_codigo);
         }
 
         $id_codigo = (isset($id_codigo)) ? $id_codigo : 0;
@@ -268,7 +276,8 @@ class Pedidos extends CI_Controller {
     }
 
     //Genera un numero de pedido ficticio.
-    public function CreaPedido() {
+    public function CreaPedido()
+    {
 
         $ResModel_IdPedido = $this->Pedidos_model->GetLastId();
         foreach ($ResModel_IdPedido->result() as $pedido) {
@@ -277,7 +286,8 @@ class Pedidos extends CI_Controller {
         return $id_codigo = (isset($id_codigo)) ? $id_codigo : 0;
     }
 
-    public function ListarPedidos() {
+    public function ListarPedidos()
+    {
         $this->template->add_css('css/datatables/dataTables.bootstrap.min.css');
         $this->template->add_js('js/datatables/jquery.dataTables.min.js');
         $this->template->add_js('js/datatables/dataTables.bootstrap.min.js');
@@ -286,7 +296,7 @@ class Pedidos extends CI_Controller {
         $data['controlador'] = 'Pedidos';
         $this->template->load(10, 'pedidos/v_lista_pedidos', $data);
     }
-    
+
     public function EliminarPedido()
     {
         $id = $_POST['pedido_detalle_id'];
@@ -297,34 +307,39 @@ class Pedidos extends CI_Controller {
     {
         $setMonto = [];
         $pedidoCodigo = $_POST['pedidoCodigo'];
-        $numeroAbono = $_POST['numeroAbono'];
+        $idAbono = $_POST['idabono'];
         $cuentaBancaria = $_POST['select_cuentas'];
         $montoAbono = $_POST['montoAbono'];
         $tipoCambio = $_POST['tipoCambio'];
         $condiciones_modelo_ctasBancarias = array('id' => $cuentaBancaria);
         $resDataCtaBancaria = $this->Cuentas_bancarias_model->GetDetalleCtaBancaria($condiciones_modelo_ctasBancarias);
-        if($resDataCtaBancaria->tipo_moneda === 'PEN'){
+        if ($resDataCtaBancaria->tipo_moneda === 'PEN') {
             //APLICAMOS EL CAMBIO
             $setMonto['monto_pen'] = $montoAbono;
-            $montoAbono = (double)$montoAbono / $tipoCambio;
-            $setMonto['monto'] = round($montoAbono,2);
-        }else{
+            $montoAbono = (float) $montoAbono / $tipoCambio;
+            $setMonto['monto'] = round($montoAbono, 2);
+        } else {
             $setMonto['monto'] = $montoAbono;
-            $montoAbonoPen = (double)$montoAbono * (double)$tipoCambio;
-            $setMonto['monto_pen'] = round($montoAbonoPen,2);
+            $montoAbonoPen = (float) $montoAbono * (float) $tipoCambio;
+            $setMonto['monto_pen'] = round($montoAbonoPen, 2);
         }
         $setMonto['cuentas_bancarias_id'] = $cuentaBancaria;
-        $bool_upd = $this->Abono_model->ActualizarAbonoDePedido($numeroAbono,$pedidoCodigo,$setMonto);
+        $bool_upd = $this->Abono_model->ActualizarAbonoDePedido($idAbono, $pedidoCodigo, $setMonto);
         $msg = ($bool_upd) ? 'Abono actulizado.' : 'Error al editar abono';
-        $this->session->set_flashdata('msg', $msg); 
+        $this->session->set_flashdata('msg', $msg);
     }
 
     public function AgregarAbono()
     {
+        $data_insert = [];
         $monto = $_POST['montoAddAbono'];
         $fecha = $_POST['select_cuentas'];
-        echo $monto." ".$fecha;
-        // $this->Pedidos_model->InsertarAbono();
+        $codigo_pedido = $_POST['codigo_pedido'];
+        $cliente_codigo = $_POST['cliente_codigo'];
+        array(
+            'pedido_codigo' => $codigo_pedido, 'pedido_cliente_codigo' => $cliente_codigo,
+            'monto' => $codigo_pedido, 'pedido_cliente_codigo' => $cliente_codigo,
+        );
+        $this->Abono_model->InsertarAbono();
     }
 }
-

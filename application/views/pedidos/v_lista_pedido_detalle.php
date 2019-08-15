@@ -219,20 +219,21 @@ if (isset($data_ingresada)) {
                         }
                         //SUMATARIA TOTAL ABONO
                         if ($EXISTE_ABONO) {
+                            $i = 1;
                             foreach ($abonos->Result() as $abono) {
                                 //LOGICA PARA CONVERTIR EL ABONO REGISTRADO A USD CON EL TIPO DE CAMBIO DE ESE DÍA
                                 ?>
                         <tr>
                             <td></td>
-                            <td><?= $abono->numero_abono ?></td>
-                            <!-- <td><input type="text" class="form-control input-sm monto_abono" id="<?= $abono->numero_abono ?>" disabled value="<?= $abono->monto ?>"></td> -->
+                            <td><?=$i?></td>
+                            <!-- <td><input type="text" class="form-control input-sm monto_abono" id="<?= $abono->id ?>" disabled value="<?= $abono->monto ?>"></td> -->
                             <td>
                                 <?= $abono->monto ?>
                             </td>
 
 
                             <td id="bloque_select_cuentas">
-                                <select class="form-control select_cuentas" id="<?= $abono->numero_abono ?>" disabled>
+                                <select class="form-control select_cuentas" id="<?= $abono->id ?>" disabled>
                                     <?php
                                             foreach ($cuentas_bancarias->Result() as $cuenta) {
                                                 $selected = ($abono->cuentas_bancarias_id === $cuenta->id) ? 'selected' : '';
@@ -243,11 +244,11 @@ if (isset($data_ingresada)) {
                                             ?>
                                 </select>
                             </td>
-                            <td><input type="hidden" id="<?= $abono->numero_abono ?>" class="monto_usd" value="<?= $abono->monto ?>"></td>
+                            <td><input type="hidden" id="<?= $abono->id ?>" class="monto_usd" value="<?= $abono->monto ?>"></td>
                             <td>
                                 <div class="text-center">
-                                    <button type="button" class="btn btn-sm" title="Editar abono <?= $abono->numero_abono ?>" data-toggle="modal" data-target="#editaAbonoModal" data-numeroabono="<?= $abono->numero_abono ?>" data-codigopedido="<?= $pedido->codigo ?>" data-titular="<?= $abono->titular ?>" data-moneda="<?= $abono->tipo_moneda ?>" data-numcuenta="<?= $abono->numero_cuenta ?>" data-montousd="<?= $abono->monto ?>" data-montopen="<?= $abono->monto_pen ?>" data-tipocambio="<?= $tipo_cambio ?>" data-cuentabancaria="<?= $abono->cuentas_bancarias_id ?>"><i class="fa fa-pencil"></i></button>
-                                    <button type="button" class="btn btn-sm" title="Eliminar abono <?= $abono->numero_abono ?>" onclick="eliminarAbono(this)" data-numeroabono="<?= $abono->numero_abono ?>" data-codigopedido="<?= $pedido->codigo ?>"><i class="fa fa-trash-o"></i></button>
+                                    <button type="button" class="btn btn-sm" title="Editar abono <?= $abono->id ?>" data-toggle="modal" data-target="#editaAbonoModal" data-idabono="<?= $abono->id ?>" data-codigopedido="<?= $pedido->codigo ?>" data-titular="<?= $abono->titular ?>" data-moneda="<?= $abono->tipo_moneda ?>" data-numcuenta="<?= $abono->numero_cuenta ?>" data-montousd="<?= $abono->monto ?>" data-montopen="<?= $abono->monto_pen ?>" data-tipocambio="<?= $tipo_cambio ?>" data-cuentabancaria="<?= $abono->cuentas_bancarias_id ?>"><i class="fa fa-pencil"></i></button>
+                                    <button type="button" class="btn btn-sm" title="Eliminar abono <?= $abono->id ?>" onclick="eliminarAbono(this)" data-idabono="<?= $abono->id ?>" data-codigopedido="<?= $pedido->codigo ?>"><i class="fa fa-trash-o"></i></button>
                                 </div>
                             </td>
 
@@ -258,13 +259,14 @@ if (isset($data_ingresada)) {
                         </tr>
 
                         <?php
-                            }
+                        $i++;   
+                        }
                         } else {
                             ?>
                         <tr>
                             <td></td>
-                            <td><?= $last_abono ?></td>
-                            <td><input type="text" class="form-control input-sm monto_abono" id="<?= $last_abono ?>" value=""></td>
+                            <!-- <td><?= $last_abono ?></td> -->
+                            <!-- <td><input type="text" class="form-control input-sm monto_abono" id="<?= $last_abono ?>" value=""></td> -->
                             <td id="bloque_select_cuentas">
                                 <select class="form-control select_cuentas" id="1">
                                     <?php
@@ -276,7 +278,7 @@ if (isset($data_ingresada)) {
                                         ?>
                                 </select>
                             </td>
-                            <td><input type="hidden" id="<?= $last_abono ?>" class="monto_usd" value=""></td>
+                            <!-- <td><input type="hidden" id="<?= $last_abono ?>" class="monto_usd" value=""></td> -->
                         </tr>
                         <?php
                         }
@@ -328,4 +330,4 @@ if (isset($data_ingresada)) {
 <input type="hidden" value="<?= $tc_today ?>" id="tc_today">
 <input type="hidden" value="<?= $pedido->codigo ?>" id="codigo_pedido">
 <input type="hidden" value="<?= $pedido->cliente_codigo ?>" id="cliente_codigo">
-<input type="hidden" value="<?= $last_abono ?>" id="last_abono">
+<!-- <input type="hidden" value="<?= $last_abono ?>" id="last_abono"> -->

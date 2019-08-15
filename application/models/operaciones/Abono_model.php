@@ -6,10 +6,10 @@ class Abono_model extends CI_Model {
 
     public function __construct() {
         parent::__construct();
-        $this->date = (new DateTime())->format('Y-m-d');
+        $this->date = (new DateTime())->format('Y-m-d H:i:s');
     }
 
-    function RegistrarAbonoDePedido($numero_abono, $monto_abono, $pedido_codigo, $pedido_cliente_codigo, $cuentas_bancarias_id, $abono_usd, $moneda) {
+    function RegistrarAbonoDePedido($monto_abono, $pedido_codigo, $pedido_cliente_codigo, $cuentas_bancarias_id, $abono_usd, $moneda) {
 
         if ($moneda == 'PEN') {
             $this->db->set('monto_pen', $monto_abono);
@@ -19,7 +19,6 @@ class Abono_model extends CI_Model {
             $this->db->set('monto_pen', 0.00);
             $this->db->set('monto', $abono_usd);
         }
-        $this->db->set('numero_abono', $numero_abono);
         $this->db->set('pedido_codigo', $pedido_codigo);
         $this->db->set('pedido_cliente_codigo', $pedido_cliente_codigo);
         $this->db->set('pedido_cliente_codigo', $pedido_cliente_codigo);
@@ -31,10 +30,10 @@ class Abono_model extends CI_Model {
     }
 
     // function ActualizarAbonoDePedido($numero_abono, $pedido_codigo, $cuentas_bancarias_id) {
-    function ActualizarAbonoDePedido($numero_abono, $pedido_codigo, $camposSet) {
+    function ActualizarAbonoDePedido($id_abono,$pedido_codigo, $camposSet) {
 
         $this->db->set($camposSet);
-        $this->db->where('numero_abono', $numero_abono);
+        $this->db->where('id', $id_abono);
         $this->db->where('pedido_codigo', $pedido_codigo);
         $result = $this->db->update('abono');
 //        return $this->db->last_query();
@@ -71,19 +70,19 @@ class Abono_model extends CI_Model {
         $this->db->where('pedido_codigo', $pedido_codigo);
         $this->db->where('abono.estado', 'Y');
         $this->db->join('cuentas_bancarias CB', 'abono.cuentas_bancarias_id = CB.id', 'left');
-        $this->db->order_by('numero_abono', 'ASC');
+        $this->db->order_by('fecha', 'ASC');
         $resultado = $this->db->get();
 //        return $this->db->last_query();
         return $resultado;
     }
 
     function ObtenerUltimoNumeroAbono($pedido_codigo) {
-        $this->db->select('numero_abono');
+        $this->db->select('id');
         $this->db->from('abono');
         $this->db->where('pedido_codigo', $pedido_codigo);
-        $this->db->order_by('numero_abono', 'DESC');
+        $this->db->order_by('id', 'DESC');
         $this->db->limit(1);
-        return $this->db->get()->row()->numero_abono;
+        return $this->db->get()->row()->id;
     }
 
     function ObtenerCantidadDeAbonos($pedido_codigo) {
@@ -118,6 +117,11 @@ class Abono_model extends CI_Model {
         $this->db->where('abono <=', $fecha);
         return $this->db->get();
     }
-   
+    public function InsertarAbono($data)
+    {
+        $this->db->set($data);
+        $rs = $this->db->insert('pedido_detalle');
+        return $rs;
+    }
 
 }
