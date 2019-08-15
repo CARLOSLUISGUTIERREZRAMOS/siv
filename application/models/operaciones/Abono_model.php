@@ -102,7 +102,6 @@ class Abono_model extends CI_Model {
     }
 
     function GetAbonos($campo) {
-
         $this->db->select_sum($campo);
         $this->db->from('abono');
         return $this->db->get()->row()->$campo;

@@ -62,12 +62,9 @@ if (isset($data_ingresada)) {
 
     <!-- Table row -->
     <div class="row">
-
-
         <div class="box box-primary">
             <div class="box-header with-border">
                 <h3 class="box-title">Costos</h3>
-
                 <div class="box-tools pull-right">
                     <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                     </button>
@@ -197,22 +194,25 @@ if (isset($data_ingresada)) {
         <!-- /.col -->
         <div class="col-xs-12 col-lg-6">
             <p class="lead"><span class="label bg-light-blue">Abonos: </span></p>
-            
             <div class="table-responsive">
-            <div>
-                <p>hsajd</p>
-            </div>
+
                 <table class="table" id="tbl_lista_pedido_detalle">
                     <tbody>
                         <tr>
-                            <th><button type="button" class="btn btn-dropbox btn-sm btn-flat" id="btn_agregar_abono" title="Agregar abono" onclick="agregarAbono()"><i class="fa fa-plus"></i></button></th>
+                            <th><button type="button" title="Agregar abono" class="btn btn-dropbox btn-sm btn-flat" id="btn_agregar_abono"  onclick="agregarAbono()"><i id="btnAbonoAdd" class="fa fa-plus"></i></button></th>
                             <th style="width:15%">N° Abono:</th>
                             <th style="width:20%">Monto:</th>
                             <th>Cuenta de Abono:</th>
                             <th></th>
                         </tr>
+                        <tr style="display: none" id="fila_add_abono">
+                            <td colspan="7">
+                                <?php
+                                $this->load->view('pedidos/v_anadir_abono');
+                                ?>
+                            </td>
+                        </tr>
                         <?php
-
                         if (isset($msg_proccess)) {
                             $res = MostrarBloqueAviso($msg_proccess, NULL);
                             echo $res;
@@ -247,14 +247,16 @@ if (isset($data_ingresada)) {
                             <td>
                                 <div class="text-center">
                                     <button type="button" class="btn btn-sm" title="Editar abono <?= $abono->numero_abono ?>" data-toggle="modal" data-target="#editaAbonoModal" data-numeroabono="<?= $abono->numero_abono ?>" data-codigopedido="<?= $pedido->codigo ?>" data-titular="<?= $abono->titular ?>" data-moneda="<?= $abono->tipo_moneda ?>" data-numcuenta="<?= $abono->numero_cuenta ?>" data-montousd="<?= $abono->monto ?>" data-montopen="<?= $abono->monto_pen ?>" data-tipocambio="<?= $tipo_cambio ?>" data-cuentabancaria="<?= $abono->cuentas_bancarias_id ?>"><i class="fa fa-pencil"></i></button>
-                                    <button  type="button" class="btn btn-sm" title="Eliminar abono <?= $abono->numero_abono ?>" onclick="eliminarAbono(this)" data-numeroabono="<?= $abono->numero_abono ?>" data-codigopedido="<?= $pedido->codigo ?>"><i class="fa fa-trash-o"></i></button>
+                                    <button type="button" class="btn btn-sm" title="Eliminar abono <?= $abono->numero_abono ?>" onclick="eliminarAbono(this)" data-numeroabono="<?= $abono->numero_abono ?>" data-codigopedido="<?= $pedido->codigo ?>"><i class="fa fa-trash-o"></i></button>
                                 </div>
                             </td>
 
 
 
-                            </td>
+
+
                         </tr>
+
                         <?php
                             }
                         } else {
@@ -282,6 +284,7 @@ if (isset($data_ingresada)) {
 
                     </tbody>
                     <tfoot>
+
                         <tr>
                             <td></td>
                             <td>TOTAL ABONOS: </td>
@@ -300,9 +303,9 @@ if (isset($data_ingresada)) {
                             <td>$ <span id="saldo"><?= $SALDO_TOTAL ?></span></td>
                             <td></td>
                         </tr> -->
-
                     </tfoot>
                 </table>
+
             </div>
         </div>
         <!-- /.col -->

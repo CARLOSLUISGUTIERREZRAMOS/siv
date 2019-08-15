@@ -173,5 +173,11 @@ class Pedidos_model extends CI_Model {
         $res_query = $this->db->get();
         return $res_query->row();
     }
+    public function InsertarAbono($data)
+    {
+        $this->db->set($data);
+        $rs = $this->db->insert('pedido_detalle');
+        return $rs;
+    }
 
 }

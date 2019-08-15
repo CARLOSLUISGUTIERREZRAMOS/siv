@@ -318,5 +318,13 @@ class Pedidos extends CI_Controller {
         $msg = ($bool_upd) ? 'Abono actulizado.' : 'Error al editar abono';
         $this->session->set_flashdata('msg', $msg); 
     }
+
+    public function AgregarAbono()
+    {
+        $monto = $_POST['montoAddAbono'];
+        $fecha = $_POST['select_cuentas'];
+        echo $monto." ".$fecha;
+        // $this->Pedidos_model->InsertarAbono();
+    }
 }
 

@@ -48,7 +48,6 @@ $(function () {
     $("#actualidarDatos").submit(function (event) {
 
         var parametros = $(this).serialize();
-        console.log(parametros);
         $.ajax({
             type: "POST",
             url: "/siv/operaciones/Pedidos/ModificarAbono",
@@ -60,6 +59,28 @@ $(function () {
                 location.reload();
             }
         });
+        event.preventDefault();
+    });
+    $("#agregarAbono").submit(function (event) {
+        var parametros = $(this).serialize();
+
+        $.ajax({
+            type: "POST",
+            url: "/siv/operaciones/Pedidos/AgregarAbono",
+            data: parametros,
+            beforeSend: function (objeto) {
+                    RecargaPagina('Abono agregado');
+            },
+            success: function (data) {
+
+                // setTimeout(function() {
+                //     location.reload();
+                // }, 1000);
+                // RecargaPagina('Abono agregado');
+                console.log(data);
+            }
+        });
+
         event.preventDefault();
     });
 
@@ -100,12 +121,12 @@ function eliminarAbono(elemento) {
 
     }).then((result) => {
         if (result.value) {
-            $.post("/siv/operaciones/Pedidos/EliminarAbono", { codigopedido: codigoPedido, numeroAbono: numeroAbono })
+            $.post("/siv/operaciones/Pedidos/AgregarAbono", { codigopedido: codigoPedido, numeroAbono: numeroAbono })
                 .done(function (data) {
 
-                   /*  setTimeout(function () {
-                        RecargaPagina('Abono eliminado');
-                    }, 2000); */
+                    /*  setTimeout(function () {
+                         RecargaPagina('Abono eliminado');
+                     }, 2000); */
                     location.reload();
                 });
         }
@@ -113,11 +134,29 @@ function eliminarAbono(elemento) {
 
 }
 
-function agregarAbono(){
+function agregarAbono() {
 
+    if ($("#fila_add_abono").css("display") == 'none') {
+        $('#fila_add_abono').show();
+        $("#btnAbonoAdd").attr("class", "fa fa-minus");
+        $('#btn_agregar_abono').attr('title', 'Quitar bloque para agregar abono.')
+    } else {
+        $("#btnAbonoAdd").attr("class", "fa fa-plus");
+        $('#fila_add_abono').hide();
+        $('#btn_agregar_abono').attr('title', 'Agregar abono.')
+    }
 }
+// function GuardarNuevoAbono() {
 
-function RecargaPagina() {
+//     $("#form_agregarabono").submit(function (event) {
+
+//         var parametros = $(this).serialize();
+
+//         event.preventDefault();
+//     });
+// }
+
+function RecargaPagina(mensaje) {
 
     const Toast = Swal.mixin({
         toast: true,
@@ -128,7 +167,7 @@ function RecargaPagina() {
 
     Toast.fire({
         type: 'success',
-        title: 'Abono eliminado!'
+        title: mensaje
     })
 
 }
