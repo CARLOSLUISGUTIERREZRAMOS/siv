@@ -333,13 +333,26 @@ class Pedidos extends CI_Controller
     {
         $data_insert = [];
         $monto = $_POST['montoAddAbono'];
-        $fecha = $_POST['select_cuentas'];
+        $id_ctabancaria = $_POST['select_cuentas'];
         $codigo_pedido = $_POST['codigo_pedido'];
         $cliente_codigo = $_POST['cliente_codigo'];
-        array(
+        $condicion = array('id' => $id_ctabancaria);
+        $data_ctaBancaria = $this->Cuentas_bancarias_model->GetDetalleCtaBancaria($condicion);
+        $tipoMoneda = $data_ctaBancaria->tipo_moneda;
+        $data_insert = array(
             'pedido_codigo' => $codigo_pedido, 'pedido_cliente_codigo' => $cliente_codigo,
-            'monto' => $codigo_pedido, 'pedido_cliente_codigo' => $cliente_codigo,
+            'cuentas_bancarias_id'=> $id_ctabancaria,'fecha' => date('Y-m-d H:i:s')
         );
-        $this->Abono_model->InsertarAbono();
+        switch ($tipoMoneda) {
+            case 'USD':
+             $data_insert['monto']  = $monto;
+                break;
+            case 'PEN':
+            $data_insert['monto_pen']  = $monto;
+                break;
+        }
+        
+        $res_insert_abono = $this->Abono_model->InsertarAbono($data_insert);
+        echo $res_insert_abono;
     }
 }

@@ -15,9 +15,9 @@
                     <?= armarSelectCtasBancarias() ?>
                 </div>
                 <div class="col-xs-2">
-                    <input type="hidden" value="<?= $pedido->codigo ?>" id="codigo_pedido">
+                    <input type="hidden" value="<?= $pedido->codigo ?>" id="codigo_pedido" name="codigo_pedido">
                     <input type="hidden" value="<?= $tc_today ?>" id="tc_today">
-                    <input type="hidden" value="<?= $pedido->cliente_codigo ?>" id="cliente_codigo">
+                    <input type="hidden" value="<?= $pedido->cliente_codigo ?>" id="cliente_codigo" name="cliente_codigo">
                     <button type="submit" class="btn btn-success" title="Guardar cambios"><i class="fa fa-save"></i></button>
                 </div>
             </div>

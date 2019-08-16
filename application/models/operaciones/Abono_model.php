@@ -120,8 +120,8 @@ class Abono_model extends CI_Model {
     public function InsertarAbono($data)
     {
         $this->db->set($data);
-        $rs = $this->db->insert('pedido_detalle');
-        return $rs;
+        return $this->db->insert('abono');
+        
     }
 
 }

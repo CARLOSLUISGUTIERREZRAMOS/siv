@@ -69,40 +69,42 @@ $(function () {
             url: "/siv/operaciones/Pedidos/AgregarAbono",
             data: parametros,
             beforeSend: function (objeto) {
+                setTimeout(function () {
                     RecargaPagina('Abono agregado');
+                }, 4000);
             },
             success: function (data) {
-
-                // setTimeout(function() {
-                //     location.reload();
-                // }, 1000);
-                // RecargaPagina('Abono agregado');
-                console.log(data);
+                setTimeout(function () {
+                    RecargaPagina('Abono agregado');
+                }, 4000);
+            },
+            complete: function () {
+                location.reload();
             }
         });
 
         event.preventDefault();
     });
 
-//     $("body").on("click", ".ico_edit_abono", function () {
+    //     $("body").on("click", ".ico_edit_abono", function () {
 
 
-//         var codigoPedido = $(this).attr("data-pedido");
-//         var numAbono = $(this).attr("id");
-//         $('#exampleModal').modal({
-//             show: true
-//         });
+    //         var codigoPedido = $(this).attr("data-pedido");
+    //         var numAbono = $(this).attr("id");
+    //         $('#exampleModal').modal({
+    //             show: true
+    //         });
 
-//         return false;
+    //         return false;
 
-//         $.post("/siv/operaciones/Pedidos/ObtenerAbono", { numAbono: numAbono, codigoPedido: codigoPedido })
-//             .done(function (data) {
-//                 console.log(data);
-//                 $('#exampleModal').modal('show');
-//             });
+    //         $.post("/siv/operaciones/Pedidos/ObtenerAbono", { numAbono: numAbono, codigoPedido: codigoPedido })
+    //             .done(function (data) {
+    //                 console.log(data);
+    //                 $('#exampleModal').modal('show');
+    //             });
 
 
-//     });
+    //     });
 });
 
 function eliminarAbono(elemento) {
@@ -121,7 +123,7 @@ function eliminarAbono(elemento) {
 
     }).then((result) => {
         if (result.value) {
-            $.post("/siv/operaciones/Pedidos/EliminarAbono", { codigopedido: codigoPedido, idabono:idAbono})
+            $.post("/siv/operaciones/Pedidos/EliminarAbono", { codigopedido: codigoPedido, idabono: idAbono })
                 .done(function (data) {
 
                     /*  setTimeout(function () {
@@ -136,15 +138,18 @@ function eliminarAbono(elemento) {
 
 function agregarAbono() {
 
-    if ($("#fila_add_abono").css("display") == 'none') {
-        $('#fila_add_abono').show();
-        $("#btnAbonoAdd").attr("class", "fa fa-minus");
-        $('#btn_agregar_abono').attr('title', 'Quitar bloque para agregar abono.')
-    } else {
-        $("#btnAbonoAdd").attr("class", "fa fa-plus");
-        $('#fila_add_abono').hide();
-        $('#btn_agregar_abono').attr('title', 'Agregar abono.')
-    }
+     PantallaBloqueada();
+    
+
+    // if ($("#fila_add_abono").css("display") == 'none') {
+    //     $('#fila_add_abono').show();
+    //     $("#btnAbonoAdd").attr("class", "fa fa-minus");
+    //     $('#btn_agregar_abono').attr('title', 'Quitar bloque para agregar abono.')
+    // } else {
+    //     $("#btnAbonoAdd").attr("class", "fa fa-plus");
+    //     $('#fila_add_abono').hide();
+    //     $('#btn_agregar_abono').attr('title', 'Agregar abono.')
+    // }
 }
 // function GuardarNuevoAbono() {
 
@@ -178,6 +183,20 @@ function calcularPresupuestoEnvio(stockProducto, shippingUnitario) {
 function useReturnData(data) {
     result = data;
 
+}
+
+function PantallaBloqueada(){
+    $.blockUI({ css: { 
+        border: 'none', 
+        padding: '15px', 
+        backgroundColor: '#000', 
+        '-webkit-border-radius': '10px', 
+        '-moz-border-radius': '10px', 
+        opacity: .5, 
+        color: '#fff' 
+    } }); 
+
+    setTimeout($.unblockUI, 2000); 
 }
 
 
