@@ -138,18 +138,18 @@ function eliminarAbono(elemento) {
 
 function agregarAbono() {
 
-     PantallaBloqueada();
+    //  PantallaBloqueada();
     
 
-    // if ($("#fila_add_abono").css("display") == 'none') {
-    //     $('#fila_add_abono').show();
-    //     $("#btnAbonoAdd").attr("class", "fa fa-minus");
-    //     $('#btn_agregar_abono').attr('title', 'Quitar bloque para agregar abono.')
-    // } else {
-    //     $("#btnAbonoAdd").attr("class", "fa fa-plus");
-    //     $('#fila_add_abono').hide();
-    //     $('#btn_agregar_abono').attr('title', 'Agregar abono.')
-    // }
+    if ($("#fila_add_abono").css("display") == 'none') {
+        $('#fila_add_abono').show();
+        $("#btnAbonoAdd").attr("class", "fa fa-minus");
+        $('#btn_agregar_abono').attr('title', 'Quitar bloque para agregar abono.')
+    } else {
+        $("#btnAbonoAdd").attr("class", "fa fa-plus");
+        $('#fila_add_abono').hide();
+        $('#btn_agregar_abono').attr('title', 'Agregar abono.')
+    }
 }
 // function GuardarNuevoAbono() {
 
