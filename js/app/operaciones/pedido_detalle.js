@@ -1,5 +1,7 @@
 $(function () {
 
+    //AQUI UN CAMBIO
+
     $("body").on("click", ".del_prodpedido", function () {
         id = $(this).attr('id');
         nombreProducto = $(this).parents("tr").find("td")[1].innerHTML;
