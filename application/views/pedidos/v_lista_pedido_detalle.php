@@ -18,7 +18,7 @@ if (isset($data_ingresada)) {
 }
 ?>
 
-<section class="invoice">
+<section class="invoice" id="bloque_pedido_detalle">
     <!-- title row -->
     <?php
     $msg_proccess = $this->session->flashdata('msg');

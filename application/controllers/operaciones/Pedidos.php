@@ -53,15 +53,17 @@ class Pedidos extends CI_Controller
             //           echo $abono->tipo_moneda;
         }
     }
-
-    public function VerDetallePedido()
+    
+    
+    public function VerDetallePedido($renderiza=NULL)
     {
         $this->template->add_js('js/app/operaciones/pedido_detalle.js', true);
         $this->template->add_css('css/sweetalert2/sweetalert2.min.css', true);
         $this->template->add_css('css/sweetalert2/styles.css', true);
         $this->template->add_js('js/sweetalert2/sweetalert2.min.js', true);
         $this->template->set('titulo', '');
-        $codigo_pedido = $_GET['codigo_pedido'];
+        $codigo_pedido = (!is_null($renderiza)) ? $renderiza : $_GET['codigo_pedido'] ;
+        
         $data['pedido'] = $this->Pedidos_model->ObtenerPedido($codigo_pedido);
         $cantidad_abonos = $this->Abono_model->ObtenerCantidadDeAbonos($codigo_pedido);
         if ($cantidad_abonos > 0) {
@@ -90,8 +92,18 @@ class Pedidos extends CI_Controller
 
         $data['precioTotalPedido'] = $this->CalcularPrecioTotalDePedido($data['pedido_detalle']);
         $data['saldoPorCobrar'] = $this->CalcularSaldoPorCobrar($data['precioTotalPedido'], $data['sum_abono']);
-        $this->template->load(10, 'pedidos/v_lista_pedido_detalle', $data);
-        $this->load->view('pedidos/v_modal_editar_pedido');
+        
+        if(!is_null($renderiza)){
+            
+            // var_dump($data['pedido']);
+            $this->load->view('pedidos/v_modal_editar_pedido');
+            return $this->load->view('pedidos/v_lista_pedido_detalle', $data,true);
+        }else if(isset($_GET['codigo_pedido'])){
+
+            $this->load->view('pedidos/v_modal_editar_pedido');
+            $this->template->load(10, 'pedidos/v_lista_pedido_detalle', $data);
+        }
+        // $this->template->load(10,'pedido_detalle/v_base',$data);
     }
 
     private function CalcularPrecioTotalDePedido($dataPedidoDetalle)
@@ -249,7 +261,9 @@ class Pedidos extends CI_Controller
         $id_abono = $_POST['idabono'];
         $camposSet = array('estado' => 'N');
         $this->Abono_model->ActualizarAbonoDePedido($id_abono, $id_pedido, $camposSet);
-        $this->session->set_flashdata('msg', 'Abono eliminado. ');
+        // $this->session->set_flashdata('msg', 'Abono eliminado. ');
+        $vista = $this->VerDetallePedido($id_pedido);
+        echo $vista;
     }
 
     public function ObtenerPendienteDeCompra($stock_act_producto, $cant_producto_req)

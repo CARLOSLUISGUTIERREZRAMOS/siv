@@ -20,6 +20,7 @@ $(function () {
                 $.post("/siv/operaciones/Pedidos/EliminarPedido", { pedido_detalle_id: id })
                     .done(function (data) {
                         location.reload();
+                        
                     });
             }
         })
@@ -131,11 +132,43 @@ function eliminarAbono(elemento) {
                     /*  setTimeout(function () {
                          RecargaPagina('Abono eliminado');
                      }, 2000); */
-                    location.reload();
+                    //  console.log(data);
+                     $('#bloque_pedido_detalle').html(data);
+                     const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                      })
+                      
+                      Toast.fire({
+                        type: 'success',
+                        title: 'Signed in successfully'
+                      })
                 });
         }
     })
 
+}
+
+function MensajeSweetAlert(tipo,mensaje) {
+    var color;
+    if (tipo=="success") {
+        color="rgba(165, 220, 134, 0.45)";
+    }
+    else if (tipo=="warning") {
+        color="rgba(255, 193, 7, 0.54)";
+    }
+    else if (tipo=="error") {
+        color="rgba(242, 116, 116, 0.45)";
+    }
+    swal({
+        title: mensaje,
+        type:  tipo,
+        button: "Cerrar",
+        timer: "4000",
+        backdrop: color
+    });
 }
 
 function agregarAbono() {
@@ -187,18 +220,6 @@ function useReturnData(data) {
 
 }
 
-function PantallaBloqueada(){
-    $.blockUI({ css: { 
-        border: 'none', 
-        padding: '15px', 
-        backgroundColor: '#000', 
-        '-webkit-border-radius': '10px', 
-        '-moz-border-radius': '10px', 
-        opacity: .5, 
-        color: '#fff' 
-    } }); 
 
-    setTimeout($.unblockUI, 2000); 
-}
 
 
