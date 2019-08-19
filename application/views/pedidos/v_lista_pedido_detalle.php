@@ -226,7 +226,6 @@ if (isset($data_ingresada)) {
                         <tr>
                             <td></td>
                             <td><?=$i?></td>
-                            <!-- <td><input type="text" class="form-control input-sm monto_abono" id="<?= $abono->id ?>" disabled value="<?= $abono->monto ?>"></td> -->
                             <td>
                                 <?= $abono->monto ?>
                             </td>
@@ -265,8 +264,6 @@ if (isset($data_ingresada)) {
                             ?>
                         <tr>
                             <td></td>
-                            <!-- <td><?= $last_abono ?></td> -->
-                            <!-- <td><input type="text" class="form-control input-sm monto_abono" id="<?= $last_abono ?>" value=""></td> -->
                             <td id="bloque_select_cuentas">
                                 <select class="form-control select_cuentas" id="1">
                                     <?php
@@ -278,7 +275,6 @@ if (isset($data_ingresada)) {
                                         ?>
                                 </select>
                             </td>
-                            <!-- <td><input type="hidden" id="<?= $last_abono ?>" class="monto_usd" value=""></td> -->
                         </tr>
                         <?php
                         }
@@ -299,12 +295,7 @@ if (isset($data_ingresada)) {
                             <td></td>
                             <td></td>
                         </tr>
-                        <!-- <tr>
-                            <td></td>
-                            <td>SALDO: </td>
-                            <td>$ <span id="saldo"><?= $SALDO_TOTAL ?></span></td>
-                            <td></td>
-                        </tr> -->
+                        
                     </tfoot>
                 </table>
 
@@ -330,4 +321,3 @@ if (isset($data_ingresada)) {
 <input type="hidden" value="<?= $tc_today ?>" id="tc_today">
 <input type="hidden" value="<?= $pedido->codigo ?>" id="codigo_pedido">
 <input type="hidden" value="<?= $pedido->cliente_codigo ?>" id="cliente_codigo">
-<!-- <input type="hidden" value="<?= $last_abono ?>" id="last_abono"> -->

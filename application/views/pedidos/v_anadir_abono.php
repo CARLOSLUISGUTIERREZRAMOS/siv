@@ -5,10 +5,10 @@
     </div>
     <!-- /.box-header -->
     <div class="box-body">
-        <form id="agregarAbono">
+        <form id="agregarAbono" method="POST">
             <div class="row">
                 <div class="col-xs-3">
-                    <input type="text" class="form-control" placeholder="monto" name="montoAddAbono">
+                    <input type="text" class="form-control" id="entradaAddAbono" placeholder="monto" name="montoAddAbono">
 
                 </div>
                 <div class="col-xs-7">

@@ -1,9 +1,13 @@
 $(function () {
 
-    //AQUI UN CAMBIO
+    $("body").on("click", "#btn_agregar_abono", function () {
+        $('#entradaAddAbono').focus();
+    });
 
     $("body").on("click", ".del_prodpedido", function () {
+        
         id = $(this).attr('id');
+        codigo_pedido = $('#codigo_pedido').val();
         nombreProducto = $(this).parents("tr").find("td")[1].innerHTML;
         Swal.fire({
             title: '¿Seguro de eliminar?',
@@ -13,22 +17,16 @@ $(function () {
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Si, estoy seguro.',
-
         }).then((result) => {
-            console.log(result);
             if (result.value) {
-                $.post("/siv/operaciones/Pedidos/EliminarPedido", { pedido_detalle_id: id })
+                $.post("/siv/operaciones/Pedidos/EliminarPedido", { pedido_detalle_id: id, codigo_pedido: codigo_pedido })
                     .done(function (data) {
-                        location.reload();
-                        
+                        $('#bloque_pedido_detalle').html(data);
+                        MostrarAvisoProceso('Producto eliminado de pedido.', 'success');        
                     });
             }
         })
-
-
     });
-
-
     $('#editaAbonoModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget) // Botón que activó el modal
         var idabono = button.data('idabono'); // Extraer la información de atributos de datos
@@ -65,50 +63,19 @@ $(function () {
         event.preventDefault();
     });
 
-    $("#agregarAbono").submit(function (event) {
+    $("body").on("submit", "#agregarAbono", function () {
+    // $("#agregarAbono").on('submit', function (event) {
         var parametros = $(this).serialize();
-        $.ajax({
-            type: "POST",
-            url: "/siv/operaciones/Pedidos/AgregarAbono",
-            data: parametros,
-            beforeSend: function (objeto) {
-                setTimeout(function () {
-                    RecargaPagina('Abono agregado');
-                }, 4000);
-            },
-            success: function (data) {
-                setTimeout(function () {
-                    RecargaPagina('Abono agregado');
-                }, 4000);
-            },
-            complete: function () {
-                location.reload();
-            }
-        });
-
+        $.post("/siv/operaciones/Pedidos/AgregarAbono", parametros)
+            .done(function (data) {
+                $('#bloque_pedido_detalle').html(data);
+                MostrarAvisoProceso('Abono agregado', 'success');
+            });
         event.preventDefault();
     });
 
-    //     $("body").on("click", ".ico_edit_abono", function () {
-
-
-    //         var codigoPedido = $(this).attr("data-pedido");
-    //         var numAbono = $(this).attr("id");
-    //         $('#exampleModal').modal({
-    //             show: true
-    //         });
-
-    //         return false;
-
-    //         $.post("/siv/operaciones/Pedidos/ObtenerAbono", { numAbono: numAbono, codigoPedido: codigoPedido })
-    //             .done(function (data) {
-    //                 console.log(data);
-    //                 $('#exampleModal').modal('show');
-    //             });
-
-
-    //     });
 });
+
 
 function eliminarAbono(elemento) {
 
@@ -128,43 +95,42 @@ function eliminarAbono(elemento) {
         if (result.value) {
             $.post("/siv/operaciones/Pedidos/EliminarAbono", { codigopedido: codigoPedido, idabono: idAbono })
                 .done(function (data) {
-
-                    /*  setTimeout(function () {
-                         RecargaPagina('Abono eliminado');
-                     }, 2000); */
-                    //  console.log(data);
-                     $('#bloque_pedido_detalle').html(data);
-                     const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000
-                      })
-                      
-                      Toast.fire({
-                        type: 'success',
-                        title: 'Signed in successfully'
-                      })
+                    $('#bloque_pedido_detalle').html(data);
+                    MostrarAvisoProceso('Abono eliminado', 'success');
                 });
         }
     })
 
 }
 
-function MensajeSweetAlert(tipo,mensaje) {
+function MostrarAvisoProceso(title, tipo) {
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000
+    })
+
+    Toast.fire({
+        type: tipo,
+        title: title
+    })
+}
+
+function MensajeSweetAlert(tipo, mensaje) {
     var color;
-    if (tipo=="success") {
-        color="rgba(165, 220, 134, 0.45)";
+    if (tipo == "success") {
+        color = "rgba(165, 220, 134, 0.45)";
     }
-    else if (tipo=="warning") {
-        color="rgba(255, 193, 7, 0.54)";
+    else if (tipo == "warning") {
+        color = "rgba(255, 193, 7, 0.54)";
     }
-    else if (tipo=="error") {
-        color="rgba(242, 116, 116, 0.45)";
+    else if (tipo == "error") {
+        color = "rgba(242, 116, 116, 0.45)";
     }
     swal({
         title: mensaje,
-        type:  tipo,
+        type: tipo,
         button: "Cerrar",
         timer: "4000",
         backdrop: color
@@ -173,7 +139,7 @@ function MensajeSweetAlert(tipo,mensaje) {
 
 function agregarAbono() {
 
-    //  PantallaBloqueada();
+    document.getElementById("entradaAddAbono").focus();
     
 
     if ($("#fila_add_abono").css("display") == 'none') {
@@ -186,15 +152,6 @@ function agregarAbono() {
         $('#btn_agregar_abono').attr('title', 'Agregar abono.')
     }
 }
-// function GuardarNuevoAbono() {
-
-//     $("#form_agregarabono").submit(function (event) {
-
-//         var parametros = $(this).serialize();
-
-//         event.preventDefault();
-//     });
-// }
 
 function RecargaPagina(mensaje) {
 

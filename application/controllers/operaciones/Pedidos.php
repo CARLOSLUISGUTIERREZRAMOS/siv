@@ -63,7 +63,6 @@ class Pedidos extends CI_Controller
         $this->template->add_js('js/sweetalert2/sweetalert2.min.js', true);
         $this->template->set('titulo', '');
         $codigo_pedido = (!is_null($renderiza)) ? $renderiza : $_GET['codigo_pedido'] ;
-        
         $data['pedido'] = $this->Pedidos_model->ObtenerPedido($codigo_pedido);
         $cantidad_abonos = $this->Abono_model->ObtenerCantidadDeAbonos($codigo_pedido);
         if ($cantidad_abonos > 0) {
@@ -77,7 +76,6 @@ class Pedidos extends CI_Controller
             $data['sum_abono'] = 0;
             $data['SALDO_TOTAL'] = (float) $data['pedido']->precio_total - $data['sum_abono'];
         }
-
         $data['abonos'] = $this->Abono_model->ObtenerAbonosPedido($codigo_pedido);
         $fecha_sql = (new DateTime($data['pedido']->fecha_pedido))->format('Y-m-d');
         //        echo $fecha_sql;die;
@@ -98,12 +96,12 @@ class Pedidos extends CI_Controller
             // var_dump($data['pedido']);
             $this->load->view('pedidos/v_modal_editar_pedido');
             return $this->load->view('pedidos/v_lista_pedido_detalle', $data,true);
-        }else if(isset($_GET['codigo_pedido'])){
 
+        }else{
             $this->load->view('pedidos/v_modal_editar_pedido');
             $this->template->load(10, 'pedidos/v_lista_pedido_detalle', $data);
+            
         }
-        // $this->template->load(10,'pedido_detalle/v_base',$data);
     }
 
     private function CalcularPrecioTotalDePedido($dataPedidoDetalle)
@@ -314,8 +312,10 @@ class Pedidos extends CI_Controller
     public function EliminarPedido()
     {
         $id = $_POST['pedido_detalle_id'];
+        $codigo_pedido = $_POST['codigo_pedido'];
         $res_upd = $this->Pedidos_model->EliminarProductoPedido($id);
-        echo $res_upd;
+        
+            echo $this->VerDetallePedido($codigo_pedido);
     }
     public function ModificarAbono()
     {
@@ -345,7 +345,7 @@ class Pedidos extends CI_Controller
 
     public function AgregarAbono()
     {
-        $data_insert = [];
+
         $monto = $_POST['montoAddAbono'];
         $id_ctabancaria = $_POST['select_cuentas'];
         $codigo_pedido = $_POST['codigo_pedido'];
@@ -359,14 +359,22 @@ class Pedidos extends CI_Controller
         );
         switch ($tipoMoneda) {
             case 'USD':
-             $data_insert['monto']  = $monto;
-                break;
+            $data_insert['monto']  = $monto;
+            break;
             case 'PEN':
             $data_insert['monto_pen']  = $monto;
-                break;
+            break;
         }
         
         $res_insert_abono = $this->Abono_model->InsertarAbono($data_insert);
-        echo $res_insert_abono;
+        
+        if($res_insert_abono){
+            $vista = $this->VerDetallePedido($codigo_pedido);
+            echo $vista;
+        }else{
+            echo 'error!';
+        }
+        
+        
     }
 }
