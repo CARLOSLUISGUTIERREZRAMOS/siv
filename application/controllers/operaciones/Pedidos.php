@@ -13,7 +13,7 @@ class Pedidos extends CI_Controller
             redirect('/');
         endif;
         $this->load->model('data/Clientes_model');
-        $this->load->helper(array('pedido', 'ctabancarias', 'procesos'));
+        $this->load->helper(array('pedido', 'ctabancarias', 'procesos','productos'));
         $this->load->model(array('data/Productos_model', 'data/Cuentas_bancarias_model', 'operaciones/Pedidos_model', 'operaciones/Abono_model', 'finanzas/Tax_model'));
         $this->template->add_js('js/app/operaciones/pedido.js');
         $this->template->add_js('js/bootstrap-datepicker/bootstrap-datepicker.min.js');
@@ -95,10 +95,12 @@ class Pedidos extends CI_Controller
             
             // var_dump($data['pedido']);
             $this->load->view('pedidos/v_modal_editar_pedido');
+            $this->load->view('pedidos/v_modal_agregar_producto');
             return $this->load->view('pedidos/v_lista_pedido_detalle', $data,true);
 
         }else{
             $this->load->view('pedidos/v_modal_editar_pedido');
+            $this->load->view('pedidos/v_modal_agregar_producto');
             $this->template->load(10, 'pedidos/v_lista_pedido_detalle', $data);
             
         }

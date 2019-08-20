@@ -3,6 +3,27 @@ $(function () {
     $("body").on("click", "#btn_agregar_abono", function () {
         $('#entradaAddAbono').focus();
     });
+    $("body").on("change", ".select_productos", function () {
+        data = this.value;
+        val = data.split('|');
+        var id  = val[0];
+        var precio = val[1];
+
+        $('#cup').val(precio);
+        //  id_producto = $(this).val();
+        // var button = $(event.relatedTarget)
+        // precio =  button.data("precio");
+        console.log(precio);
+    });
+
+    $("body").on("change", "#cantLibras", function () {
+        var cant_libras = parseFloat(this.value);
+        var costo_x_libra = parseFloat($('#costo_x_libra').text());
+        var resShippingUnit = calcularShippingUnitario(cant_libras,costo_x_libra);
+        $('#shippingUnitario').val(resShippingUnit.toFixed(2));
+
+        
+    });
 
     $("body").on("click", ".del_prodpedido", function () {
         
@@ -76,7 +97,10 @@ $(function () {
 
 });
 
-
+function calcularShippingUnitario(cantLibras,costoPorLibra)
+{
+    return cantLibras * costoPorLibra;
+}
 function eliminarAbono(elemento) {
 
     var codigoPedido = $(elemento).data('codigopedido');
@@ -137,20 +161,24 @@ function MensajeSweetAlert(tipo, mensaje) {
     });
 }
 
-function agregarAbono() {
+function agregar(elemento) {
 
-    document.getElementById("entradaAddAbono").focus();
-    
-
-    if ($("#fila_add_abono").css("display") == 'none') {
-        $('#fila_add_abono').show();
-        $("#btnAbonoAdd").attr("class", "fa fa-minus");
-        $('#btn_agregar_abono').attr('title', 'Quitar bloque para agregar abono.')
+    if ($("#fila_add_"+elemento).css("display") == 'none') {
+        $('#fila_add_'+elemento).show();
+        $("#btn_add_"+elemento).attr("class", "fa fa-minus");
+        $('#btn_agregar_'+elemento).attr('title', 'Quitar bloque para agregar '+elemento)
     } else {
-        $("#btnAbonoAdd").attr("class", "fa fa-plus");
-        $('#fila_add_abono').hide();
-        $('#btn_agregar_abono').attr('title', 'Agregar abono.')
+        $("#btn_add_"+elemento).attr("class", "fa fa-plus");
+        $('#fila_add_'+elemento).hide();
+        $('#btn_agregar_'+elemento).attr('title', 'Agregar '+elemento)
     }
+}
+
+function CambiarValorSelectProducto(elemento){
+    data = elemento.value;
+
+    data_pre = elemento.data-precio;
+    console.log(data_pre);
 }
 
 function RecargaPagina(mensaje) {

@@ -38,7 +38,7 @@ if (isset($data_ingresada)) {
     <div class="row invoice-info">
         <div class="col-sm-4 invoice-col">
             <address>
-                <b>Costo por libra: </b><?= $pedido->costo_x_libra ?><br>
+                <b>Costo por libra: </b><span id="costo_x_libra"><?= $pedido->costo_x_libra ?></span><br>
                 <b>Tipo de cambio: </b> <?= $tipo_cambio ?><br>
                 <b>Tipo de cambio del día: </b> <?= $tc_today ?><br>
             </address>
@@ -64,7 +64,9 @@ if (isset($data_ingresada)) {
     <div class="row">
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h3 class="box-title">Costos</h3>
+                <button type="button" class="btn btn-sm margin" title="Agregar Producto al listado" data-toggle="modal" id="btn_agregar_producto"  onclick="agregar('producto')"><i class="fa fa-plus"></i></button>
+                <?php $this->load->view('productos/v_add_producto_a_pedido')?>
+                <h3 class="box-title">AGREGAR PRODUCTO</h3>
                 <div class="box-tools pull-right">
                     <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                     </button>
@@ -199,7 +201,7 @@ if (isset($data_ingresada)) {
                 <table class="table" id="tbl_lista_pedido_detalle">
                     <tbody>
                         <tr>
-                            <th><button type="button" title="Agregar abono" class="btn btn-dropbox btn-sm btn-flat" id="btn_agregar_abono"  onclick="agregarAbono()"><i id="btnAbonoAdd" class="fa fa-plus"></i></button></th>
+                            <th><button type="button" title="Agregar abono" class="btn btn-dropbox btn-sm btn-flat" id="btn_agregar_abono"  onclick="agregar('abono')"><i id="btn_add_abono" class="fa fa-plus"></i></button></th>
                             <th style="width:15%">N° Abono:</th>
                             <th style="width:20%">Monto:</th>
                             <th>Cuenta de Abono:</th>
