@@ -84,6 +84,8 @@ if (isset($data_ingresada)) {
                                 <th>C.U.P</th>
                                 <th>Cant. libras</th>
                                 <th>Shipping Unit.</th>
+                                <th>C.U.T</th>
+                                <th>C.T.P</th>
                                 <th>Ganancia Unit.</th>
                                 <th>P.U.V</th>
                                 <th>Precio T.</th>
@@ -103,6 +105,8 @@ if (isset($data_ingresada)) {
                                 <td><?= $item->costo_unitario_producto ?></td>
                                 <td><?= $item->peso_libras ?></td>
                                 <td><?= $item->shipping_unitario ?></td>
+                                <td><?= $cut =calcularCostoUnitarioTotal($item->costo_unitario_producto,$item->shipping_unitario) ?></td>
+                                <td><?= calcularCostoTotalProducto($item->cantidad,$cut) ?></td>
                                 <td><?= $item->ganancia_unitaria ?></td>
                                 <td><?= $item->precio_unitario_usd ?></td>
                                 <td><?= $item->precio_total ?></td>

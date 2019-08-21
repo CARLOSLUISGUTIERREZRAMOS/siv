@@ -13,7 +13,7 @@ class Pedidos extends CI_Controller
             redirect('/');
         endif;
         $this->load->model('data/Clientes_model');
-        $this->load->helper(array('pedido', 'ctabancarias', 'procesos','productos'));
+        $this->load->helper(array('pedido', 'ctabancarias', 'procesos','productos','calculos'));
         $this->load->model(array('data/Productos_model', 'data/Cuentas_bancarias_model', 'operaciones/Pedidos_model', 'operaciones/Abono_model', 'finanzas/Tax_model'));
         $this->template->add_js('js/app/operaciones/pedido.js');
         $this->template->add_js('js/bootstrap-datepicker/bootstrap-datepicker.min.js');
