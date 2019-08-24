@@ -4,26 +4,28 @@ $(function () {
         $('#entradaAddAbono').focus();
     });
     $("body").on("change", ".select_productos", function () {
-        data = this.value;
-        val = data.split('|');
-        var id  = val[0];
-        var precio = val[1];
+        var data                            =       this.value;
+        var cantLibras                      =       $('#cantLibras').val();
+        var shpUnit                         =       $('#shippingUnitario').val();
+        var cantidadProducto                =       $('#cantidadProducto').val();
+        val                                 =       data.split('|');
+        var id                              =       val[0];
+        var precio                          =       val[1];
+        var cut                             =       calcularCostoUnitarioTotal(precio,shpUnit,cantLibras,false);
+        calcularCostoTotalProducto(cut,cantidadProducto,true)
 
         $('#cup').val(precio);
-        //  id_producto = $(this).val();
-        // var button = $(event.relatedTarget)
-        // precio =  button.data("precio");
-        console.log(precio);
-    });
-
-    $("body").on("change", "#cantLibras", function () {
-        var cant_libras = parseFloat(this.value);
-        var costo_x_libra = parseFloat($('#costo_x_libra').text());
-        var resShippingUnit = calcularShippingUnitario(cant_libras,costo_x_libra);
-        $('#shippingUnitario').val(resShippingUnit.toFixed(2));
-
         
+        $('#cut').val(cut);
+
     });
+
+    // $("body").on("change", "#cantLibras", function () {
+    //     var cant_libras = parseFloat(this.value);
+    //     var costo_x_libra = parseFloat($('#costo_x_libra').text());
+    //     var resShippingUnit = calcularShippingUnitario(cant_libras,costo_x_libra);
+    //     $('#shippingUnitario').val(resShippingUnit.toFixed(2));
+    // });
 
     $("body").on("click", ".del_prodpedido", function () {
         
@@ -84,6 +86,23 @@ $(function () {
         event.preventDefault();
     });
 
+    /*
+    @Author: Carlos Gutierrez
+    @Version: 24/08/2019
+    Este metodo sirve para enviar el formulario
+    */
+    $("#formAddProducto").submit(function (event) {
+
+        var parametros = $(this).serialize();
+        
+        $.post("/siv/operaciones/Pedidos/AgregarProductoPedido", { dataForm: parametros})
+        .done(function (data) {
+            $('#bloque_pedido_detalle').html(data);
+            // MostrarAvisoProceso();
+        });
+        event.preventDefault();
+    });
+
     $("body").on("submit", "#agregarAbono", function () {
     // $("#agregarAbono").on('submit', function (event) {
         var parametros = $(this).serialize();
@@ -97,10 +116,7 @@ $(function () {
 
 });
 
-function calcularShippingUnitario(cantLibras,costoPorLibra)
-{
-    return cantLibras * costoPorLibra;
-}
+
 function eliminarAbono(elemento) {
 
     var codigoPedido = $(elemento).data('codigopedido');
@@ -202,8 +218,94 @@ function calcularPresupuestoEnvio(stockProducto, shippingUnitario) {
 
 function useReturnData(data) {
     result = data;
-
 }
+
+/*
+@Author: Carlos Gutierrez
+@Version: 24/08/2019
+Se agrega método para calcular el Costo Unitario Total del producto
+*/
+
+function calcularCostoUnitarioTotal(costoUnitarioProducto,shippingUnitario,cantLibras,set=null)
+{
+
+    var cantLibras                  =       parseFloat(cantLibras);
+    var costoUnitarioProducto       =       parseFloat(costoUnitarioProducto);
+    var shippingUnitario            =       parseFloat(shippingUnitario);
+    var recalculoShipUnit           =       cantLibras * shippingUnitario;
+    var costoUnitarioTotal          =       costoUnitarioProducto + recalculoShipUnit;
+    var cantidadProducto            =       parseFloat($('#cantidadProducto').val()).toFixed(2);
+    costoUnitarioTotal.toFixed(2);
+
+    if(set)
+    {
+        $('#cut').val(costoUnitarioTotal.toFixed(2));
+        //Se reacalcula tambien el Costo total del Producto
+        calcularCostoTotalProducto(costoUnitarioTotal,cantidadProducto,true);
+    }else{
+
+        return costoUnitarioTotal.toFixed(2);
+    }
+}
+
+/*
+@Author: Carlos Gutierrez
+@Version: 24/08/2019
+Se agrega método para calcular el Costo total del producto
+*/
+function calcularCostoTotalProducto(costoUnitarioTotal,cantidadProducto,set=false)
+{
+    var costoUnitarioTotal              =               parseFloat(costoUnitarioTotal);
+    var cantidadProducto                =               parseInt(cantidadProducto);
+    var costoTotalProducto              =               (costoUnitarioTotal * cantidadProducto).toFixed(2);
+    if(set)
+    {
+        $('#costoTotalProducto').val(costoTotalProducto);
+    }else
+    {
+        return costoTotalProducto;
+    }
+}
+/*
+@Author: Carlos Gutierrez
+@Version: 24/08/2019
+Se agrega método para calcular el Shipping Unitario
+*/
+function calcularShippingUnitario(cantLibras,costoPorLibra,establecer)
+{
+    var cantLibras              =               parseFloat(cantLibras);
+    var costoPorLibra           =               parseFloat(costoPorLibra);
+    var shippingUnitario =  (cantLibras * costoPorLibra).toFixed(2);
+    if(establecer)
+    {
+        $('#shippingUnitario').val(shippingUnitario);
+    }
+    else
+    {
+        return shippingUnitario;
+    }
+}
+/*
+@Author: Carlos Gutierrez
+@Version: 24/08/2019
+Se agrega método para calcular el precio total
+*/
+function calcularPrecioTotal(cantidadProducto,precioUnitarioDeVenta,establecer=false)
+{
+   
+    var cantidadProducto                =               parseInt(cantidadProducto);
+    var precioUnitarioDeVenta           =               parseFloat(precioUnitarioDeVenta);
+    var precioTotal                     =               (cantidadProducto * precioUnitarioDeVenta).toFixed(2);
+    if(!isNaN(precioUnitarioDeVenta)){
+        if(establecer){
+            $('#precioTotal').val(precioTotal);
+        }else{
+            return precioTotal;
+        }
+    }
+    
+}
+
 
 
 

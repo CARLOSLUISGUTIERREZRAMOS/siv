@@ -1,23 +1,3 @@
-<?php
-$data_ingresada = $this->session->flashdata('data_ingresada');
-if (isset($data_ingresada)) {
-    $EXITO = $this->session->flashdata('EXITO');
-    $alert = ($EXITO) ? 'succes' : 'danger';
-    ?>
-<br>
-<div class="alert alert-success <?= $alert ?>">
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-    <h4><i class="icon fa fa-check"></i> Exito!</h4>
-    <?php
-        foreach ($data_ingresada as $item) {
-            echo $item . "<br>";
-        }
-        ?>
-</div>
-<?php
-}
-?>
-
 <section class="invoice" id="bloque_pedido_detalle">
     <!-- title row -->
     <?php

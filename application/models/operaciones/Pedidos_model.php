@@ -174,5 +174,9 @@ class Pedidos_model extends CI_Model {
         return $res_query->row();
     }
  
+    function AgregarProductoPedido()
+    {
+        
+    }
 
 }

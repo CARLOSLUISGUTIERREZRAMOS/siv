@@ -377,6 +377,13 @@ class Pedidos extends CI_Controller
             echo 'error!';
         }
         
+    }
+
+    public function AgregarProductoPedido(){
+        $_POST['dataForm'];
+        $codigo_pedido = $_POST['codigo_pedido'];
+        $res_upd = $this->Pedidos_model->EliminarProductoPedido($id);
         
+            echo $this->VerDetallePedido($codigo_pedido);
     }
 }
