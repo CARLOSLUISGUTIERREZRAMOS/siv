@@ -174,8 +174,11 @@ class Pedidos_model extends CI_Model {
         return $res_query->row();
     }
  
-    function AgregarProductoPedido()
+    function AgregarProductoPedido($data)
     {
+        $this->db->set($data);
+        $res = $this->db->insert('pedido_detalle');
+        return $this->db->last_query();
         
     }
 

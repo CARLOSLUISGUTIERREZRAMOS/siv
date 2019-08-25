@@ -13,7 +13,7 @@ class Pedidos extends CI_Controller
             redirect('/');
         endif;
         $this->load->model('data/Clientes_model');
-        $this->load->helper(array('pedido', 'ctabancarias', 'procesos','productos','calculos'));
+        $this->load->helper(array('pedido', 'ctabancarias', 'procesos', 'productos', 'calculos'));
         $this->load->model(array('data/Productos_model', 'data/Cuentas_bancarias_model', 'operaciones/Pedidos_model', 'operaciones/Abono_model', 'finanzas/Tax_model'));
         $this->template->add_js('js/app/operaciones/pedido.js');
         $this->template->add_js('js/bootstrap-datepicker/bootstrap-datepicker.min.js');
@@ -53,16 +53,16 @@ class Pedidos extends CI_Controller
             //           echo $abono->tipo_moneda;
         }
     }
-    
-    
-    public function VerDetallePedido($renderiza=NULL)
+
+
+    public function VerDetallePedido($renderiza = NULL)
     {
         $this->template->add_js('js/app/operaciones/pedido_detalle.js', true);
         $this->template->add_css('css/sweetalert2/sweetalert2.min.css', true);
         $this->template->add_css('css/sweetalert2/styles.css', true);
         $this->template->add_js('js/sweetalert2/sweetalert2.min.js', true);
         $this->template->set('titulo', '');
-        $codigo_pedido = (!is_null($renderiza)) ? $renderiza : $_GET['codigo_pedido'] ;
+        $codigo_pedido = (!is_null($renderiza)) ? $renderiza : $_GET['codigo_pedido'];
         $data['pedido'] = $this->Pedidos_model->ObtenerPedido($codigo_pedido);
         $cantidad_abonos = $this->Abono_model->ObtenerCantidadDeAbonos($codigo_pedido);
         if ($cantidad_abonos > 0) {
@@ -90,19 +90,17 @@ class Pedidos extends CI_Controller
 
         $data['precioTotalPedido'] = $this->CalcularPrecioTotalDePedido($data['pedido_detalle']);
         $data['saldoPorCobrar'] = $this->CalcularSaldoPorCobrar($data['precioTotalPedido'], $data['sum_abono']);
-        
-        if(!is_null($renderiza)){
-            
+
+        if (!is_null($renderiza)) {
+
             // var_dump($data['pedido']);
             $this->load->view('pedidos/v_modal_editar_pedido');
             $this->load->view('pedidos/v_modal_agregar_producto');
-            return $this->load->view('pedidos/v_lista_pedido_detalle', $data,true);
-
-        }else{
+            return $this->load->view('pedidos/v_lista_pedido_detalle', $data, true);
+        } else {
             $this->load->view('pedidos/v_modal_editar_pedido');
             $this->load->view('pedidos/v_modal_agregar_producto');
             $this->template->load(10, 'pedidos/v_lista_pedido_detalle', $data);
-            
         }
     }
 
@@ -316,8 +314,8 @@ class Pedidos extends CI_Controller
         $id = $_POST['pedido_detalle_id'];
         $codigo_pedido = $_POST['codigo_pedido'];
         $res_upd = $this->Pedidos_model->EliminarProductoPedido($id);
-        
-            echo $this->VerDetallePedido($codigo_pedido);
+
+        echo $this->VerDetallePedido($codigo_pedido);
     }
     public function ModificarAbono()
     {
@@ -341,7 +339,7 @@ class Pedidos extends CI_Controller
         }
         $setMonto['cuentas_bancarias_id'] = $cuentaBancaria;
         $bool_upd = $this->Abono_model->ActualizarAbonoDePedido($idAbono, $pedidoCodigo, $setMonto);
-        $msg = ($bool_upd) ? 'Abono actulizado.' : 'Error al editar abono';
+        $msg = ($bool_upd) ? 'Abono actualizado.' : 'Error al editar abono';
         $this->session->set_flashdata('msg', $msg);
     }
 
@@ -357,33 +355,32 @@ class Pedidos extends CI_Controller
         $tipoMoneda = $data_ctaBancaria->tipo_moneda;
         $data_insert = array(
             'pedido_codigo' => $codigo_pedido, 'pedido_cliente_codigo' => $cliente_codigo,
-            'cuentas_bancarias_id'=> $id_ctabancaria,'fecha' => date('Y-m-d H:i:s')
+            'cuentas_bancarias_id' => $id_ctabancaria, 'fecha' => date('Y-m-d H:i:s')
         );
         switch ($tipoMoneda) {
             case 'USD':
-            $data_insert['monto']  = $monto;
-            break;
+                $data_insert['monto']  = $monto;
+                break;
             case 'PEN':
-            $data_insert['monto_pen']  = $monto;
-            break;
+                $data_insert['monto_pen']  = $monto;
+                break;
         }
-        
+
         $res_insert_abono = $this->Abono_model->InsertarAbono($data_insert);
-        
-        if($res_insert_abono){
+
+        if ($res_insert_abono) {
             $vista = $this->VerDetallePedido($codigo_pedido);
             echo $vista;
-        }else{
+        } else {
             echo 'error!';
         }
-        
     }
 
-    public function AgregarProductoPedido(){
-        $_POST['dataForm'];
-        $codigo_pedido = $_POST['codigo_pedido'];
-        $res_upd = $this->Pedidos_model->EliminarProductoPedido($id);
-        
-            echo $this->VerDetallePedido($codigo_pedido);
+    public function AgregarProductoPedido()
+    {
+        $_POST['producto_codigo'] = explode('|',$_POST['producto_codigo'])[0];
+        $res_upd                =               $this->Pedidos_model->AgregarProductoPedido($_POST);
+        $vista                  =               $this->VerDetallePedido($_POST['pedido_codigo']);
+        echo $vista;
     }
 }

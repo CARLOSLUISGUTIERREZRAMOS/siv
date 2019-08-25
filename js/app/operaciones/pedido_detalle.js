@@ -72,6 +72,7 @@ $(function () {
     $("#actualidarDatos").submit(function (event) {
 
         var parametros = $(this).serialize();
+        
         $.ajax({
             type: "POST",
             url: "/siv/operaciones/Pedidos/ModificarAbono",
@@ -95,11 +96,24 @@ $(function () {
 
         var parametros = $(this).serialize();
         
-        $.post("/siv/operaciones/Pedidos/AgregarProductoPedido", { dataForm: parametros})
-        .done(function (data) {
-            $('#bloque_pedido_detalle').html(data);
-            // MostrarAvisoProceso();
+        $.ajax({
+            type: 'POST',
+            url: '/siv/operaciones/Pedidos/AgregarProductoPedido',
+            data: parametros,
+            success: function (data) {
+                $('#bloque_pedido_detalle').html(data);
+                MostrarAvisoProceso('Producto agregado', 'success');   
+            },
+           
         });
+
+
+        // $.post("/siv/operaciones/Pedidos/AgregarProductoPedido", { dataForm: parametros})
+        // .done(function (data) {
+        //     console.log(data);
+        //     return false;
+        //     $('#bloque_pedido_detalle').html(data);
+        // });
         event.preventDefault();
     });
 
@@ -303,8 +317,24 @@ function calcularPrecioTotal(cantidadProducto,precioUnitarioDeVenta,establecer=f
             return precioTotal;
         }
     }
-    
 }
+/*
+@Author: Carlos Gutierrez
+@Version: 25/08/2019
+Se agrega método para calcular la Ganancia Unitaria
+*/
+function calcularGananciaUnitaria(costoUnitario,precioUnitarioVenta,establecer)
+{
+   var costoUnitario                    =               parseFloat(costoUnitario);
+   var precioUnitarioVenta              =               parseFloat(precioUnitarioVenta);
+   var gananciaUnitaria                 =               (precioUnitarioVenta - costoUnitario).toFixed(2);
+   if(establecer){
+        $('#gananciaUnitaria').val(gananciaUnitaria);
+   }else{
+       return gananciaUnitaria;
+   }
+}
+
 
 
 

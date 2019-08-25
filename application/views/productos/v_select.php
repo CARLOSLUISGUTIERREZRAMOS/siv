@@ -1,4 +1,4 @@
-<select class="form-control select_productos" name="select_productos">
+<select class="form-control select_productos" name="producto_codigo">
 <option value="" selected disabled hidden>Seleccione</option>
     <?php
     foreach ($allProductos->Result() as $item) { ?>

@@ -76,7 +76,8 @@
                             $sumatoria_costo_unitario_total = 0;
                             foreach ($pedido_detalle->Result() as $item) {
 
-                                $sumatoria_costo_unitario_total = $item->costo_unitario_producto + $sumatoria_costo_unitario_total;
+                                $cut=calcularCostoUnitarioTotal($item->costo_unitario_producto,$item->shipping_unitario);
+                                $sumatoria_costo_unitario_total = $cut + $sumatoria_costo_unitario_total;
                                 ?>
                             <tr>
                                 <td><?= $item->producto_codigo ?></td>
@@ -85,7 +86,7 @@
                                 <td><?= $item->costo_unitario_producto ?></td>
                                 <td><?= $item->peso_libras ?></td>
                                 <td><?= $item->shipping_unitario ?></td>
-                                <td><?= $cut =calcularCostoUnitarioTotal($item->costo_unitario_producto,$item->shipping_unitario) ?></td>
+                                <td><?= $cut ?></td>
                                 <td><?= calcularCostoTotalProducto($item->cantidad,$cut) ?></td>
                                 <td><?= $item->ganancia_unitaria ?></td>
                                 <td><?= $item->precio_unitario_usd ?></td>
@@ -93,6 +94,7 @@
                                 <td><i class="fa fa-trash-o del_prodpedido" style="color: red" id="<?= $item->id ?>" title="Retirar <?= $item->nombre ?>"></i></td>
                             </tr>
                             <?php
+
                             }
                             ?>
 
@@ -104,8 +106,10 @@
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td>$ <span id="costo_unit_tot"><?= $sumatoria_costo_unitario_total ?></span></td>
                                 <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>$ <span id="costo_unit_tot"><?= $sumatoria_costo_unitario_total ?></span></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -295,11 +299,8 @@
     <div class="row no-print">
         <div class="col-xs-12">
             <a href="<?= base_url() ?>operaciones/Pedidos/ListarPedidos" target="_self" class="btn btn-default"><i class="fa fa-chevron-circle-left"></i> Volver</a>
-            <button type="button" class="btn btn-success pull-right btn_guardar"><i class="fa fa-save"></i> Guardar
             </button>
-            <!--            <button type="button" class="btn btn-primary pull-right" style="margin-right: 5px;">
-                            <i class="fa fa-download"></i> Limp
-                        </button>-->
+            
         </div>
     </div>
 </section>

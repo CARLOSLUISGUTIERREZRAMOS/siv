@@ -1,12 +1,12 @@
 <!-- <div class="col-md-3"> -->
-<div class="box box-success box-solid" id="fila_add_producto" style="display: none">
+<div class="box box-success box-solid table-responsive" id="fila_add_producto" style="display: none">
     <div class="box-header with-border">
         <h3 class="box-title">Agregar Producto</h3>
     </div>
     <!-- /.box-header -->
     <div class="box-body">
-        <form id="formAddProducto">
-            <div class="col-xs-12 col-lg-3 col-md-12">
+        <form id="formAddProducto" method="POST">
+            <div class="col-xs-12 col-lg-2 col-md-12">
                 <div class="form-group has-success">
                     <label class="control-label" for="inputSuccess"> Seleccione producto:</label>
                         <?= armarSelectProductos() ?>
@@ -26,38 +26,44 @@
             </div>
             <div class="col-xs-4 col-lg-1 col-sm-3">
                 <div class="form-group has-success">
-                    <label class="control-label" for="cantLibras"> Cant. libras</label>
+                    <label class="control-label" for="cantLibras">Cant.Lib</label>
                     <input type="text" class="form-control" id="cantLibras" name="peso_libras" value="1" onchange="calcularCostoUnitarioTotal(document.getElementById('cup').value,<?= $pedido->costo_x_libra ?>,this.value,true) ; calcularShippingUnitario(this.value,<?= $pedido->costo_x_libra ?>,true)">
                 </div>
             </div>
             <div class="col-xs-4 col-lg-1 col-sm-3">
                 <div class="form-group has-success">
-                    <label class="control-label" for="shippingUnitario"> Shipping Unit.</label>
+                    <label class="control-label" for="shippingUnitario"> Shipp.Unit.</label>
                     <input type="text" class="form-control" id="shippingUnitario" name="shipping_unitario" value="<?= $pedido->costo_x_libra ?>">
                 </div>
             </div>
             <div class="col-xs-4 col-lg-1 col-sm-3">
                 <div class="form-group has-success">
                     <label class="control-label" for="cut"> C.U.T.</label>
-                    <input type="text" class="form-control" id="cut" name="cut">
+                    <input type="text" class="form-control" id="cut">
                 </div>
             </div>
             <div class="col-xs-4 col-lg-1 col-sm-3">
                 <div class="form-group has-success">
                     <label class="control-label" for="costoTotalProducto"> C.T.P.</label>
-                    <input type="text" class="form-control" id="costoTotalProducto" name="costoTotalProducto">
+                    <input type="text" class="form-control" id="costoTotalProducto">
+                </div>
+            </div>
+            <div class="col-xs-4 col-lg-1 col-sm-3">
+                <div class="form-group has-success">
+                    <label class="control-label" for="gananciaUnitaria"> Gan.Unit</label>
+                    <input type="text" class="form-control" id="gananciaUnitaria" name="ganancia_unitaria">
                 </div>
             </div>
             <div class="col-xs-4 col-lg-1 col-sm-3">
                 <div class="form-group has-success">
                     <label class="control-label" for="inputSuccess"> P.U.V</label>
-                    <input type="text" class="form-control" id="precioUnitarioVenta" name="precioUnitarioVenta" onchange="calcularPrecioTotal(document.getElementById('cantidadProducto').value,this.value,true)">
+                    <input type="text" class="form-control" id="precioUnitarioVenta" name="precio_unitario_usd" onchange="calcularPrecioTotal(document.getElementById('cantidadProducto').value,this.value,true) ; calcularGananciaUnitaria(document.getElementById('cut').value,this.value,true)">
                 </div>
             </div>
             <div class="col-xs-4 col-lg-1 col-sm-3">
                 <div class="form-group has-success">
-                    <label class="control-label" for="inputSuccess"> Precio T.</label>
-                    <input type="text" class="form-control" id="precioTotal" name="precioTotal">
+                    <label class="control-label" for="inputSuccess">Prec T.</label>
+                    <input type="text" class="form-control" id="precioTotal" name="precio_total">
                 </div>
             </div>
             <!-- <div class="col-xs-">
@@ -69,6 +75,8 @@
                 </button>
             </div>
 
+            <input type="hidden" value="<?= $pedido->codigo ?>" name="pedido_codigo">
+<input type="hidden" value="<?= $pedido->cliente_codigo ?>" name="pedido_cliente_codigo">
         </form>
     </div>
     <!-- /.box-body -->
