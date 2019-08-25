@@ -191,7 +191,8 @@
                         <tr>
                             <th><button type="button" title="Agregar abono" class="btn btn-dropbox btn-sm btn-flat" id="btn_agregar_abono"  onclick="agregar('abono')"><i id="btn_add_abono" class="fa fa-plus"></i></button></th>
                             <th style="width:15%">N° Abono:</th>
-                            <th style="width:20%">Monto:</th>
+                            <th style="width:20%">Monto USD</th>
+                            <th style="width:20%">Monto S/.</th>
                             <th>Cuenta de Abono:</th>
                             <th></th>
                         </tr>
@@ -218,6 +219,9 @@
                             <td><?=$i?></td>
                             <td>
                                 <?= $abono->monto ?>
+                            </td>
+                            <td>
+                                <?= $abono->monto_pen ?>
                             </td>
 
 
@@ -276,7 +280,8 @@
                         <tr>
                             <td></td>
                             <td>TOTAL ABONOS: </td>
-                            <td><span id="monto_total_cal"><?= $sum_abono ?></span></td>
+                            <td><span id="monto_total_cal"><?= $sum_abono_usd ?></span></td>
+                            <td><span id="monto_total_cal"><?= $sum_abono_pen ?></span></td>
                             <td></td>
                         </tr>
                         <tr>

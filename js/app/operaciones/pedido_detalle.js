@@ -80,8 +80,10 @@ $(function () {
             beforeSend: function (objeto) {
                 $("#datos_ajax").html("Guardando cambios...");
             },
-            success: function (datos) {
-                location.reload();
+            success: function (data) {
+                // location.reload();
+                $('#bloque_pedido_detalle').html(data);
+                MostrarAvisoProceso('Abono modificado', 'success');   
             }
         });
         event.preventDefault();

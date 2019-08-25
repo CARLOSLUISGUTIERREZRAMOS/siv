@@ -68,14 +68,16 @@ class Pedidos extends CI_Controller
         if ($cantidad_abonos > 0) {
             $data['EXISTE_ABONO'] = TRUE;
             // $data['last_abono'] = $this->Abono_model->ObtenerUltimoNumeroAbono($codigo_pedido);
-            $data['sum_abono'] = $this->Abono_model->SumarAbonosExistentes($codigo_pedido);
-            $data['SALDO_TOTAL'] = (float) $data['pedido']->precio_total - $data['sum_abono'];
-        } else {
-            $data['EXISTE_ABONO'] = FALSE;
-            $data['last_abono'] = 1;
-            $data['sum_abono'] = 0;
-            $data['SALDO_TOTAL'] = (float) $data['pedido']->precio_total - $data['sum_abono'];
-        }
+            $data['sum_abono_usd'] = $this->Abono_model->SumarAbonosExistentes($codigo_pedido,'monto');
+            $data['sum_abono_pen'] = $this->Abono_model->SumarAbonosExistentes($codigo_pedido,'monto_pen');
+            $data['SALDO_TOTAL'] = (float) $data['pedido']->precio_total - $data['sum_abono_usd'];
+        } 
+        // else {
+        //     $data['EXISTE_ABONO'] = FALSE;
+        //     $data['last_abono'] = 1;
+        //     $data['sum_abono'] = 0;
+        //     $data['SALDO_TOTAL'] = (float) $data['pedido']->precio_total - $data['sum_abono'];
+        // }
         $data['abonos'] = $this->Abono_model->ObtenerAbonosPedido($codigo_pedido);
         $fecha_sql = (new DateTime($data['pedido']->fecha_pedido))->format('Y-m-d');
         //        echo $fecha_sql;die;
@@ -89,7 +91,7 @@ class Pedidos extends CI_Controller
         $data['presupuestoEnvio'] = $this->obtenerPresupuestoEnvio($data['pedido_detalle']);
 
         $data['precioTotalPedido'] = $this->CalcularPrecioTotalDePedido($data['pedido_detalle']);
-        $data['saldoPorCobrar'] = $this->CalcularSaldoPorCobrar($data['precioTotalPedido'], $data['sum_abono']);
+        $data['saldoPorCobrar'] = $this->CalcularSaldoPorCobrar($data['precioTotalPedido'], $data['sum_abono_usd']);
 
         if (!is_null($renderiza)) {
 
@@ -339,8 +341,11 @@ class Pedidos extends CI_Controller
         }
         $setMonto['cuentas_bancarias_id'] = $cuentaBancaria;
         $bool_upd = $this->Abono_model->ActualizarAbonoDePedido($idAbono, $pedidoCodigo, $setMonto);
-        $msg = ($bool_upd) ? 'Abono actualizado.' : 'Error al editar abono';
-        $this->session->set_flashdata('msg', $msg);
+
+        $vista = $this->VerDetallePedido($_POST['pedidoCodigo']);
+        echo $vista;
+        // $msg = ($bool_upd) ? 'Abono actualizado.' : 'Error al editar abono';
+        // $this->session->set_flashdata('msg', $msg);
     }
 
     public function AgregarAbono()
@@ -379,7 +384,11 @@ class Pedidos extends CI_Controller
     public function AgregarProductoPedido()
     {
         $_POST['producto_codigo'] = explode('|',$_POST['producto_codigo'])[0];
-        $res_upd                =               $this->Pedidos_model->AgregarProductoPedido($_POST);
+        $stockProducto = $this->Productos_model->ObtenerCantidadStockProducto($_POST['producto_codigo']);
+        $pendienteCompra = $this->ObtenerPendienteDeCompra($stockProducto,$_POST['cantidad']);
+        $_POST['pendiente_compra'] = $pendienteCompra;
+        $_POST['stock_producto_flag'] = $stockProducto;
+        $this->Pedidos_model->AgregarProductoPedido($_POST);
         $vista                  =               $this->VerDetallePedido($_POST['pedido_codigo']);
         echo $vista;
     }

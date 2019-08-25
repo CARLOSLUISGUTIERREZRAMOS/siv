@@ -92,12 +92,12 @@ class Abono_model extends CI_Model {
         return $this->db->get()->num_rows();
     }
 
-    function SumarAbonosExistentes($pedido_codigo) {
-        $this->db->select_sum('monto');
+    function SumarAbonosExistentes($pedido_codigo,$moneda) {
+        $this->db->select_sum($moneda);
         $this->db->where('pedido_codigo', $pedido_codigo);
         $this->db->where('estado', 'Y');
         $res_suma_abonos = $this->db->get('abono');
-        return $res_suma_abonos->row()->monto;
+        return $res_suma_abonos->row()->$moneda;
     }
 
     function GetAbonos($campo) {
