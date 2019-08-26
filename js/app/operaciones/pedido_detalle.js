@@ -94,7 +94,8 @@ $(function () {
     @Version: 24/08/2019
     Este metodo sirve para enviar el formulario
     */
-    $("#formAddProducto").submit(function (event) {
+   $("body").on("submit", "#formAddProducto", function () {
+    // $("#formAddProducto").submit(function (event) {
 
         var parametros = $(this).serialize();
         
