@@ -15,33 +15,15 @@
         <!-- /.col -->
     </div>
     <!-- info row -->
-    <div class="row invoice-info">
-        <div class="col-sm-4 invoice-col">
-            <address>
-                <b>Costo por libra: </b><span id="costo_x_libra"><?= $pedido->costo_x_libra ?></span><br>
-                <b>Tipo de cambio: </b> <?= $tipo_cambio ?><br>
-                <b>Tipo de cambio del día: </b> <?= $tc_today ?><br>
-            </address>
-        </div>
-        <!-- /.col -->
-        <div class="col-sm-4 invoice-col">
-            <address>
-                <b>Presupuesto para compra: </b>$ <?= $presupuestoCompra ?><br>
-                <b>Presupuesto para envío: </b>$ <?= $presupuestoEnvio ?> <br>
-            </address>
-        </div>
-        <!-- /.col -->
-        
-        <!-- /.col -->
-    </div>
+
     <!-- /.row -->
 
     <!-- Table row -->
     <div class="row">
         <div class="box box-primary">
             <div class="box-header with-border">
-                <button type="button" class="btn btn-sm margin" title="Agregar Producto al listado" data-toggle="modal" id="btn_agregar_producto"  onclick="agregar('producto')"><i class="fa fa-plus"></i></button>
-                <?php $this->load->view('productos/v_add_producto_a_pedido')?>
+                <button type="button" class="btn btn-sm margin" title="Agregar Producto al listado" data-toggle="modal" id="btn_agregar_producto" onclick="agregar('producto')"><i class="fa fa-plus"></i></button>
+                <?php $this->load->view('productos/v_add_producto_a_pedido') ?>
                 <h3 class="box-title">AGREGAR PRODUCTO</h3>
                 <div class="box-tools pull-right">
                     <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -71,35 +53,37 @@
                             <?php
                             $sumatoria_costo_unitario_total = 0;
                             $sumatoria_precio_total = 0;
+                            $sumatoriaPresupuestoParaEnvio = 0;
                             foreach ($pedido_detalle->Result() as $item) {
 
-                                $cut=calcularCostoUnitarioTotal($item->costo_unitario_producto,$item->shipping_unitario);
-                                $precio_total               =               calcularPrecioTotal($item->cantidad, $item->precio_unitario_usd);
+                                $cut = calcularCostoUnitarioTotal($item->costo_unitario_producto, $item->shipping_unitario);
+                                $precio_total                                =               calcularPrecioTotal($item->cantidad, $item->precio_unitario_usd);
+                                $sumatoriaPresupuestoParaEnvio               +=               calcularPresupuestoParaEnvio($item->shipping_unitario, $item->cantidad);
                                 $sumatoria_precio_total += $precio_total;
-                                
+
                                 $sumatoria_costo_unitario_total = $cut + $sumatoria_costo_unitario_total;
                                 ?>
                             <tr>
                                 <td><?= $item->producto_codigo ?></td>
                                 <td><?= $item->nombre ?></td>
                                 <td>
-                                <span class="modificarCantidadProd" style="cursor: pointer;" id="<?= $item->id ?>" name="<?=$item->cantidad?>" title="Doble click para modificar cantidad"><?= $item->cantidad ?></span>
-                                    
+                                    <span class="modificarCantidadProd" style="cursor: pointer;" id="<?= $item->id ?>" name="<?= $item->cantidad ?>" title="Doble click para modificar cantidad"><?= $item->cantidad ?></span>
+
                                 </td>
                                 <td><?= $item->costo_unitario_producto ?></td>
                                 <td><?= $item->peso_libras ?></td>
                                 <td><?= $item->shipping_unitario ?></td>
                                 <td><?= $cut ?></td>
-                                <td><?= calcularCostoTotalProducto($item->cantidad,$cut) ?></td>
+                                <td><?= calcularCostoTotalProducto($item->cantidad, $cut) ?></td>
                                 <td><?= $item->ganancia_unitaria ?></td>
                                 <td><?= $item->precio_unitario_usd ?></td>
-                                <td><?= $precio_total?></td>
+                                <td><?= $precio_total ?></td>
                                 <td><i class="fa fa-trash-o del_prodpedido" style="color: red" id="<?= $item->id ?>" title="Retirar <?= $item->nombre ?>"></i></td>
                             </tr>
                             <?php
 
                             }
-                            
+
                             ?>
 
 
@@ -193,7 +177,7 @@
                 <table class="table" id="tbl_lista_pedido_detalle">
                     <tbody>
                         <tr>
-                            <th><button type="button" title="Agregar abono" class="btn btn-dropbox btn-sm btn-flat" id="btn_agregar_abono"  onclick="agregar('abono')"><i id="btn_add_abono" class="fa fa-plus"></i></button></th>
+                            <th><button type="button" title="Agregar abono" class="btn btn-dropbox btn-sm btn-flat" id="btn_agregar_abono" onclick="agregar('abono')"><i id="btn_add_abono" class="fa fa-plus"></i></button></th>
                             <th style="width:15%">N° Abono:</th>
                             <th style="width:20%">Monto USD</th>
                             <th style="width:20%">Monto S/.</th>
@@ -220,7 +204,7 @@
                                 ?>
                         <tr>
                             <td></td>
-                            <td><?=$i?></td>
+                            <td><?= $i ?></td>
                             <td>
                                 <?= $abono->monto ?>
                             </td>
@@ -256,8 +240,8 @@
                         </tr>
 
                         <?php
-                        $i++;   
-                        }
+                                $i++;
+                            }
                         } else {
                             ?>
                         <tr>
@@ -294,21 +278,45 @@
                             <td></td>
                             <td></td>
                         </tr>
-                        
+
                     </tfoot>
                 </table>
-                <div class="col-sm-4 invoice-col">
-            <address>
-                <?php
-            $saldoxCobrar = calcularSaldoPorCobrar($sumatoria_precio_total,$sum_abono_usd);
-            ?>
-                <b>Saldo por cobrar: $ </b><span class="<?= ($saldoPorCobrar < 0) ? 'text-red' : ''; ?>"><?= $saldoxCobrar?></span><br>
-            </address>
-        </div>
+
+
+
+
+
             </div>
         </div>
         <!-- /.col -->
     </div>
+    <!-- CAMBIOS -->
+
+    <div class="row invoice-info">
+        <div class="col-sm-4 invoice-col">
+            <address>
+                <b>Costo por libra: </b><span id="costo_x_libra"><?= $pedido->costo_x_libra ?></span><br>
+                <b>Tipo de cambio: </b> <?= $tipo_cambio ?><br>
+                <b>Tipo de cambio del día: </b> <?= $tc_today ?><br>
+            </address>
+        </div>
+        <!-- /.col -->
+        <div class="col-sm-4 invoice-col">
+            <address>
+                <b>Presupuesto para envío: </b>$ <?= $sumatoriaPresupuestoParaEnvio ?> <br>
+                <b>Presupuesto para compra: </b>$ <?= $presupuestoCompra ?><br>
+            </address>
+        </div>
+        <div class="col-sm-4 invoice-col">
+            <address>
+                <b>Saldo por cobrar: $ </b><span class="<?= ($saldoPorCobrar < 0) ? 'text-red' : ''; ?>"><?= calcularSaldoPorCobrar($sumatoria_precio_total, $sum_abono_usd) ?></span><br>
+            </address>
+        </div>
+        <!-- /.col -->
+
+        <!-- /.col -->
+    </div>
+    <!-- CAMBIOS -->
     <!-- /.row -->
 
     <!-- this row will not appear when printing -->
@@ -316,7 +324,7 @@
         <div class="col-xs-12">
             <a href="<?= base_url() ?>operaciones/Pedidos/ListarPedidos" target="_self" class="btn btn-default"><i class="fa fa-chevron-circle-left"></i> Volver</a>
             </button>
-            
+
         </div>
     </div>
 </section>

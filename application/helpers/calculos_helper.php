@@ -27,3 +27,10 @@ if (!function_exists('calcularSaldoPorCobrar')) {
     return $sumatoriaPrecioTotal - $totalAbonos;
   }
 }
+
+if (!function_exists('calcularPresupuestoParaEnvio')) {
+  function calcularPresupuestoParaEnvio($shippingUnitario,$cantidadProducto)
+  {
+    return $shippingUnitario * $cantidadProducto;
+  }
+}
