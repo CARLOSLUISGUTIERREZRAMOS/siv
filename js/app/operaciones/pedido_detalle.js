@@ -109,15 +109,10 @@ $(function () {
            
         });
 
-
-        // $.post("/siv/operaciones/Pedidos/AgregarProductoPedido", { dataForm: parametros})
-        // .done(function (data) {
-        //     console.log(data);
-        //     return false;
-        //     $('#bloque_pedido_detalle').html(data);
-        // });
         event.preventDefault();
     });
+
+    
 
     $("body").on("submit", "#agregarAbono", function () {
     // $("#agregarAbono").on('submit', function (event) {
@@ -336,6 +331,48 @@ function calcularGananciaUnitaria(costoUnitario,precioUnitarioVenta,establecer)
        return gananciaUnitaria;
    }
 }
+
+$(document).on('dblclick','.modificarCantidadProd',function (arg) {
+    var valor=$(this).attr('name');
+    var id = this.id;
+    var padre=this.parentElement;
+    $(this).addClass('hide');
+    var form=   '<div>'+
+                    '<div class="row">'+
+                        '<input type="text" value="'+valor+'" style="width: 90px;margin: 0 -10px 5px -10px;" class="form-control input-linea input-sm cantidad'+id+'">'+
+                    '</div>'+
+                    '<div class="row">'+
+                        '<button class="btn btn-success btn-sm btn-asignar" style="padding: 3px;" id="'+id+'">Asignar</button> '+
+                        '<button class="btn btn-danger btn-sm btn-cancelar" style="padding: 3px;" id="'+id+'">Cancelar</button> '+
+                    '</div>'+
+                '</div>';
+    $(padre).append(form);
+});
+$(document).on('click','.btn-cancelar',function (arg) {
+    var span=$(this.parentElement.parentElement.previousElementSibling);
+    var padre=$(this.parentElement.parentElement);
+    padre.remove();
+    span.removeClass('hide');
+});
+
+$(document).on('click','.btn-asignar',function (arg) {
+    var pedido_codigo = $('#codigo_pedido').val();
+	var idPedidoDetalle=this.id;
+	var span=$(this.parentElement.parentElement.previousElementSibling);
+	var padre=$(this.parentElement.parentElement);
+	var value=$(".cantidad"+idPedidoDetalle).val();
+	$.ajax({
+        type: 'POST',
+        url: '/siv/operaciones/Pedidos/ModificarCantidadDeProducto',
+        data: 'idPedidoDetalle='+idPedidoDetalle+'&cantidad='+value+'&pedido_codigo='+pedido_codigo,
+        success: function (data) {
+            $('#bloque_pedido_detalle').html(data);
+                    MostrarAvisoProceso('Cantidad modificada', 'success');
+        }
+        
+    });
+});
+
 
 
 

@@ -60,6 +60,7 @@ class Pedidos extends CI_Controller
         $this->template->add_js('js/app/operaciones/pedido_detalle.js', true);
         $this->template->add_css('css/sweetalert2/sweetalert2.min.css', true);
         $this->template->add_css('css/sweetalert2/styles.css', true);
+        $this->template->add_css('css/app/pedido_detalle.css', true);
         $this->template->add_js('js/sweetalert2/sweetalert2.min.js', true);
         $this->template->set('titulo', '');
         $codigo_pedido = (!is_null($renderiza)) ? $renderiza : $_GET['codigo_pedido'];
@@ -392,4 +393,17 @@ class Pedidos extends CI_Controller
         $vista                  =               $this->VerDetallePedido($_POST['pedido_codigo']);
         echo $vista;
     }
+    public function ModificarCantidadDeProducto()
+    {
+        $pedido_codigo                  =               $_POST['pedido_codigo'];
+        $id_pedido_detalle              =               $_POST['idPedidoDetalle'];
+        $cant_productos                 =               $_POST['cantidad'];
+
+        $this->Pedidos_model->ActualizarCantidadDeProducto($id_pedido_detalle,$cant_productos);
+        $vista                  =               $this->VerDetallePedido($pedido_codigo);
+        echo $vista;
+    }
+
+
+
 }

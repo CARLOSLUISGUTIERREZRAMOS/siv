@@ -15,3 +15,9 @@ if (!function_exists('calcularCostoTotalProducto')) {
       return $costoUnitarioTotal * $cantidad;
     }
 }
+if (!function_exists('calcularPrecioTotal')) {
+  function calcularPrecioTotal($cantidad,$precioUnitarioDeVenta)
+  {
+    return $cantidad * $precioUnitarioDeVenta;
+  }
+}

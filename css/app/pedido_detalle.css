@@ -1,0 +1,10 @@
+.modificarCantidadProd:hover{
+	margin-left: -7px;
+	padding:5px;
+	border-radius:3px;
+	/*** aquí va la sombra ***/
+	-webkit-box-shadow: 0 0 5px #F44336;
+	-moz-box-shadow: 0 0 5px #F44336;
+	-ms-box-shadow: 0 0 5px #F44336;
+	box-shadow: 0 0 5px #F44336;
+}

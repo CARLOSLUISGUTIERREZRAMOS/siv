@@ -82,7 +82,10 @@
                             <tr>
                                 <td><?= $item->producto_codigo ?></td>
                                 <td><?= $item->nombre ?></td>
-                                <td><?= $item->cantidad ?></td>
+                                <td>
+                                <span class="modificarCantidadProd" style="cursor: pointer;" id="<?= $item->id ?>" name="<?=$item->cantidad?>" title="Doble click para modificar cantidad"><?= $item->cantidad ?></span>
+                                    
+                                </td>
                                 <td><?= $item->costo_unitario_producto ?></td>
                                 <td><?= $item->peso_libras ?></td>
                                 <td><?= $item->shipping_unitario ?></td>
@@ -90,7 +93,7 @@
                                 <td><?= calcularCostoTotalProducto($item->cantidad,$cut) ?></td>
                                 <td><?= $item->ganancia_unitaria ?></td>
                                 <td><?= $item->precio_unitario_usd ?></td>
-                                <td><?= $item->precio_total ?></td>
+                                <td><?= calcularPrecioTotal($item->cantidad, $item->precio_unitario_usd)?></td>
                                 <td><i class="fa fa-trash-o del_prodpedido" style="color: red" id="<?= $item->id ?>" title="Retirar <?= $item->nombre ?>"></i></td>
                             </tr>
                             <?php

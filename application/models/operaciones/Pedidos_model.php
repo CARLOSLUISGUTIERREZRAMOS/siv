@@ -87,7 +87,7 @@ class Pedidos_model extends CI_Model {
         return $this->db->get();
     }
 
-    function ObtenerPedidoDetalleViaje() {
+        function ObtenerPedidoDetalleViaje() {
         $this->db->select('PR.codigo as cod_prod,PD.pedido_cliente_codigo,P.codigo,PD.id,PD.cantidad,PR.nombre,PD.shipping_unitario,PD.peso_libras,PR.stock_actual');
         $this->db->from('pedido_detalle PD');
         $this->db->join('producto PR', 'PD.producto_codigo = PR.codigo');
@@ -182,4 +182,9 @@ class Pedidos_model extends CI_Model {
         
     }
 
+    function ActualizarCantidadDeProducto($id_pedido_detalle,$cantidad)
+    {
+        $this->db->where('id', $id_pedido_detalle);
+        return $this->db->update('pedido_detalle', array('cantidad' => $cantidad));
+    }
 }
