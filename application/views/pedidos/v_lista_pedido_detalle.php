@@ -31,11 +31,7 @@
             </address>
         </div>
         <!-- /.col -->
-        <div class="col-sm-4 invoice-col">
-            <address>
-                <b>Saldo por cobrar: $ </b><span class="<?= ($saldoPorCobrar < 0) ? 'text-red' : ''; ?>"><?= $saldoPorCobrar ?></span><br>
-            </address>
-        </div>
+        
         <!-- /.col -->
     </div>
     <!-- /.row -->
@@ -74,9 +70,13 @@
                         <tbody>
                             <?php
                             $sumatoria_costo_unitario_total = 0;
+                            $sumatoria_precio_total = 0;
                             foreach ($pedido_detalle->Result() as $item) {
 
                                 $cut=calcularCostoUnitarioTotal($item->costo_unitario_producto,$item->shipping_unitario);
+                                $precio_total               =               calcularPrecioTotal($item->cantidad, $item->precio_unitario_usd);
+                                $sumatoria_precio_total += $precio_total;
+                                
                                 $sumatoria_costo_unitario_total = $cut + $sumatoria_costo_unitario_total;
                                 ?>
                             <tr>
@@ -93,12 +93,13 @@
                                 <td><?= calcularCostoTotalProducto($item->cantidad,$cut) ?></td>
                                 <td><?= $item->ganancia_unitaria ?></td>
                                 <td><?= $item->precio_unitario_usd ?></td>
-                                <td><?= calcularPrecioTotal($item->cantidad, $item->precio_unitario_usd)?></td>
+                                <td><?= $precio_total?></td>
                                 <td><i class="fa fa-trash-o del_prodpedido" style="color: red" id="<?= $item->id ?>" title="Retirar <?= $item->nombre ?>"></i></td>
                             </tr>
                             <?php
 
                             }
+                            
                             ?>
 
 
@@ -116,7 +117,7 @@
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td>$<span id="precio_total_sumatoria"><?= $precioTotalPedido ?></span> </td>
+                                <td>$<span id="precio_total_sumatoria"><?= $sumatoria_precio_total ?></span> </td>
                             </tr>
                         </tfoot>
                     </table>
@@ -296,7 +297,14 @@
                         
                     </tfoot>
                 </table>
-
+                <div class="col-sm-4 invoice-col">
+            <address>
+                <?php
+            $saldoxCobrar = calcularSaldoPorCobrar($sumatoria_precio_total,$sum_abono_usd);
+            ?>
+                <b>Saldo por cobrar: $ </b><span class="<?= ($saldoPorCobrar < 0) ? 'text-red' : ''; ?>"><?= $saldoxCobrar?></span><br>
+            </address>
+        </div>
             </div>
         </div>
         <!-- /.col -->

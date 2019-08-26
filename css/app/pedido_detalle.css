@@ -8,3 +8,7 @@
 	-ms-box-shadow: 0 0 5px #F44336;
 	box-shadow: 0 0 5px #F44336;
 }
+
+tr > tbody{
+	text-align:  right;
+}

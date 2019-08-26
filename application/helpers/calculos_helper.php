@@ -21,3 +21,9 @@ if (!function_exists('calcularPrecioTotal')) {
     return $cantidad * $precioUnitarioDeVenta;
   }
 }
+if (!function_exists('calcularSaldoPorCobrar')) {
+  function calcularSaldoPorCobrar($sumatoriaPrecioTotal,$totalAbonos)
+  {
+    return $sumatoriaPrecioTotal - $totalAbonos;
+  }
+}
