@@ -42,7 +42,7 @@ $(function () {
             confirmButtonText: 'Si, estoy seguro.',
         }).then((result) => {
             if (result.value) {
-                $.post("/siv/operaciones/Pedidos/EliminarPedido", { pedido_detalle_id: id, codigo_pedido: codigo_pedido })
+                $.post("/siv/operaciones/Pedidos/EliminarProductoPedido", { pedido_detalle_id: id, codigo_pedido: codigo_pedido })
                     .done(function (data) {
                         $('#bloque_pedido_detalle').html(data);
                         MostrarAvisoProceso('Producto eliminado de pedido.', 'success');        
@@ -373,6 +373,7 @@ $(document).on('click','.btn-asignar',function (arg) {
         
     });
 });
+
 
 
 

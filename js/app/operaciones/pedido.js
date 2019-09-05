@@ -24,6 +24,9 @@ $(function () {
     var costo_unitario_total_fila_capturado = 0;
     var sumatoria_costo_unitario_total = 0;
     var tc_compra = parseFloat($('#tc_compra').text());
+
+    // $('#tbl_list_pedidos').DataTable();
+
     $("body").on("change", "#producto", function () {
 
 //        codigo_producto = $(this).val();
@@ -812,7 +815,7 @@ $(function () {
             }
         });
     });
-    $('#tbl_list_pedidos').DataTable();
+    
 
     $("body").on("click", ".del_prod_add", function () {
         $(this).closest('tr').hide();
@@ -996,3 +999,46 @@ $(function () {
         return sumatoria_abonos;
     }
 });
+
+/*
+@Author: Carlos Gutierrez
+@Version: 03/09/2019
+Se agrega método para calcular la Ganancia Unitaria
+*/
+$(document).on('click','.eliminarPedido',function (arg) {
+// function EliminarPedido(codigo)
+// {
+    codigo = $(this).attr('id');
+   
+    Swal.fire({
+        title: '¿Seguro de eliminar el pedido '+codigo+'?',
+        // text: "Eliminarás " + nombreProducto + ' del Pedido',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, estoy seguro.',
+    }).then((result) => {
+        if (result.value) {
+            $.post("/siv/operaciones/Pedidos/EliminarPedido", { codigo_pedido_ajax: codigo})
+                .done(function (data) {
+                    $('#bloque_list_pedido').html(data);
+                    MostrarAvisoProceso('Pedido eliminado.', 'success');        
+                });
+        }
+    });
+ }  );
+
+function MostrarAvisoProceso(title, tipo) {
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000
+    })
+
+    Toast.fire({
+        type: tipo,
+        title: title
+    })
+}

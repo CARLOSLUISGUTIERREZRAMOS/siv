@@ -15,10 +15,15 @@ class Pedidos extends CI_Controller
         $this->load->model('data/Clientes_model');
         $this->load->helper(array('pedido', 'ctabancarias', 'procesos', 'productos', 'calculos'));
         $this->load->model(array('data/Productos_model', 'data/Cuentas_bancarias_model', 'operaciones/Pedidos_model', 'operaciones/Abono_model', 'finanzas/Tax_model'));
-        $this->template->add_js('js/app/operaciones/pedido.js');
-        $this->template->add_js('js/bootstrap-datepicker/bootstrap-datepicker.min.js');
         $this->template->add_js('js/datatables/jquery.dataTables.min.js');
+        $this->template->add_js('js/bootstrap-datepicker/bootstrap-datepicker.min.js');
         $this->template->add_js('js/datatables/dataTables.bootstrap.min.js');
+        $this->template->add_js('js/app/operaciones/pedido.js',true);
+        $this->template->add_js('js/app/operaciones/pedido_detalle.js', true);
+        $this->template->add_css('css/sweetalert2/sweetalert2.min.css', true);
+        $this->template->add_css('css/sweetalert2/styles.css', true);
+        $this->template->add_css('css/app/pedido_detalle.css', true);
+        $this->template->add_js('js/sweetalert2/sweetalert2.min.js', true);
     }
 
     public function index()
@@ -57,57 +62,49 @@ class Pedidos extends CI_Controller
 
     public function VerDetallePedido($renderiza = NULL)
     {
-        $this->template->add_js('js/app/operaciones/pedido_detalle.js', true);
-        $this->template->add_css('css/sweetalert2/sweetalert2.min.css', true);
-        $this->template->add_css('css/sweetalert2/styles.css', true);
-        $this->template->add_css('css/app/pedido_detalle.css', true);
-        $this->template->add_js('js/sweetalert2/sweetalert2.min.js', true);
+        
         $this->template->set('titulo', '');
-        $codigo_pedido = (!is_null($renderiza)) ? $renderiza : $_GET['codigo_pedido'];
-        $data['pedido'] = $this->Pedidos_model->ObtenerPedido($codigo_pedido);
-        $cantidad_abonos = $this->Abono_model->ObtenerCantidadDeAbonos($codigo_pedido);
+
+        $codigo_pedido      =       (!is_null($renderiza)) ? $renderiza : $_GET['codigo_pedido'];
+        $data['pedido']     =       $this->Pedidos_model->ObtenerPedido($codigo_pedido);
+        $cantidad_abonos    =       $this->Abono_model->ObtenerCantidadDeAbonos($codigo_pedido);
+
         if ($cantidad_abonos > 0) {
-            $data['EXISTE_ABONO'] = TRUE;
-            // $data['last_abono'] = $this->Abono_model->ObtenerUltimoNumeroAbono($codigo_pedido);
-            $data['sum_abono_usd'] = $this->Abono_model->SumarAbonosExistentes($codigo_pedido,'monto');
-            $data['sum_abono_pen'] = $this->Abono_model->SumarAbonosExistentes($codigo_pedido,'monto_pen');
-            $data['SALDO_TOTAL'] = (float) $data['pedido']->precio_total - $data['sum_abono_usd'];
+
+            $data['EXISTE_ABONO']   = TRUE;
+            $data['sum_abono_usd']  = $this->Abono_model->SumarAbonosExistentes($codigo_pedido,'monto');
+            $data['sum_abono_pen']  = $this->Abono_model->SumarAbonosExistentes($codigo_pedido,'monto_pen');
+            $data['SALDO_TOTAL']    = (float) $data['pedido']->precio_total - $data['sum_abono_usd'];
+
         } 
-        // else {
-        //     $data['EXISTE_ABONO'] = FALSE;
-        //     $data['last_abono'] = 1;
-        //     $data['sum_abono'] = 0;
-        //     $data['SALDO_TOTAL'] = (float) $data['pedido']->precio_total - $data['sum_abono'];
-        // }
-        $data['abonos'] = $this->Abono_model->ObtenerAbonosPedido($codigo_pedido);
-        $fecha_sql = (new DateTime($data['pedido']->fecha_pedido))->format('Y-m-d');
-        //        echo $fecha_sql;die;
-        $data['tipo_cambio'] = $this->Pedidos_model->ObtenerTipoCambioPedido($fecha_sql)->tipo_cambio_compra;
-        $data['tc_today'] = $this->Tax_model->ObtenerTipoCambioDelDia()->tipo_cambio_compra;
-        //        echo $data['tipo_cambio'];die;
-        $data['cuentas_bancarias'] = $this->Cuentas_bancarias_model->GetCuentasBancarias();
-        $data['pedido_detalle'] = $this->Pedidos_model->ObtenerPedidoDetalle($codigo_pedido);
-
-        $data['presupuestoCompra'] = $this->obtenerPresupuestoCompra($data['pedido_detalle']);
-        $data['presupuestoEnvio'] = $this->obtenerPresupuestoEnvio($data['pedido_detalle']);
-
-        $data['precioTotalPedido'] = $this->CalcularPrecioTotalDePedido($data['pedido_detalle']);
-        $data['saldoPorCobrar'] = $this->CalcularSaldoPorCobrar($data['precioTotalPedido'], $data['sum_abono_usd']);
+       
+        $fecha_sql                  =               (new DateTime($data['pedido']->fecha_pedido))->format('Y-m-d');
+        $data['abonos']             =               $this->Abono_model->ObtenerAbonosPedido($codigo_pedido);
+        $data['tipo_cambio']        =               $this->Pedidos_model->ObtenerTipoCambioPedido($fecha_sql)->tipo_cambio_compra;
+        $data['tc_today']           =               $this->Tax_model->ObtenerTipoCambioDelDia()->tipo_cambio_compra;
+        $data['cuentas_bancarias']  =               $this->Cuentas_bancarias_model->GetCuentasBancarias();
+        $data['pedido_detalle']     =               $this->Pedidos_model->ObtenerPedidoDetalle($codigo_pedido);
+        $data['presupuestoCompra']  =               $this->obtenerPresupuestoCompra($data['pedido_detalle']);
+        $data['presupuestoEnvio']   =               $this->obtenerPresupuestoEnvio($data['pedido_detalle']);
+        $data['precioTotalPedido']  =               $this->CalcularPrecioTotalDePedido($data['pedido_detalle']);
+        $data['saldoPorCobrar']     =               $this->CalcularSaldoPorCobrar($data['precioTotalPedido'], $data['sum_abono_usd']);
 
         if (!is_null($renderiza)) {
 
-            // var_dump($data['pedido']);
             $this->load->view('pedidos/v_modal_editar_pedido');
             $this->load->view('pedidos/v_modal_agregar_producto');
             return $this->load->view('pedidos/v_lista_pedido_detalle', $data, true);
+
         } else {
+
             $this->load->view('pedidos/v_modal_editar_pedido');
             $this->load->view('pedidos/v_modal_agregar_producto');
             $this->template->load(10, 'pedidos/v_lista_pedido_detalle', $data);
+
         }
     }
 
-    private function CalcularPrecioTotalDePedido($dataPedidoDetalle)
+    private function CalcularPrecioTotalDePedido($da2taPedidoDetalle)
     {
         $precioTotalPedido = 0;
         foreach ($dataPedidoDetalle->Result() as $campo) {
@@ -301,18 +298,23 @@ class Pedidos extends CI_Controller
         return $id_codigo = (isset($id_codigo)) ? $id_codigo : 0;
     }
 
-    public function ListarPedidos()
+    public function ListarPedidos($renderiza = FALSE)
     {
-        $this->template->add_css('css/datatables/dataTables.bootstrap.min.css');
-        $this->template->add_js('js/datatables/jquery.dataTables.min.js');
-        $this->template->add_js('js/datatables/dataTables.bootstrap.min.js');
+
         $this->template->set('titulo', 'Listado de Pedidos');
-        $data['pedidos'] = $this->Pedidos_model->GetAllPedidos('PEDIDO');
-        $data['controlador'] = 'Pedidos';
-        $this->template->load(10, 'pedidos/v_lista_pedidos', $data);
+        $data['pedidos']        =       $this->Pedidos_model->GetAllPedidos('PEDIDO');
+        $data['controlador']    =       'Pedidos';
+        
+        if($renderiza){
+            
+            return $this->load->view('pedidos/v_lista_pedidos', $data, true);
+
+        }else{
+            $this->template->load(10, 'pedidos/v_lista_pedidos', $data);
+        }
     }
 
-    public function EliminarPedido()
+    public function EliminarProductoPedido()
     {
         $id = $_POST['pedido_detalle_id'];
         $codigo_pedido = $_POST['codigo_pedido'];
@@ -404,6 +406,26 @@ class Pedidos extends CI_Controller
         echo $vista;
     }
 
+    public function EliminarPedido()
+    {
 
+        $codigo_pedido          =           $_POST['codigo_pedido_ajax'];
+        $res_del                =           $this->Pedidos_model->EliminarPedido($codigo_pedido);
+        
+        if($res_del)
+        {
+
+            $renderiza          =           TRUE;
+            $vista_ajax         =           $this->ListarPedidos($renderiza);
+            echo $vista_ajax;
+
+        }
+        else{
+
+            echo FALSE;
+
+        }
+
+    }
 
 }

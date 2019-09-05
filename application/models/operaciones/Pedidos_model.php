@@ -65,8 +65,9 @@ class Pedidos_model extends CI_Model {
                 $this->db->where_in('P.estado', $estado);
                 break;
         }
+        $this->db->where("P.estado_registro", "Y");
         $this->db->order_by("P.codigo", "DESC");
-        RETURN $this->db->get();
+        return $this->db->get();
 
 //        return $this->db->last_query();
     }
@@ -186,5 +187,19 @@ class Pedidos_model extends CI_Model {
     {
         $this->db->where('id', $id_pedido_detalle);
         return $this->db->update('pedido_detalle', array('cantidad' => $cantidad));
+    }
+
+    function EliminarPedido($codigo)
+    {
+        $sql = "UPDATE pedido P
+                        INNER JOIN  
+                    pedido_detalle PD ON PD.pedido_codigo = P.codigo
+                SET 
+                    P.estado_registro  = 'N', PD.estado_registro = 'N'
+                WHERE P.codigo = ". $this->db->escape($codigo);
+                
+        $this->db->query($sql);
+        return $this->db->last_query();
+        return $this->db->affected_rows();
     }
 }
