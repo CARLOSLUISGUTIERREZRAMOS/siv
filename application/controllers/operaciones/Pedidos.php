@@ -104,7 +104,7 @@ class Pedidos extends CI_Controller
         }
     }
 
-    private function CalcularPrecioTotalDePedido($da2taPedidoDetalle)
+    private function CalcularPrecioTotalDePedido($dataPedidoDetalle)
     {
         $precioTotalPedido = 0;
         foreach ($dataPedidoDetalle->Result() as $campo) {
