@@ -189,15 +189,15 @@ class Pedidos extends CI_Controller
         $ObjPedido = json_decode($JsonDataPedido);
 
         $data_insert_pedido = array(
-            'cliente_codigo' => $ObjPedido->cliente_codigo,
-            'shipping_total' => $ObjPedido->shipping_total,
-            'costos_totales' => $ObjPedido->costos_totales,
-            'precio_total' => $ObjPedido->precio_total,
-            'saldo' => $ObjPedido->saldo,
-            'costo_x_libra' => $ObjPedido->costo_x_libra,
-            'presupuesto_x_compra' => $ObjPedido->presupuesto_x_compra,
-            'presupuesto_x_envio' => $ObjPedido->presupuesto_x_envio,
-            'tax_id' => $this->Tax_model->ObtenerTipoCambioDelDia()->id
+            'cliente_codigo'        => $ObjPedido->cliente_codigo,
+            'shipping_total'        => $ObjPedido->shipping_total,
+            'costos_totales'        => $ObjPedido->costos_totales,
+            'precio_total'          => $ObjPedido->precio_total,
+            'saldo'                 => $ObjPedido->saldo,
+            'costo_x_libra'         => $ObjPedido->costo_x_libra,
+            'presupuesto_x_compra'  => $ObjPedido->presupuesto_x_compra,
+            'presupuesto_x_envio'   => $ObjPedido->presupuesto_x_envio,
+            'tax_id'                => $this->Tax_model->ObtenerTipoCambioDelDia()->id
         );
 
         $pedido_codigo = $this->Pedidos_model->IngresarPedido($data_insert_pedido);
@@ -207,19 +207,19 @@ class Pedidos extends CI_Controller
             $pendiente_compra = $this->ObtenerPendienteDeCompra($stock_act_producto, $producto->cantidad);
 
             $data_insert_pedido_detalle = array(
-                'pedido_codigo' => $pedido_codigo,
-                'pedido_cliente_codigo' => $ObjPedido->cliente_codigo,
-                'producto_codigo' => $producto->codigo_producto,
-                'cantidad' => $producto->cantidad,
-                'costo_unitario_producto' => $producto->costo_unitario_producto,
-                'peso_libras' => $producto->peso_libras,
-                'shipping_unitario' => $producto->shipping_unitario,
-                'pendiente_compra' => $pendiente_compra,
-                'ganancia_unitaria' => $producto->ganancia_unitaria,
-                'precio_unitario_usd' => $producto->precio_unitario_usd,
-                'precio_unitario_pen' => $producto->precio_unitario_pen,
-                'precio_total' => $producto->precio_total,
-                'stock_producto_flag' => $stock_act_producto
+                'pedido_codigo'             => $pedido_codigo,
+                'pedido_cliente_codigo'     => $ObjPedido->cliente_codigo,
+                'producto_codigo'           => $producto->codigo_producto,
+                'cantidad'                  => $producto->cantidad,
+                'costo_unitario_producto'   => $producto->costo_unitario_producto,
+                'peso_libras'               => $producto->peso_libras,
+                'shipping_unitario'         => $producto->shipping_unitario,
+                'pendiente_compra'          => $pendiente_compra,
+                'ganancia_unitaria'         => $producto->ganancia_unitaria,
+                'precio_unitario_usd'       => $producto->precio_unitario_usd,
+                'precio_unitario_pen'       => $producto->precio_unitario_pen,
+                'precio_total'              => $producto->precio_total,
+                'stock_producto_flag'       => $stock_act_producto
             );
 
             $res_insert_pedido_detalle = $this->Pedidos_model->RegistrarPedidoDetalle($data_insert_pedido_detalle);
