@@ -149,14 +149,14 @@ class Pedidos extends CI_Controller
     function GuardarAbonos()
     {
         $data = [];
-        $JsonDataAbono = $_POST['json'];
-        $cliente_codigo = $_POST['pedido_cliente_codigo'];
-        $codigo_pedido = $_POST['codigo_pedido'];
-        $saldo_por_cobrar = $_POST['saldo_por_cobrar'];
-        $ObjAbono = json_decode($JsonDataAbono);
+        $JsonDataAbono      = $_POST['json'];
+        $cliente_codigo     = $_POST['pedido_cliente_codigo'];
+        $codigo_pedido      = $_POST['codigo_pedido'];
+        $saldo_por_cobrar   = $_POST['saldo_por_cobrar'];
+        $ObjAbono           = json_decode($JsonDataAbono);
+
         foreach ($ObjAbono as $abono) {
             $res = $this->Abono_model->VerificarExisteNumeroAbonoRegistrado($abono->numero_abono, $codigo_pedido);
-            //            // SI NO EXISTE REGSITRO ENTRA A LA VALIDACION Y SE REGISTRA ABONO
             if ($res === 0) {
                 $res_insert = $this->Abono_model->RegistrarAbonoDePedido($abono->numero_abono, $abono->monto, $codigo_pedido, $cliente_codigo, $abono->cuenta_id, $abono->monto_usd, $abono->moneda);
                 if ($res_insert) {
@@ -167,16 +167,6 @@ class Pedidos extends CI_Controller
                     $this->session->set_flashdata('EXITO', FALSE);
                 }
             }
-            //            else {
-            //                $res_upd = $this->Abono_model->ActualizarAbonoDePedido($abono->numero_abono, $codigo_pedido, $abono->cuenta_id);
-            //
-            //                if ($res_upd) {
-            //                    $data[] = 'Se actualizo el abono N° ' . $abono->numero_abono . ' del pedido ' . $codigo_pedido . ' exitosamente';
-            //                } else {
-            //                    $data[] = 'Ocurrió un error en la actualización del abono N° ' . $abono->numero_abono . ' con número de pedido ' . $codigo_pedido;
-            //                    $this->session->set_flashdata('EXITO', TRUE);
-            //                }
-            //            }
         }
 
 
