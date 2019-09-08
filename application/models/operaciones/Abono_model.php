@@ -36,8 +36,8 @@ class Abono_model extends CI_Model {
         $this->db->where('id', $id_abono);
         $this->db->where('pedido_codigo', $pedido_codigo);
         $result = $this->db->update('abono');
-//        return $this->db->last_query();
         return $result;
+        
     }
 
     function VerificarExisteNumeroAbonoRegistrado($numero_abono, $pedido_codigo) {

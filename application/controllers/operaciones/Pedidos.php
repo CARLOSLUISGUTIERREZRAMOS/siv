@@ -19,11 +19,12 @@ class Pedidos extends CI_Controller
         $this->template->add_js('js/bootstrap-datepicker/bootstrap-datepicker.min.js');
         $this->template->add_js('js/datatables/dataTables.bootstrap.min.js');
         $this->template->add_js('js/app/operaciones/pedido.js',true);
+        $this->template->add_js('js/sweetalert2/sweetalert2.min.js', true);
         $this->template->add_js('js/app/operaciones/pedido_detalle.js', true);
         $this->template->add_css('css/sweetalert2/sweetalert2.min.css', true);
         $this->template->add_css('css/sweetalert2/styles.css', true);
         $this->template->add_css('css/app/pedido_detalle.css', true);
-        $this->template->add_js('js/sweetalert2/sweetalert2.min.js', true);
+        $this->template->add_css('css/bootstrap-datepicker/bootstrap-datepicker.min.css', true);
     }
 
     public function index()
@@ -32,11 +33,11 @@ class Pedidos extends CI_Controller
         if ($tax_cargado) {
 
             $this->template->set('titulo', 'SISTEMA');
-            $data['Clientes'] = $this->Clientes_model->GetAllClientes();
-            $data['Productos'] = $this->Productos_model->GetAllProductos();
-            $data['NewCodPedido'] = $this->ObtenerNuevoCodigoPedido();
-            $data['costo_libra_today'] = $this->Tax_model->ObtenerCostoLibraDelDia();
-            $data['tipo_cambio_compra_today'] = $this->Tax_model->ObtenerTipoCambioDelDia()->tipo_cambio_compra;
+            $data['Clientes']                   =       $this->Clientes_model->GetAllClientes();
+            $data['Productos']                  =       $this->Productos_model->GetAllProductos();
+            $data['NewCodPedido']               =       $this->ObtenerNuevoCodigoPedido();
+            $data['costo_libra_today']          =       $this->Tax_model->ObtenerCostoLibraDelDia();
+            $data['tipo_cambio_compra_today']   =       $this->Tax_model->ObtenerTipoCambioDelDia()->tipo_cambio_compra;
             $this->template->load(1, 'pedidos/v_anadir_producto', $data);
         } else {
             redirect("interno/Main", 'refresh');
@@ -45,8 +46,6 @@ class Pedidos extends CI_Controller
 
     public function RegistrarPedido()
     {
-
-        //        var_dump($_POST);
         echo $this->Pedidos_model->IngresarPedido($_POST);
     }
 
@@ -150,14 +149,14 @@ class Pedidos extends CI_Controller
     function GuardarAbonos()
     {
         $data = [];
-        $JsonDataAbono = $_POST['json'];
-        $cliente_codigo = $_POST['pedido_cliente_codigo'];
-        $codigo_pedido = $_POST['codigo_pedido'];
-        $saldo_por_cobrar = $_POST['saldo_por_cobrar'];
-        $ObjAbono = json_decode($JsonDataAbono);
+        $JsonDataAbono      = $_POST['json'];
+        $cliente_codigo     = $_POST['pedido_cliente_codigo'];
+        $codigo_pedido      = $_POST['codigo_pedido'];
+        $saldo_por_cobrar   = $_POST['saldo_por_cobrar'];
+        $ObjAbono           = json_decode($JsonDataAbono);
+
         foreach ($ObjAbono as $abono) {
             $res = $this->Abono_model->VerificarExisteNumeroAbonoRegistrado($abono->numero_abono, $codigo_pedido);
-            //            // SI NO EXISTE REGSITRO ENTRA A LA VALIDACION Y SE REGISTRA ABONO
             if ($res === 0) {
                 $res_insert = $this->Abono_model->RegistrarAbonoDePedido($abono->numero_abono, $abono->monto, $codigo_pedido, $cliente_codigo, $abono->cuenta_id, $abono->monto_usd, $abono->moneda);
                 if ($res_insert) {
@@ -168,16 +167,6 @@ class Pedidos extends CI_Controller
                     $this->session->set_flashdata('EXITO', FALSE);
                 }
             }
-            //            else {
-            //                $res_upd = $this->Abono_model->ActualizarAbonoDePedido($abono->numero_abono, $codigo_pedido, $abono->cuenta_id);
-            //
-            //                if ($res_upd) {
-            //                    $data[] = 'Se actualizo el abono N° ' . $abono->numero_abono . ' del pedido ' . $codigo_pedido . ' exitosamente';
-            //                } else {
-            //                    $data[] = 'Ocurrió un error en la actualización del abono N° ' . $abono->numero_abono . ' con número de pedido ' . $codigo_pedido;
-            //                    $this->session->set_flashdata('EXITO', TRUE);
-            //                }
-            //            }
         }
 
 
@@ -324,31 +313,35 @@ class Pedidos extends CI_Controller
     }
     public function ModificarAbono()
     {
-        $setMonto = [];
-        $pedidoCodigo = $_POST['pedidoCodigo'];
-        $idAbono = $_POST['idabono'];
-        $cuentaBancaria = $_POST['select_cuentas'];
-        $montoAbono = $_POST['montoAbono'];
-        $tipoCambio = $_POST['tipoCambio'];
+        $setMonto           =       [];
+
+        $pedidoCodigo       =       $_POST['pedidoCodigo'];
+        $idAbono            =       $_POST['idabono'];
+        $cuentaBancaria     =       $_POST['select_cuentas'];
+        $montoAbono         =       $_POST['montoAbono'];
+        $tipoCambio         =       $_POST['tipoCambio'];
+
         $condiciones_modelo_ctasBancarias = array('id' => $cuentaBancaria);
-        $resDataCtaBancaria = $this->Cuentas_bancarias_model->GetDetalleCtaBancaria($condiciones_modelo_ctasBancarias);
+        $resDataCtaBancaria = $this->Cuentas_bancarias_model->GetDetalleCtaBancaria(
+                                                            $condiciones_modelo_ctasBancarias);
         if ($resDataCtaBancaria->tipo_moneda === 'PEN') {
             //APLICAMOS EL CAMBIO
-            $setMonto['monto_pen'] = $montoAbono;
-            $montoAbono = (float) $montoAbono / $tipoCambio;
-            $setMonto['monto'] = round($montoAbono, 2);
+            $setMonto['monto_pen']      =       $montoAbono;
+            $montoAbono                 =       (float) $montoAbono / $tipoCambio;
+            $setMonto['monto']          =       round($montoAbono, 2);
         } else {
-            $setMonto['monto'] = $montoAbono;
-            $montoAbonoPen = (float) $montoAbono * (float) $tipoCambio;
-            $setMonto['monto_pen'] = round($montoAbonoPen, 2);
+            $setMonto['monto']          =       $montoAbono;
+            $montoAbonoPen              =       (float) $montoAbono * (float) $tipoCambio;
+            $setMonto['monto_pen']      =       round($montoAbonoPen, 2);
         }
-        $setMonto['cuentas_bancarias_id'] = $cuentaBancaria;
-        $bool_upd = $this->Abono_model->ActualizarAbonoDePedido($idAbono, $pedidoCodigo, $setMonto);
+        $setMonto['cuentas_bancarias_id']   =       $cuentaBancaria;
+        $bool_upd                           =       $this->Abono_model->ActualizarAbonoDePedido($idAbono, 
+                                                                                                $pedidoCodigo, $setMonto);
 
-        $vista = $this->VerDetallePedido($_POST['pedidoCodigo']);
+        $vista                              =       $this->VerDetallePedido($_POST['pedidoCodigo']);
+
         echo $vista;
-        // $msg = ($bool_upd) ? 'Abono actualizado.' : 'Error al editar abono';
-        // $this->session->set_flashdata('msg', $msg);
+        
     }
 
     public function AgregarAbono()
