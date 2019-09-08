@@ -2,7 +2,7 @@
     <!-- Logo -->
     <a href="<?= base_url() . 'index.php/interno/main' ?>" class="logo">
         <span class="logo-mini">SIV</span>
-          <span class="logo-lg"><b>    <img src="<?= base_url() . 'img/logo_ventas.png'; ?>">SIV</b>ADMIN</span>
+          <span class="logo-lg"><b>    <img src="<?= base_url() . 'img/siv_icono.png'; ?>"> SIV</b>ADMIN</span>
 <!--        <div class="pull-left image">
             <img width="25%" height="25%" src="<?= base_url() . 'img/logo_ventas.png'; ?>" class="img-responsive" alt="STARPERU">
         </div>-->

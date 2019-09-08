@@ -1,5 +1,7 @@
 $(function () {
 
+    $('#datepicker').datepicker();
+
     $("body").on("click", "#btn_agregar_abono", function () {
         $('#entradaAddAbono').focus();
     });
@@ -19,6 +21,9 @@ $(function () {
         $('#cut').val(cut);
 
     });
+    
+
+
 
     // $("body").on("change", "#cantLibras", function () {
     //     var cant_libras = parseFloat(this.value);
